@@ -14,8 +14,6 @@ import {
   Building2,
   MapPin,
   Sparkles,
-  ChevronDown,
-  ChevronUp,
   TrendingUp,
   BarChart3,
   AlertTriangle,
@@ -25,7 +23,18 @@ import {
   Cpu,
   CheckCircle2,
   RefreshCw,
-  Zap
+  Zap,
+  Sliders,
+  PieChart as PieIcon,
+  Activity,
+  Layers,
+  LayoutDashboard,
+  Building,
+  Calendar,
+  CheckCircle,
+  HelpCircle,
+  Clock,
+  Shield
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -49,6 +58,8 @@ interface CollegeItem {
   type: string;
 }
 
+type TabType = 'overview' | 'students' | 'faculty' | 'placements' | 'prediction' | 'research' | 'finance' | 'infrastructure' | 'complaints';
+
 export const Dashboard: React.FC = () => {
   // Global Filter & Search States
   const [colleges, setColleges] = useState<CollegeItem[]>(
@@ -59,25 +70,26 @@ export const Dashboard: React.FC = () => {
   );
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
-  const [selectedCollege, setSelectedCollege] = useState<CollegeItem | null>(null);
+  const [selectedCollege, setSelectedCollege] = useState<CollegeItem | null>(mockColleges[1] as CollegeItem); // Default to VJTI
 
-  // Filters
-  const [filterDistrict, setFilterDistrict] = useState('');
-  const [filterDept, setFilterDept] = useState('');
+  // Active Tab State
+  const [activeTab, setActiveTab] = useState<TabType>('overview');
+
+  // Sticky Filters
   const [filterYear, setFilterYear] = useState('2025');
-  const [filterNaac, setFilterNaac] = useState('');
-  const [filterPlacement, setFilterPlacement] = useState('');
+  const [filterDept, setFilterDept] = useState('');
+  const [filterProgram, setFilterProgram] = useState('');
+  const [filterBranch, setFilterBranch] = useState('');
 
-  // Collapsible Accordion Sections
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    students: true,
-    faculty: true,
-    placements: true,
-    research: false,
-    infrastructure: false,
-    finance: false,
-    complaints: false,
-  });
+  // ML Interactive Controls State
+  const [seats, setSeats] = useState(120);
+  const [filledSeats, setFilledSeats] = useState(100);
+  const [applications, setApplications] = useState(400);
+  const [placementRateInput, setPlacementRateInput] = useState(80.0);
+  const [avgPackageInput, setAvgPackageInput] = useState(12.0);
+  const [cutoffInput, setCutoffInput] = useState(92.0);
+  const [facultyCountInput, setFacultyCountInput] = useState(17);
+  const [naacGradeInput, setNaacGradeInput] = useState('A++');
 
   // ML Prediction Result State
   const [predicting, setPredicting] = useState(false);
@@ -112,9 +124,12 @@ export const Dashboard: React.FC = () => {
     }
   }, [searchQuery]);
 
-  // Run prediction whenever selected college changes
+  // Sync controls & run prediction whenever selected college changes
   useEffect(() => {
     if (selectedCollege) {
+      setPlacementRateInput(selectedCollege.placementRate);
+      setFacultyCountInput(selectedCollege.facultyCount);
+      setNaacGradeInput(selectedCollege.naacGrade);
       runPredictionForCollege(selectedCollege);
     }
   }, [selectedCollege, filterYear]);
@@ -125,7 +140,6 @@ export const Dashboard: React.FC = () => {
       if (res.ok) {
         const data = await res.json();
         if (data.colleges && data.colleges.length > 0) {
-          // Merge API colleges with default premier colleges so VJTI/COEP/ICT are always present
           const existingIds = new Set(data.colleges.map((c: any) => c.id));
           const defaults = mockColleges.map(c => ({ ...c, nirfRank: String(c.nirfRank || 'Not Ranked') }))
             .filter(c => !existingIds.has(c.id));
@@ -151,25 +165,25 @@ export const Dashboard: React.FC = () => {
         }
       }
     } catch (e) {
-      // ignore offline
+      // ignore
     }
   };
 
-  const runPredictionForCollege = async (col: CollegeItem) => {
+  const runPredictionForCollege = async (col: CollegeItem, customParams?: any) => {
     setPredicting(true);
     try {
       const payload = {
-        college_name: col.name,
+        college_name: col ? col.name : "VJTI Mumbai",
         target_year: parseInt(filterYear, 10) || 2025,
-        district: col.district,
-        sanctioned_seats: 120,
-        filled_seats: 100,
-        applications: 400,
-        placement_rate: col.placementRate,
-        avg_package: 12.0,
-        cutoff_percentile: 90.0,
-        faculty_count: col.facultyCount,
-        naac_grade: col.naacGrade,
+        district: col ? col.district : "Mumbai",
+        sanctioned_seats: customParams?.seats || seats,
+        filled_seats: customParams?.filledSeats || filledSeats,
+        applications: customParams?.applications || applications,
+        placement_rate: customParams?.placementRate || placementRateInput,
+        avg_package: customParams?.avgPackage || avgPackageInput,
+        cutoff_percentile: customParams?.cutoff || cutoffInput,
+        faculty_count: customParams?.facultyCount || facultyCountInput,
+        naac_grade: customParams?.naacGrade || naacGradeInput,
         autonomous: "Yes"
       };
 
@@ -184,7 +198,7 @@ export const Dashboard: React.FC = () => {
         setPredResult(data);
       }
     } catch (e) {
-      console.warn("Predict API offline, using internal calculation:", e);
+      console.warn("Predict API offline, using fallback math:", e);
     } finally {
       setPredicting(false);
     }
@@ -208,73 +222,84 @@ export const Dashboard: React.FC = () => {
   };
 
   const handleResetFilters = () => {
-    setSelectedCollege(null);
+    setSelectedCollege(mockColleges[1] as CollegeItem);
     setSearchQuery('');
-    setFilterDistrict('');
-    setFilterDept('');
     setFilterYear('2025');
-    setFilterNaac('');
-    setFilterPlacement('');
+    setFilterDept('');
+    setFilterProgram('');
+    setFilterBranch('');
   };
 
-  const toggleSection = (key: string) => {
-    setOpenSections(prev => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  // Dynamic Metrics depending on selection
-  const activeMetrics = useMemo(() => {
-    if (!selectedCollege) {
+  // Dynamic 10 Executive KPI Metrics depending on selection
+  const kpis = useMemo(() => {
+    const col = selectedCollege;
+    if (!col) {
       return {
         totalStudents: defaultMetrics.totalStudents,
-        totalColleges: colleges.length > 0 ? colleges.length : 2000,
         totalFaculty: defaultMetrics.totalFaculty,
         placementRate: defaultMetrics.placementRate,
+        averagePackage: 8.5,
         averageCgpa: defaultMetrics.averageCgpa,
         scholarshipStudents: defaultMetrics.scholarshipStudents,
-        complaints: 124,
+        researchPublications: 1240,
         infraScore: 8.4,
+        complaints: 124,
+        budgetUtil: 91.2,
       };
     }
     return {
-      totalStudents: selectedCollege.totalStudents,
-      totalColleges: 1,
-      totalFaculty: selectedCollege.facultyCount,
-      placementRate: selectedCollege.placementRate,
-      averageCgpa: selectedCollege.averageCgpa,
-      scholarshipStudents: Math.round(selectedCollege.totalStudents * 0.3),
-      complaints: Math.floor(Math.random() * 5) + 1,
-      infraScore: selectedCollege.naacGrade.includes('A') ? 9.2 : 7.8,
+      totalStudents: col.totalStudents,
+      totalFaculty: col.facultyCount,
+      placementRate: col.placementRate,
+      averagePackage: col.placementRate >= 90 ? 14.5 : (col.placementRate >= 80 ? 9.2 : 6.5),
+      averageCgpa: col.averageCgpa,
+      scholarshipStudents: Math.round(col.totalStudents * 0.32),
+      researchPublications: col.naacGrade.includes('A') ? 420 : 180,
+      infraScore: col.naacGrade.includes('A') ? 9.2 : 7.8,
+      complaints: Math.floor(Math.random() * 4) + 1,
+      budgetUtil: col.naacGrade.includes('A') ? 94.8 : 86.5,
     };
-  }, [selectedCollege, colleges]);
+  }, [selectedCollege]);
 
-  // AI Generated Insights based on context
+  // AI Executive Insight Panel Cards
   const aiInsights = useMemo(() => {
-    if (selectedCollege) {
-      return [
-        { type: 'positive', title: `High Applicant Demand (${selectedCollege.name.split(' ')[0]})`, text: `Applications exceed capacity by 3.3x for ${filterYear}. Projected 96%+ utilization.` },
-        { type: 'positive', title: 'Placement Momentum', text: `Placement rate at ${selectedCollege.placementRate}% with strong core branch recruitment.` },
-        { type: 'warning', title: 'Faculty & Lab Ratio', text: `Faculty-student ratio is 1:${Math.round(selectedCollege.totalStudents / selectedCollege.facultyCount)}. Additional smart classrooms recommended.` },
-      ];
-    }
+    const col = selectedCollege || mockColleges[1];
     return [
-      { type: 'positive', title: 'State Enrollment Growth', text: 'Admissions increased by 4.2% YoY across Pune & Mumbai technical hubs.' },
-      { type: 'positive', title: 'Placement Performance', text: 'Overall recruitment improved 5.1% with Computer & IT branches leading.' },
-      { type: 'warning', title: 'District Capacity Alert', text: 'Tier-2 & Rural engineering college vacancy rate at 22%. Targeted scholarship incentives active.' },
+      { 
+        type: 'positive', 
+        title: `Capacity & Demand Equilibrium (${col.name.split(' ')[0]})`, 
+        text: `Applications exceed capacity by 3.33x for AY ${filterYear}. Projected 97.7% seat utilization with minimal vacancy risks.` 
+      },
+      { 
+        type: 'positive', 
+        title: 'Recruitment & Package Surge', 
+        text: `Placement rate maintained at ${col.placementRate}% with median package reaching ₹${kpis.averagePackage} LPA in core Tech branches.` 
+      },
+      { 
+        type: 'warning', 
+        title: 'Faculty & Lab Capital Expenditure', 
+        text: `Faculty-student ratio is 1:${Math.round(kpis.totalStudents / kpis.totalFaculty)}. Additional smart lab infrastructure recommended under RUSA grant.` 
+      },
     ];
-  }, [selectedCollege, filterYear]);
+  }, [selectedCollege, filterYear, kpis]);
 
   const formatNum = (n: number) => n >= 100000 ? (n/100000).toFixed(2) + 'L' : (n >= 1000 ? (n/1000).toFixed(1) + 'K' : n.toString());
 
   return (
     <div className="space-y-6 pb-12">
-      {/* 1. TOP EXECUTIVE GLOBAL SEARCH BAR WITH AUTOCOMPLETE */}
+      {/* 1. TOP GLOBAL EXECUTIVE SEARCH BAR */}
       <div className="bg-slate-900 rounded-xl p-5 text-white shadow-xl relative z-30 border border-slate-800">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
           <div>
-            <span className="text-[10px] font-bold tracking-widest uppercase text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
-              Government Executive Decision Support Mode
-            </span>
-            <h1 className="text-xl font-bold mt-1 text-white">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-bold tracking-widest uppercase text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
+                Government Executive Decision Support Mode
+              </span>
+              <span className="text-[10px] font-bold tracking-widest uppercase text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Live Data Sync
+              </span>
+            </div>
+            <h1 className="text-xl font-bold mt-1.5 text-white">
               Maharashtra Higher & Technical Education Intelligence Platform
             </h1>
           </div>
@@ -282,13 +307,13 @@ export const Dashboard: React.FC = () => {
           {selectedCollege && (
             <div className="flex items-center gap-2 bg-blue-600/30 text-blue-300 px-3 py-1.5 rounded-lg border border-blue-500/30 text-xs font-semibold">
               <Building2 className="w-4 h-4 text-blue-400" />
-              Active Context: <span className="text-white">{selectedCollege.name.split(' (')[0]}</span>
-              <button onClick={() => setSelectedCollege(null)} className="ml-2 hover:text-white font-bold">×</button>
+              Active Context: <span className="text-white font-bold">{selectedCollege.name.split(' (')[0]}</span>
+              <button onClick={() => setSelectedCollege(null)} className="ml-2 hover:text-white font-bold text-sm">×</button>
             </div>
           )}
         </div>
 
-        {/* Search Input */}
+        {/* Global Autocomplete Search Input */}
         <div className="relative">
           <div className="relative flex items-center">
             <Search className="w-5 h-5 absolute left-4 text-slate-400" />
@@ -300,13 +325,13 @@ export const Dashboard: React.FC = () => {
                 setShowSearchDropdown(true);
               }}
               onFocus={() => setShowSearchDropdown(true)}
-              placeholder="Search by College Name (e.g. VJTI, COEP), District (Pune, Mumbai), Department, University..."
+              placeholder="Search by College Name (e.g. VJTI, COEP, ICT), District (Pune, Mumbai), Department, University..."
               className="w-full pl-12 pr-10 py-3 bg-slate-800/90 border border-slate-700 rounded-lg text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
             />
             {searchQuery && (
               <button 
                 onClick={() => { setSearchQuery(''); setSelectedCollege(null); }}
-                className="absolute right-4 text-slate-400 hover:text-white text-xs"
+                className="absolute right-4 text-slate-400 hover:text-white text-xs font-semibold"
               >
                 Clear
               </button>
@@ -334,7 +359,7 @@ export const Dashboard: React.FC = () => {
                         <MapPin className="w-3 h-3 text-blue-400" /> {col.district} • {col.type}
                       </div>
                     </div>
-                    <span className="px-2 py-0.5 text-[10px] font-bold bg-blue-500/20 text-blue-300 rounded border border-blue-400/20">
+                    <span className="px-2.5 py-0.5 text-[10px] font-bold bg-blue-500/20 text-blue-300 rounded border border-blue-400/20">
                       {col.naacGrade} Grade
                     </span>
                   </div>
@@ -345,14 +370,14 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. MODERN FILTER BAR BELOW SEARCH */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
+      {/* 2. STICKY FILTER BAR */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-wrap items-center justify-between gap-3 text-xs sticky top-2 z-20">
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1.5 font-bold text-slate-700 uppercase tracking-wider text-[11px] pr-2 border-r border-slate-200">
+          <div className="flex items-center gap-1.5 font-bold text-slate-700 uppercase tracking-wider text-[11px] pr-3 border-r border-slate-200">
             <Filter className="w-4 h-4 text-blue-600" /> Filters
           </div>
 
-          {/* College Filter */}
+          {/* College Dropdown */}
           <select
             value={selectedCollege ? selectedCollege.id : ''}
             onChange={(e) => {
@@ -360,35 +385,30 @@ export const Dashboard: React.FC = () => {
               setSelectedCollege(c || null);
               if (c) setSearchQuery(c.name);
             }}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 font-semibold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"
+            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 font-semibold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"
           >
-            <option value="">All Institutions (Overall State)</option>
+            <option value="">All Maharashtra Institutions</option>
             {colleges.map(c => (
               <option key={c.id} value={c.id}>{c.name.split(' (')[0]}</option>
             ))}
           </select>
 
-          {/* District Filter */}
+          {/* Academic Year Filter */}
           <select
-            value={filterDistrict}
-            onChange={(e) => setFilterDistrict(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 font-semibold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"
+            value={filterYear}
+            onChange={(e) => setFilterYear(e.target.value)}
+            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 font-semibold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"
           >
-            <option value="">All Districts</option>
-            <option value="Pune">Pune</option>
-            <option value="Mumbai">Mumbai</option>
-            <option value="Nagpur">Nagpur</option>
-            <option value="Nashik">Nashik</option>
-            <option value="Aurangabad">Aurangabad</option>
-            <option value="Sangli">Sangli</option>
-            <option value="Latur">Latur</option>
+            <option value="2025">Academic Year 2025-2026</option>
+            <option value="2026">Academic Year 2026-2027</option>
+            <option value="2024">Academic Year 2024-2025</option>
           </select>
 
           {/* Department Filter */}
           <select
             value={filterDept}
             onChange={(e) => setFilterDept(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 font-semibold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"
+            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 font-semibold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"
           >
             <option value="">All Departments</option>
             <option value="Computer">Computer Engineering</option>
@@ -398,28 +418,16 @@ export const Dashboard: React.FC = () => {
             <option value="Electrical">Electrical Engineering</option>
           </select>
 
-          {/* Academic Year */}
+          {/* Program Filter */}
           <select
-            value={filterYear}
-            onChange={(e) => setFilterYear(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 font-semibold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"
+            value={filterProgram}
+            onChange={(e) => setFilterProgram(e.target.value)}
+            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 font-semibold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"
           >
-            <option value="2025">AY 2025 - 2026</option>
-            <option value="2026">AY 2026 - 2027</option>
-            <option value="2024">AY 2024 - 2025</option>
-          </select>
-
-          {/* NAAC Grade */}
-          <select
-            value={filterNaac}
-            onChange={(e) => setFilterNaac(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 font-semibold text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"
-          >
-            <option value="">All NAAC Grades</option>
-            <option value="A++">A++</option>
-            <option value="A+">A+</option>
-            <option value="A">A</option>
-            <option value="B++">B++</option>
+            <option value="">All Programs (B.Tech / M.Tech)</option>
+            <option value="B.Tech">Undergraduate (B.Tech / B.E.)</option>
+            <option value="M.Tech">Postgraduate (M.Tech / M.E.)</option>
+            <option value="PhD">Doctoral (Ph.D.)</option>
           </select>
         </div>
 
@@ -431,7 +439,7 @@ export const Dashboard: React.FC = () => {
         </button>
       </div>
 
-      {/* 3. COLLEGE OVERVIEW BANNER (Appears when College is selected) */}
+      {/* 3. DEDICATED COLLEGE HEADER BANNER */}
       {selectedCollege && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -440,283 +448,399 @@ export const Dashboard: React.FC = () => {
         >
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white font-bold text-xl shadow-inner shrink-0">
+              <div className="w-16 h-16 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white font-bold text-2xl shadow-inner shrink-0">
                 {selectedCollege.name.substring(0, 2).toUpperCase()}
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-                    {selectedCollege.naacGrade} Grade
+                    NAAC {selectedCollege.naacGrade} Grade
                   </span>
                   <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30">
-                    NIRF #{selectedCollege.nirfRank}
+                    NIRF Rank #{selectedCollege.nirfRank}
                   </span>
                   <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-400/30">
                     {selectedCollege.type}
                   </span>
                 </div>
-                <h2 className="text-xl font-bold mt-1 text-white">{selectedCollege.name}</h2>
-                <p className="text-xs text-blue-200 mt-0.5 flex items-center gap-2">
+                <h2 className="text-2xl font-bold mt-1.5 text-white">{selectedCollege.name}</h2>
+                <p className="text-xs text-blue-200 mt-0.5 flex items-center gap-2 font-medium">
                   <MapPin className="w-3.5 h-3.5 text-blue-400" /> {selectedCollege.district} District • {selectedCollege.university}
                 </p>
               </div>
             </div>
 
-            <div className="text-right">
-              <div className="text-xs text-blue-300 uppercase tracking-wider font-semibold">Overall Rating</div>
+            <div className="text-right bg-white/10 p-3.5 rounded-xl border border-white/10 backdrop-blur-md">
+              <div className="text-[10px] text-blue-300 uppercase tracking-wider font-bold">Institutional Rating</div>
               <div className="text-2xl font-bold text-amber-300 mt-0.5">★ {selectedCollege.averageCgpa} / 10</div>
-              <div className="text-[11px] text-slate-300 mt-0.5">Placement: {selectedCollege.placementRate}%</div>
+              <div className="text-[11px] text-emerald-300 font-semibold mt-0.5">Placement: {selectedCollege.placementRate}%</div>
             </div>
           </div>
         </motion.div>
       )}
 
-      {/* 4. DYNAMIC EXECUTIVE KPI CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-3">
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-          <div className="text-[11px] text-slate-500 font-semibold mb-1">Total Students</div>
-          <div className="text-xl font-bold text-slate-900">{formatNum(activeMetrics.totalStudents)}</div>
-          <div className="text-[10px] text-emerald-600 font-semibold mt-1 flex items-center gap-0.5"><ArrowUpRight className="w-3 h-3"/> +4.2% YoY</div>
+      {/* 4. EXECUTIVE 10 KPI CARDS SECTION */}
+      <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-3">
+        <div className="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
+          <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Total Students</div>
+          <div className="text-lg font-bold text-slate-900 mt-0.5">{formatNum(kpis.totalStudents)}</div>
+          <div className="text-[9px] text-emerald-600 font-bold mt-0.5 flex items-center"><ArrowUpRight className="w-2.5 h-2.5"/> +4.2% YoY</div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-          <div className="text-[11px] text-slate-500 font-semibold mb-1">Total Faculty</div>
-          <div className="text-xl font-bold text-slate-900">{activeMetrics.totalFaculty}</div>
-          <div className="text-[10px] text-emerald-600 font-semibold mt-1 flex items-center gap-0.5"><ArrowUpRight className="w-3 h-3"/> +2.8% YoY</div>
+        <div className="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
+          <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Faculty Members</div>
+          <div className="text-lg font-bold text-slate-900 mt-0.5">{kpis.totalFaculty}</div>
+          <div className="text-[9px] text-purple-600 font-bold mt-0.5">1:21 Ratio</div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-          <div className="text-[11px] text-slate-500 font-semibold mb-1">Placement Rate</div>
-          <div className="text-xl font-bold text-emerald-600">{activeMetrics.placementRate}%</div>
-          <div className="text-[10px] text-emerald-600 font-semibold mt-1 flex items-center gap-0.5"><ArrowUpRight className="w-3 h-3"/> +5.1% YoY</div>
+        <div className="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
+          <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Placement Rate</div>
+          <div className="text-lg font-bold text-emerald-600 mt-0.5">{kpis.placementRate}%</div>
+          <div className="text-[9px] text-emerald-600 font-bold mt-0.5 flex items-center"><ArrowUpRight className="w-2.5 h-2.5"/> High Demand</div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-          <div className="text-[11px] text-slate-500 font-semibold mb-1">Average CGPA</div>
-          <div className="text-xl font-bold text-slate-900">{activeMetrics.averageCgpa}</div>
-          <div className="text-[10px] text-blue-600 font-semibold mt-1 flex items-center gap-0.5"><ArrowUpRight className="w-3 h-3"/> Top 10%</div>
+        <div className="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
+          <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Avg Package</div>
+          <div className="text-lg font-bold text-emerald-600 mt-0.5">₹{kpis.averagePackage} LPA</div>
+          <div className="text-[9px] text-slate-500 font-medium mt-0.5">Core Recruitment</div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-          <div className="text-[11px] text-slate-500 font-semibold mb-1">Publications</div>
-          <div className="text-xl font-bold text-purple-600">1,240</div>
-          <div className="text-[10px] text-purple-600 font-semibold mt-1">Research Index</div>
+        <div className="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
+          <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Average CGPA</div>
+          <div className="text-lg font-bold text-blue-600 mt-0.5">{kpis.averageCgpa}</div>
+          <div className="text-[9px] text-blue-600 font-bold mt-0.5">Top 10% State</div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-          <div className="text-[11px] text-slate-500 font-semibold mb-1">Scholarship</div>
-          <div className="text-xl font-bold text-slate-900">{formatNum(activeMetrics.scholarshipStudents)}</div>
-          <div className="text-[10px] text-emerald-600 font-semibold mt-1">+8.4% Beneficiaries</div>
+        <div className="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
+          <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Scholarships</div>
+          <div className="text-lg font-bold text-slate-900 mt-0.5">{formatNum(kpis.scholarshipStudents)}</div>
+          <div className="text-[9px] text-emerald-600 font-bold mt-0.5">32% Students</div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-          <div className="text-[11px] text-slate-500 font-semibold mb-1">Complaints</div>
-          <div className="text-xl font-bold text-amber-600">{activeMetrics.complaints}</div>
-          <div className="text-[10px] text-amber-600 font-semibold mt-1">Avg 3d Resolve</div>
+        <div className="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
+          <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Publications</div>
+          <div className="text-lg font-bold text-purple-600 mt-0.5">{kpis.researchPublications}</div>
+          <div className="text-[9px] text-purple-600 font-bold mt-0.5">Indexed Papers</div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-          <div className="text-[11px] text-slate-500 font-semibold mb-1">Infra Rating</div>
-          <div className="text-xl font-bold text-blue-600">{activeMetrics.infraScore}/10</div>
-          <div className="text-[10px] text-emerald-600 font-semibold mt-1">Smart Ready</div>
-        </div>
-      </div>
-
-      {/* 5. AI AUTOMATED INSIGHT CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {aiInsights.map((insight, idx) => (
-          <div key={idx} className="bg-white rounded-xl border border-slate-200 p-4 flex items-start gap-3 shadow-sm">
-            <div className={`p-2 rounded-lg shrink-0 ${insight.type === 'positive' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
-              <Sparkles className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-slate-800">{insight.title}</h4>
-              <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{insight.text}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* 6. ANALYTICS CHARTS SECTION */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Chart 1: Student Admission Trend */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-          <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-blue-600" />
-            Historical Admission & Enrollment Trend
-          </h3>
-          <div className="h-[260px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={defaultMetrics.studentAdmissionTrend}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="year" tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} />
-                <YAxis tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} tickFormatter={(v) => `${v/1000}k`} />
-                <Tooltip formatter={(v: any) => [`${(Number(v)/1000).toFixed(1)}k Students`, 'Enrolled']} />
-                <Line type="monotone" dataKey="students" stroke="#3b82f6" strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
+          <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Infra Score</div>
+          <div className="text-lg font-bold text-blue-600 mt-0.5">{kpis.infraScore}/10</div>
+          <div className="text-[9px] text-emerald-600 font-bold mt-0.5">Smart Ready</div>
         </div>
 
-        {/* Chart 2: Branch Distribution */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-          <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-indigo-600" />
-            Branch Enrollment Breakdown
-          </h3>
-          <div className="h-[260px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={defaultMetrics.studentsByBranch}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="name" tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} />
-                <YAxis tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} tickFormatter={(v) => `${v/1000}k`} />
-                <Tooltip formatter={(v: any) => [`${v} Students`, 'Count']} />
-                <Bar dataKey="value" fill="#6366f1" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
+          <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Complaints</div>
+          <div className="text-lg font-bold text-amber-600 mt-0.5">{kpis.complaints} Active</div>
+          <div className="text-[9px] text-amber-600 font-bold mt-0.5">Avg 2.4d Resolve</div>
+        </div>
+
+        <div className="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
+          <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Budget Util</div>
+          <div className="text-lg font-bold text-slate-900 mt-0.5">{kpis.budgetUtil}%</div>
+          <div className="text-[9px] text-emerald-600 font-bold mt-0.5">RUSA Compliant</div>
         </div>
       </div>
 
-      {/* 7. HIGHLIGHTED AI PREDICTION CARD (INTEGRATED ON DASHBOARD) */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 rounded-xl p-6 text-white shadow-xl relative overflow-hidden border border-slate-800">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-          <div className="space-y-2 max-w-xl">
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30 uppercase tracking-wider">
-                AI Predictive Engine v3.0
-              </span>
-              {predicting && <RefreshCw className="w-3.5 h-3.5 text-blue-400 animate-spin" />}
+      {/* 5. PROFESSIONAL EXECUTIVE TABS NAVBAR */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-1.5 flex flex-wrap gap-1">
+        {[
+          { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+          { id: 'students', label: 'Students', icon: Users },
+          { id: 'faculty', label: 'Faculty', icon: BookOpen },
+          { id: 'placements', label: 'Placements', icon: Briefcase },
+          { id: 'prediction', label: 'Enrollment Prediction', icon: TrendingUp },
+          { id: 'research', label: 'Research', icon: Activity },
+          { id: 'finance', label: 'Finance', icon: DollarSign },
+          { id: 'infrastructure', label: 'Infrastructure', icon: Building2 },
+          { id: 'complaints', label: 'Complaints', icon: AlertTriangle },
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as TabType)}
+              className={cn(
+                "flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all duration-200",
+                isActive 
+                  ? "bg-blue-600 text-white shadow-md shadow-blue-600/20" 
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+              )}
+            >
+              <Icon className="w-4 h-4" />
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* 6. TAB CONTENT CONTAINER */}
+      <div className="space-y-6">
+
+        {/* TAB 1: OVERVIEW TAB */}
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            {/* AI Automated Insight Panel */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {aiInsights.map((insight, idx) => (
+                <div key={idx} className="bg-white rounded-xl border border-slate-200 p-4 flex items-start gap-3 shadow-sm">
+                  <div className={cn("p-2 rounded-lg shrink-0", insight.type === 'positive' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600')}>
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-800">{insight.title}</h4>
+                    <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{insight.text}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-            <h3 className="text-2xl font-bold text-white">
-              Enrollment Forecast: {selectedCollege ? selectedCollege.name : "Maharashtra State Aggregate"}
+
+            {/* Overview Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4 text-blue-600" />
+                  Historical Enrollment & Admission Growth
+                </h3>
+                <div className="h-[260px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={defaultMetrics.studentAdmissionTrend}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                      <XAxis dataKey="year" tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} />
+                      <YAxis tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} tickFormatter={(v) => `${v/1000}k`} />
+                      <Tooltip formatter={(v: any) => [`${(Number(v)/1000).toFixed(1)}k Students`, 'Enrolled']} />
+                      <Line type="monotone" dataKey="students" stroke="#3b82f6" strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4 text-indigo-600" />
+                  Branch Enrollment & Seat Capacity
+                </h3>
+                <div className="h-[260px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={defaultMetrics.studentsByBranch}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                      <XAxis dataKey="name" tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} />
+                      <YAxis tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} tickFormatter={(v) => `${v/1000}k`} />
+                      <Tooltip formatter={(v: any) => [`${v} Students`, 'Count']} />
+                      <Bar dataKey="value" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 2: STUDENTS TAB */}
+        {activeTab === 'students' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+              <h3 className="font-bold text-slate-800 mb-2 text-base flex items-center gap-2">
+                <Users className="w-5 h-5 text-blue-600" /> Student Demographics & Performance Matrix (Dataset/students.csv)
+              </h3>
+              <p className="text-xs text-slate-500 mb-4">Detailed student enrollment metrics and academic performance records.</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Average CGPA</div><div className="text-xl font-bold text-blue-600">{kpis.averageCgpa}</div></div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Attendance Rate</div><div className="text-xl font-bold text-emerald-600">84.5%</div></div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Scholarship Count</div><div className="text-xl font-bold text-purple-600">{formatNum(kpis.scholarshipStudents)}</div></div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Backlog Rate</div><div className="text-xl font-bold text-amber-600">4.2%</div></div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: FACULTY TAB */}
+        {activeTab === 'faculty' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+              <h3 className="font-bold text-slate-800 mb-2 text-base flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-purple-600" /> Faculty Qualifications & Academic Staff Directory (Dataset/faculty.csv)
+              </h3>
+              <p className="text-xs text-slate-500 mb-4">Monitor teaching staff designations, experience years, and research publications.</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Total Faculty</div><div className="text-xl font-bold text-purple-700">{kpis.totalFaculty}</div></div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">PhD Holders</div><div className="text-xl font-bold text-emerald-600">68%</div></div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Regular Staff</div><div className="text-xl font-bold text-blue-600">75%</div></div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Avg Experience</div><div className="text-xl font-bold text-slate-900">12.4 Yrs</div></div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4: PLACEMENTS TAB */}
+        {activeTab === 'placements' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+              <h3 className="font-bold text-slate-800 mb-2 text-base flex items-center gap-2">
+                <Briefcase className="w-5 h-5 text-emerald-600" /> Placement Analytics & Campus Drives (Dataset/placements.csv)
+              </h3>
+              <p className="text-xs text-slate-500 mb-4">Track corporate hiring drives, salary LPA packages, and placement percentages by branch.</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Placement Rate</div><div className="text-xl font-bold text-emerald-600">{kpis.placementRate}%</div></div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Highest Package</div><div className="text-xl font-bold text-slate-900">₹42.0 LPA</div></div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Average Package</div><div className="text-xl font-bold text-blue-600">₹{kpis.averagePackage} LPA</div></div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Internships</div><div className="text-xl font-bold text-purple-600">82%</div></div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 5: DEDICATED ENROLLMENT PREDICTION TAB */}
+        {activeTab === 'prediction' && (
+          <div className="space-y-6">
+            {/* Interactive Model Parameters Form */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div className="lg:col-span-5 bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                <h3 className="font-bold text-slate-800 border-b border-slate-100 pb-3 text-base flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <Sliders className="w-5 h-5 text-blue-600" /> Model Controls & Physics
+                  </span>
+                  <span className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-mono font-bold">ExtraTrees v3.0</span>
+                </h3>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">Sanctioned Seat Capacity: <span className="font-bold text-blue-600">{seats} Seats</span></label>
+                    <input type="range" min="30" max="300" step="10" value={seats} onChange={(e) => setSeats(Number(e.target.value))} className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer" />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">Applications Received: <span className="font-bold text-blue-600">{applications} Applications ({ (applications / Math.max(1, seats)).toFixed(2) }x Demand)</span></label>
+                    <input type="range" min="50" max="1200" step="25" value={applications} onChange={(e) => setApplications(Number(e.target.value))} className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer" />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">Placement Rate %: <span className="font-bold text-emerald-600">{placementRateInput}%</span></label>
+                    <input type="range" min="20" max="100" step="1" value={placementRateInput} onChange={(e) => setPlacementRateInput(Number(e.target.value))} className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer" />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">Cutoff Percentile: <span className="font-bold text-purple-600">{cutoffInput}%</span></label>
+                    <input type="range" min="40" max="99" step="0.5" value={cutoffInput} onChange={(e) => setCutoffInput(Number(e.target.value))} className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer" />
+                  </div>
+
+                  <button
+                    onClick={() => selectedCollege && runPredictionForCollege(selectedCollege)}
+                    disabled={predicting}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-3 px-4 rounded-xl transition-colors shadow-md shadow-blue-600/20 flex items-center justify-center gap-2"
+                  >
+                    {predicting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4 text-amber-300" />}
+                    Run AI Enrollment Prediction
+                  </button>
+                </div>
+              </div>
+
+              {/* Dedicated Prediction Result Dashboard */}
+              <div className="lg:col-span-7 space-y-4">
+                <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 rounded-xl p-6 text-white shadow-xl relative overflow-hidden">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <span className="text-[10px] font-bold tracking-wider uppercase text-blue-300 bg-white/10 px-2.5 py-1 rounded-full border border-white/10">
+                        {selectedCollege ? selectedCollege.name : "VJTI Mumbai"}
+                      </span>
+                      <h3 className="text-3xl font-bold mt-3 text-white">
+                        {predResult.predicted_enrollment} <span className="text-sm font-normal text-blue-200">/ {seats} Seats</span>
+                      </h3>
+                      <p className="text-xs text-blue-200 mt-0.5">Forecasted Enrollment for AY {filterYear}</p>
+                    </div>
+
+                    <div className="text-right">
+                      <div className="text-4xl font-bold text-emerald-400">{predResult.seat_utilization_pct}%</div>
+                      <div className="text-[10px] text-slate-300 font-semibold uppercase tracking-wider">Seat Utilization</div>
+                    </div>
+                  </div>
+
+                  <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden p-0.5 mb-4">
+                    <div className="h-full rounded-full bg-emerald-400 transition-all duration-500" style={{ width: `${Math.min(100, predResult.seat_utilization_pct)}%` }}></div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3 pt-4 border-t border-white/10 text-xs">
+                    <div><span className="text-slate-400">Growth Rate:</span> <strong className="text-emerald-300 block text-sm">+{predResult.growth_rate_pct}%</strong></div>
+                    <div><span className="text-slate-400">Tree Confidence:</span> <strong className="text-amber-300 block text-sm">{predResult.prediction_confidence_pct}%</strong></div>
+                    <div><span className="text-slate-400">Std Deviation:</span> <strong className="text-blue-300 block text-sm">±{predResult.prediction_std_dev} Seats</strong></div>
+                  </div>
+                </div>
+
+                {/* Model Rationale */}
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-blue-600" /> Model Rationale & Physics
+                  </h4>
+                  <p className="text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100 font-medium leading-relaxed">
+                    {predResult.reason_summary}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 6: RESEARCH TAB */}
+        {activeTab === 'research' && (
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+            <h3 className="font-bold text-slate-800 text-base flex items-center gap-2">
+              <Activity className="w-5 h-5 text-purple-600" /> Institutional Research & Patent Output (Dataset/research.csv)
             </h3>
-            <p className="text-xs text-blue-200 leading-relaxed font-medium">
-              {predResult.reason_summary}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-6 bg-white/10 p-4 rounded-xl border border-white/10 backdrop-blur-md shrink-0">
-            <div>
-              <div className="text-[10px] uppercase tracking-wider text-slate-300 font-bold">Predicted Enrollment</div>
-              <div className="text-3xl font-bold text-white">{predResult.predicted_enrollment} <span className="text-sm font-normal text-blue-200">/ 120 Seats</span></div>
-            </div>
-            <div className="h-10 w-px bg-white/20"></div>
-            <div>
-              <div className="text-[10px] uppercase tracking-wider text-slate-300 font-bold">Seat Fill %</div>
-              <div className="text-3xl font-bold text-emerald-400">{predResult.seat_utilization_pct}%</div>
-            </div>
-            <div className="h-10 w-px bg-white/20"></div>
-            <div>
-              <div className="text-[10px] uppercase tracking-wider text-slate-300 font-bold">Confidence</div>
-              <div className="text-xl font-bold text-amber-300">{predResult.prediction_confidence_pct}%</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Journal Papers</div><div className="text-xl font-bold text-purple-600">{kpis.researchPublications}</div></div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Patents Filed</div><div className="text-xl font-bold text-blue-600">42</div></div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">R&D Grants</div><div className="text-xl font-bold text-emerald-600">₹4.8 Cr</div></div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Industry Tie-ups</div><div className="text-xl font-bold text-slate-900">18 MoU</div></div>
             </div>
           </div>
-        </div>
-      </div>
+        )}
 
-      {/* 8. COLLAPSIBLE COLLEGE INTELLIGENCE SECTIONS (SINGLE WORKSPACE) */}
-      <div className="space-y-4 pt-4">
-        <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-blue-600" />
-          Institutional Intelligence Modules (Dataset/CSVs)
-        </h3>
-
-        {/* Accordion 1: Students Overview */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <button
-            onClick={() => toggleSection('students')}
-            className="w-full p-4 text-left font-bold text-slate-800 flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition-colors text-sm"
-          >
-            <span className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-blue-600" /> Students Overview & Demographics
-            </span>
-            {openSections['students'] ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
-          {openSections['students'] && (
-            <div className="p-4 border-t border-slate-200 text-xs space-y-3">
-              <p className="text-slate-600">Active student statistics from <code className="bg-slate-100 px-1 py-0.5 rounded text-blue-600">students.csv</code>.</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 font-semibold text-slate-700">
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Average CGPA: <span className="text-blue-600 font-bold">{activeMetrics.averageCgpa}</span></div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Attendance Rate: <span className="text-emerald-600 font-bold">84.5%</span></div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Scholarship Count: <span className="text-purple-600 font-bold">{formatNum(activeMetrics.scholarshipStudents)}</span></div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Backlog Rate: <span className="text-amber-600 font-bold">4.2%</span></div>
-              </div>
+        {/* TAB 7: FINANCE TAB */}
+        {activeTab === 'finance' && (
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+            <h3 className="font-bold text-slate-800 text-base flex items-center gap-2">
+              <DollarSign className="w-5 h-5 text-emerald-600" /> State Budget Allocation & Fee Collections (Dataset/finance.csv)
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">State Grant</div><div className="text-xl font-bold text-slate-900">₹42.5 Cr</div></div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Tuition Fees</div><div className="text-xl font-bold text-blue-600">₹18.2 Cr</div></div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Infra Capex</div><div className="text-xl font-bold text-purple-600">₹12.0 Cr</div></div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Budget Utilization</div><div className="text-xl font-bold text-emerald-600">{kpis.budgetUtil}%</div></div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Accordion 2: Faculty Overview */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <button
-            onClick={() => toggleSection('faculty')}
-            className="w-full p-4 text-left font-bold text-slate-800 flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition-colors text-sm"
-          >
-            <span className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-purple-600" /> Faculty & Academic Qualifications
-            </span>
-            {openSections['faculty'] ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
-          {openSections['faculty'] && (
-            <div className="p-4 border-t border-slate-200 text-xs space-y-3">
-              <p className="text-slate-600">Teaching staff metrics from <code className="bg-slate-100 px-1 py-0.5 rounded text-purple-600">faculty.csv</code>.</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 font-semibold text-slate-700">
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Total Faculty: <span className="text-purple-700 font-bold">{activeMetrics.totalFaculty}</span></div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">PhD Qualified: <span className="text-emerald-600 font-bold">68%</span></div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Permanent Staff: <span className="text-blue-600 font-bold">75%</span></div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Avg Experience: <span className="text-slate-900 font-bold">12.4 Yrs</span></div>
-              </div>
+        {/* TAB 8: INFRASTRUCTURE TAB */}
+        {activeTab === 'infrastructure' && (
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+            <h3 className="font-bold text-slate-800 text-base flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-amber-600" /> Campus Infrastructure & Facility Score (Dataset/infrastructure.csv)
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Campus Area</div><div className="text-xl font-bold text-slate-900">16.0 Acres</div></div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Smart Labs</div><div className="text-xl font-bold text-amber-600">24 Rooms</div></div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Hostel Beds</div><div className="text-xl font-bold text-blue-600">850 Beds</div></div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">IT Bandwidth</div><div className="text-xl font-bold text-emerald-600">1 Gbps</div></div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Accordion 3: Placement Analytics */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <button
-            onClick={() => toggleSection('placements')}
-            className="w-full p-4 text-left font-bold text-slate-800 flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition-colors text-sm"
-          >
-            <span className="flex items-center gap-2">
-              <Briefcase className="w-4 h-4 text-emerald-600" /> Placement Analytics & Salary Packages
-            </span>
-            {openSections['placements'] ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
-          {openSections['placements'] && (
-            <div className="p-4 border-t border-slate-200 text-xs space-y-3">
-              <p className="text-slate-600">Recruitment drive tracking from <code className="bg-slate-100 px-1 py-0.5 rounded text-emerald-600">placements.csv</code>.</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 font-semibold text-slate-700">
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Placement Rate: <span className="text-emerald-600 font-bold">{activeMetrics.placementRate}%</span></div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Highest Package: <span className="text-slate-900 font-bold">₹42.0 LPA</span></div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Average Package: <span className="text-blue-600 font-bold">₹8.5 LPA</span></div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Internship Completion: <span className="text-purple-600 font-bold">82%</span></div>
-              </div>
+        {/* TAB 9: COMPLAINTS TAB */}
+        {activeTab === 'complaints' && (
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+            <h3 className="font-bold text-slate-800 text-base flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-600" /> Student & Institutional Grievance Resolution (Dataset/complaints.csv)
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Active Grievances</div><div className="text-xl font-bold text-amber-600">{kpis.complaints} Active</div></div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Resolved Cases</div><div className="text-xl font-bold text-emerald-600">98.2%</div></div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Avg Resolution</div><div className="text-xl font-bold text-blue-600">2.4 Days</div></div>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500">Escalation Rate</div><div className="text-xl font-bold text-slate-900 font-mono">0.8%</div></div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Accordion 4: Infrastructure & Facilities */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <button
-            onClick={() => toggleSection('infrastructure')}
-            className="w-full p-4 text-left font-bold text-slate-800 flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition-colors text-sm"
-          >
-            <span className="flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-amber-600" /> Infrastructure & Facility Ratings
-            </span>
-            {openSections['infrastructure'] ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
-          {openSections['infrastructure'] && (
-            <div className="p-4 border-t border-slate-200 text-xs space-y-3">
-              <p className="text-slate-600">Facility metrics from <code className="bg-slate-100 px-1 py-0.5 rounded text-amber-600">infrastructure.csv</code>.</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 font-semibold text-slate-700">
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Smart Classrooms: <span className="text-amber-600 font-bold">24 Rooms</span></div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Internet Speed: <span className="text-blue-600 font-bold">500 Mbps</span></div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Hostel Capacity: <span className="text-emerald-600 font-bold">850 Beds</span></div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">Solar Power: <span className="text-emerald-600 font-bold">Enabled</span></div>
-              </div>
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );
