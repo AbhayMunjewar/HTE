@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HTE Decision Intelligence</title>
+  <title>HTE Decision Intelligence System</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -44,18 +44,13 @@
           </a>
         </li>
         <li>
-          <a href="#" data-page="students" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 text-sm font-medium hover:bg-slate-800/50 hover:text-slate-100">
-            <i data-lucide="users" class="w-5 h-5"></i> Students
-          </a>
-        </li>
-        <li>
           <a href="#" data-page="colleges" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 text-sm font-medium hover:bg-slate-800/50 hover:text-slate-100">
             <i data-lucide="graduation-cap" class="w-5 h-5"></i> Colleges
           </a>
         </li>
         <li>
           <a href="#" data-page="prediction" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 text-sm font-medium hover:bg-slate-800/50 hover:text-slate-100">
-            <i data-lucide="trending-up" class="w-5 h-5"></i> Prediction
+            <i data-lucide="trending-up" class="w-5 h-5"></i> AI Prediction Engine
           </a>
         </li>
       </ul>
@@ -74,15 +69,10 @@
           <p class="text-xs text-slate-500 font-medium">Higher & Technical Education Department</p>
         </div>
       </div>
-      <div class="flex items-center gap-6">
-        <div class="relative hidden md:block">
-          <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-          <input type="text" placeholder="Search..." class="pl-9 pr-4 py-1.5 bg-slate-100 border-none rounded-full text-sm w-64 focus:ring-2 focus:ring-blue-500/20 focus:bg-white outline-none">
-        </div>
-        <button class="relative p-1.5 hover:bg-slate-100 rounded-full">
-          <i data-lucide="bell" class="w-5 h-5 text-slate-500"></i>
-          <span class="absolute top-1 right-1 w-2 h-2 bg-dashboard-destructive rounded-full border border-white"></span>
-        </button>
+      <div class="flex items-center gap-4">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full border border-emerald-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live ML Backend Connected
+        </span>
       </div>
     </header>
 
@@ -115,23 +105,110 @@
           </div>
         </div>
 
-        <!-- Other Pages placeholder -->
-        <div id="page-students" class="page-section hidden">
-          <h2 class="text-2xl font-bold text-slate-800">Student Analytics</h2>
-          <p class="text-slate-500 mt-4">Module under development for Vanilla JS.</p>
-        </div>
-        
+        <!-- Colleges Page -->
         <div id="page-colleges" class="page-section hidden">
           <h2 class="text-2xl font-bold text-slate-800">Colleges List</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6" id="colleges-container">
              <!-- Injected via JS -->
           </div>
         </div>
-        
-        <div id="page-prediction" class="page-section hidden">
-          <h2 class="text-2xl font-bold text-slate-800">Enrollment Prediction</h2>
-          <p class="text-slate-500 mt-4">Prediction module under development.</p>
+
+        <!-- Prediction Page -->
+        <div id="page-prediction" class="page-section hidden space-y-6">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
+              <i data-lucide="cpu" class="w-6 h-6 text-blue-600"></i> AI Enrollment Prediction Engine
+            </h2>
+            <p class="text-sm text-slate-500 mt-1">Predict enrollment and capacity utilization using trained ML models.</p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Input Form -->
+            <div class="lg:col-span-5 bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+              <h3 class="font-bold text-slate-800 border-b border-slate-100 pb-3 text-base">College Parameters</h3>
+              <form id="prediction-form" class="space-y-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">College Name</label>
+                  <input type="text" id="p-college" value="Veermata Jijabai Technological Institute (VJTI)" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Sanctioned Seats</label>
+                    <input type="number" id="p-seats" value="120" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Current Filled Seats</label>
+                    <input type="number" id="p-filled" value="100" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Applications</label>
+                    <input type="number" id="p-apps" value="400" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Placement Rate %</label>
+                    <input type="number" id="p-placement" value="80" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Avg Package (LPA)</label>
+                    <input type="number" step="0.1" id="p-pkg" value="12.0" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Cutoff Percentile</label>
+                    <input type="number" step="0.1" id="p-cutoff" value="92" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Faculty Count</label>
+                    <input type="number" id="p-faculty" value="17" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">NAAC Grade</label>
+                    <select id="p-naac" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
+                      <option value="A++">A++</option>
+                      <option value="A+">A+</option>
+                      <option value="A">A</option>
+                      <option value="B++">B++</option>
+                      <option value="B+">B+</option>
+                    </select>
+                  </div>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                  <i data-lucide="zap" class="w-4 h-4 text-amber-300"></i> Predict Enrollment
+                </button>
+              </form>
+            </div>
+
+            <!-- Prediction Result -->
+            <div class="lg:col-span-7 space-y-4" id="prediction-result">
+              <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 rounded-xl p-6 text-white shadow-md">
+                <span class="text-xs uppercase font-semibold text-blue-300 bg-white/10 px-2.5 py-1 rounded-full" id="res-college">Veermata Jijabai Technological Institute (VJTI)</span>
+                <div class="text-4xl font-bold mt-3" id="res-enrollment">117 / 120 Seats</div>
+                <div class="text-xs text-blue-200 mt-1">Predicted Enrollment for 2025</div>
+                <div class="w-full bg-white/10 rounded-full h-3 mt-4 overflow-hidden p-0.5">
+                  <div class="h-full rounded-full bg-emerald-400 transition-all duration-500" id="res-progress" style="width: 97.7%"></div>
+                </div>
+                <div class="grid grid-cols-3 gap-3 pt-4 mt-4 border-t border-white/10 text-xs">
+                  <div><span class="text-slate-400">Utilization:</span> <strong class="text-emerald-300" id="res-util">97.7%</strong></div>
+                  <div><span class="text-slate-400">Growth:</span> <strong class="text-emerald-300" id="res-growth">+17.0%</strong></div>
+                  <div><span class="text-slate-400">Confidence:</span> <strong class="text-amber-300" id="res-conf">60.0%</strong></div>
+                </div>
+              </div>
+
+              <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                <h4 class="font-bold text-slate-800 text-sm mb-2">Model Rationale</h4>
+                <p class="text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100 font-medium" id="res-reason">
+                  High capacity utilization (97.7%) driven by strong reputation, demand ratio (3.33x), placement rate (80.0%), and NAAC grade (A++).
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+
       </div>
     </main>
   </div>

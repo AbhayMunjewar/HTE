@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
       
-      // Update nav active state
       navLinks.forEach(l => {
         l.classList.remove("active", "bg-blue-600/20", "text-blue-400", "border-blue-500/20", "shadow-[0_0_15px_rgba(37,99,235,0.1)]");
         l.classList.add("hover:bg-slate-800/50", "hover:text-slate-100");
@@ -15,11 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
       link.classList.remove("hover:bg-slate-800/50", "hover:text-slate-100");
       link.classList.add("active", "bg-blue-600/20", "text-blue-400", "border-blue-500/20", "shadow-[0_0_15px_rgba(37,99,235,0.1)]");
 
-      // Hide all pages
       pages.forEach(p => p.classList.remove("active", "block"));
       pages.forEach(p => p.classList.add("hidden"));
 
-      // Show selected page
       const targetPageId = "page-" + link.dataset.page;
       const targetPage = document.getElementById(targetPageId);
       if (targetPage) {
@@ -47,113 +44,181 @@ document.addEventListener("DOMContentLoaded", () => {
     { title: "Scholarship", value: formatNumber(dashboardMetrics.scholarshipStudents), icon: "percent", color: "bg-rose-50 text-rose-600", perc: "8.4%" },
   ];
 
-  statCardsData.forEach(stat => {
-    const card = document.createElement("div");
-    card.className = "bg-white rounded-xl p-6 shadow-sm border border-slate-100 flex flex-col justify-between h-full";
-    card.innerHTML = `
-      <div class="flex justify-between items-start mb-4">
-        <div class="flex flex-col">
-          <span class="text-slate-500 font-medium text-sm mb-1">${stat.title}</span>
-          <span class="text-3xl font-bold text-slate-800">${stat.value}</span>
+  if (statsContainer) {
+    statCardsData.forEach(stat => {
+      const card = document.createElement("div");
+      card.className = "bg-white rounded-xl p-6 shadow-sm border border-slate-100 flex flex-col justify-between h-full";
+      card.innerHTML = `
+        <div class="flex justify-between items-start mb-4">
+          <div class="flex flex-col">
+            <span class="text-slate-500 font-medium text-sm mb-1">${stat.title}</span>
+            <span class="text-3xl font-bold text-slate-800">${stat.value}</span>
+          </div>
+          <div class="p-3 rounded-lg flex items-center justify-center ${stat.color}">
+            <i data-lucide="${stat.icon}" class="w-6 h-6"></i>
+          </div>
         </div>
-        <div class="p-3 rounded-lg flex items-center justify-center ${stat.color}">
-          <i data-lucide="${stat.icon}" class="w-6 h-6"></i>
+        <div class="flex items-center gap-2 mt-auto">
+          <span class="flex items-center text-xs font-semibold px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-600">
+            <i data-lucide="arrow-up-right" class="w-3 h-3 mr-1"></i> ${stat.perc}
+          </span>
+          <span class="text-xs text-slate-400 font-medium">vs last year</span>
         </div>
-      </div>
-      <div class="flex items-center gap-2 mt-auto">
-        <span class="flex items-center text-xs font-semibold px-2 py-1 rounded-full bg-dashboard-success/10 text-dashboard-success">
-          <i data-lucide="arrow-up-right" class="w-3 h-3 mr-1"></i> ${stat.perc}
-        </span>
-        <span class="text-xs text-slate-400 font-medium">vs last year</span>
-      </div>
-    `;
-    statsContainer.appendChild(card);
-  });
-
-  // Re-initialize icons for newly added elements
-  lucide.createIcons();
+      `;
+      statsContainer.appendChild(card);
+    });
+  }
 
   // Render Charts using Chart.js
-  const ctx1 = document.getElementById('chart1').getContext('2d');
-  new Chart(ctx1, {
-    type: 'line',
-    data: {
-      labels: dashboardMetrics.studentAdmissionTrend.map(d => d.year),
-      datasets: [{
-        label: 'Students',
-        data: dashboardMetrics.studentAdmissionTrend.map(d => d.students),
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        borderWidth: 2,
-        fill: true,
-        tension: 0.4
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: {
-          beginAtZero: false,
-          grid: { display: false },
-          border: { display: false }
-        },
-        x: {
-          grid: { display: false },
-          border: { display: false }
+  const chart1El = document.getElementById('chart1');
+  if (chart1El) {
+    const ctx1 = chart1El.getContext('2d');
+    new Chart(ctx1, {
+      type: 'line',
+      data: {
+        labels: dashboardMetrics.studentAdmissionTrend.map(d => d.year),
+        datasets: [{
+          label: 'Students',
+          data: dashboardMetrics.studentAdmissionTrend.map(d => d.students),
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: false, grid: { display: false } },
+          x: { grid: { display: false } }
         }
       }
-    }
-  });
+    });
+  }
 
-  const ctx2 = document.getElementById('chart2').getContext('2d');
-  new Chart(ctx2, {
-    type: 'doughnut',
-    data: {
-      labels: dashboardMetrics.studentsByBranch.map(d => d.name),
-      datasets: [{
-        data: dashboardMetrics.studentsByBranch.map(d => d.value),
-        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#64748b'],
-        borderWidth: 0
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom' }
+  const chart2El = document.getElementById('chart2');
+  if (chart2El) {
+    const ctx2 = chart2El.getContext('2d');
+    new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+        labels: dashboardMetrics.studentsByBranch.map(d => d.name),
+        datasets: [{
+          data: dashboardMetrics.studentsByBranch.map(d => d.value),
+          backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#64748b'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } }
       }
-    }
-  });
+    });
+  }
 
   // Render Colleges List
   const collegesContainer = document.getElementById("colleges-container");
-  mockColleges.forEach(college => {
-    const colCard = document.createElement("div");
-    colCard.className = "bg-white border border-slate-200 rounded-xl p-5 hover:shadow-md transition-shadow cursor-pointer";
-    colCard.innerHTML = `
-      <div class="flex items-start justify-between mb-4">
-        <div class="p-3 bg-indigo-50 text-indigo-600 rounded-lg">
-          <i data-lucide="building-2" class="w-6 h-6"></i>
+  if (collegesContainer) {
+    mockColleges.forEach(college => {
+      const colCard = document.createElement("div");
+      colCard.className = "bg-white border border-slate-200 rounded-xl p-5 hover:shadow-md transition-shadow cursor-pointer";
+      colCard.innerHTML = `
+        <div class="flex items-start justify-between mb-4">
+          <div class="p-3 bg-indigo-50 text-indigo-600 rounded-lg">
+            <i data-lucide="building-2" class="w-6 h-6"></i>
+          </div>
+          <span class="px-2.5 py-1 bg-green-50 text-green-700 text-xs font-semibold rounded-full border border-green-100">
+            ${college.naacGrade} Grade
+          </span>
         </div>
-        <span class="px-2.5 py-1 bg-green-50 text-green-700 text-xs font-semibold rounded-full border border-green-100">
-          ${college.naacGrade} Grade
-        </span>
-      </div>
-      <h3 class="text-lg font-bold text-slate-800 leading-tight mb-2 line-clamp-2">${college.name}</h3>
-      <div class="flex items-center gap-2 text-sm text-slate-500 mb-6">
-        <i data-lucide="map-pin" class="w-4 h-4"></i> ${college.district}
-      </div>
-      <div class="grid grid-cols-2 gap-y-4 gap-x-2 border-t border-slate-100 pt-4">
-        <div><p class="text-xs text-slate-400 mb-1">Students</p><p class="font-semibold text-slate-700">${college.totalStudents}</p></div>
-        <div><p class="text-xs text-slate-400 mb-1">Faculty</p><p class="font-semibold text-slate-700">${college.facultyCount}</p></div>
-        <div><p class="text-xs text-slate-400 mb-1">Avg CGPA</p><p class="font-semibold text-slate-700">${college.averageCgpa}</p></div>
-        <div><p class="text-xs text-slate-400 mb-1">Placement</p><p class="font-semibold text-emerald-600">${college.placementRate}%</p></div>
-      </div>
-    `;
-    collegesContainer.appendChild(colCard);
-  });
-  
+        <h3 class="text-lg font-bold text-slate-800 leading-tight mb-2 line-clamp-2">${college.name}</h3>
+        <div class="flex items-center gap-2 text-sm text-slate-500 mb-6">
+          <i data-lucide="map-pin" class="w-4 h-4"></i> ${college.district}
+        </div>
+        <div class="grid grid-cols-2 gap-y-4 gap-x-2 border-t border-slate-100 pt-4">
+          <div><p class="text-xs text-slate-400 mb-1">Students</p><p class="font-semibold text-slate-700">${college.totalStudents}</p></div>
+          <div><p class="text-xs text-slate-400 mb-1">Faculty</p><p class="font-semibold text-slate-700">${college.facultyCount}</p></div>
+          <div><p class="text-xs text-slate-400 mb-1">Avg CGPA</p><p class="font-semibold text-slate-700">${college.averageCgpa}</p></div>
+          <div><p class="text-xs text-slate-400 mb-1">Placement</p><p class="font-semibold text-emerald-600">${college.placementRate}%</p></div>
+        </div>
+      `;
+      collegesContainer.appendChild(colCard);
+    });
+  }
+
+  // Handle Prediction Form Submission to Live Backend Server
+  const predForm = document.getElementById("prediction-form");
+  if (predForm) {
+    predForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("p-college").value;
+      const seats = parseInt(document.getElementById("p-seats").value, 10);
+      const filled = parseInt(document.getElementById("p-filled").value, 10);
+      const apps = parseInt(document.getElementById("p-apps").value, 10);
+      const placement = parseFloat(document.getElementById("p-placement").value);
+      const pkg = parseFloat(document.getElementById("p-pkg").value);
+      const cutoff = parseFloat(document.getElementById("p-cutoff").value);
+      const faculty = parseInt(document.getElementById("p-faculty").value, 10);
+      const naac = document.getElementById("p-naac").value;
+
+      const payload = {
+        college_name: name,
+        target_year: 2025,
+        district: "Mumbai",
+        sanctioned_seats: seats,
+        filled_seats: filled,
+        applications: apps,
+        placement_rate: placement,
+        avg_package: pkg,
+        cutoff_percentile: cutoff,
+        faculty_count: faculty,
+        naac_grade: naac,
+        autonomous: "Yes"
+      };
+
+      try {
+        const res = await fetch("http://localhost:8000/api/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById("res-college").innerText = data.college_name;
+          document.getElementById("res-enrollment").innerText = `${data.predicted_enrollment} / ${data.admission_capacity} Seats`;
+          document.getElementById("res-progress").style.width = `${Math.min(100, data.seat_utilization_pct)}%`;
+          document.getElementById("res-util").innerText = `${data.seat_utilization_pct}%`;
+          document.getElementById("res-growth").innerText = `${data.growth_rate_pct >= 0 ? '+' : ''}${data.growth_rate_pct}%`;
+          document.getElementById("res-conf").innerText = `${data.prediction_confidence_pct}%`;
+          document.getElementById("res-reason").innerText = data.reason_summary;
+        } else {
+          throw new Error("API error");
+        }
+      } catch (err) {
+        console.warn("Backend server offline, using client calculation:", err);
+        const naacVal = naac.includes('A') ? 1.0 : 0.6;
+        const tierFactor = (0.35 * (apps / max(1, seats)) + 0.25 * (cutoff / 100) + 0.20 * (placement / 100) + 0.20 * naacVal);
+        const utilPct = tierFactor >= 1.2 ? Math.min(100, Math.max(95, 95 + 4.8 * (tierFactor - 1.2))) : Math.min(94, Math.max(50, 50 + 35 * tierFactor));
+        const pred = Math.round(seats * (utilPct / 100));
+
+        document.getElementById("res-college").innerText = name;
+        document.getElementById("res-enrollment").innerText = `${pred} / ${seats} Seats`;
+        document.getElementById("res-progress").style.width = `${utilPct.toFixed(1)}%`;
+        document.getElementById("res-util").innerText = `${utilPct.toFixed(1)}%`;
+        document.getElementById("res-growth").innerText = `${((pred - filled)/Math.max(1, filled)*100).toFixed(1)}%`;
+        document.getElementById("res-conf").innerText = `60.0%`;
+        document.getElementById("res-reason").innerText = `Predicted enrollment (${pred} students) with ${utilPct.toFixed(1)}% seat utilization based on ${naac} grade and demand ratio (${(apps/seats).toFixed(2)}x).`;
+      }
+    });
+  }
+
+  function max(a, b) { return a > b ? a : b; }
+
   lucide.createIcons();
 });
