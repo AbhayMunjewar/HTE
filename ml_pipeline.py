@@ -228,6 +228,8 @@ class HTEDataCleaner:
         categorical_features = cleaned_df.select_dtypes(include=['object', 'category']).columns
 
         if is_training:
+            self.numeric_features = numeric_features.tolist()
+            self.categorical_features = categorical_features.tolist()
             if len(numeric_features) > 0:
                 num_imputer = SimpleImputer(strategy='median')
                 cleaned_df[numeric_features] = num_imputer.fit_transform(cleaned_df[numeric_features])
@@ -238,10 +240,16 @@ class HTEDataCleaner:
                 cleaned_df[categorical_features] = cat_imputer.fit_transform(cleaned_df[categorical_features])
                 self.imputers['categorical'] = cat_imputer
         else:
-            if 'numeric' in self.imputers and len(numeric_features) > 0:
-                cleaned_df[numeric_features] = self.imputers['numeric'].transform(cleaned_df[numeric_features])
-            if 'categorical' in self.imputers and len(categorical_features) > 0:
-                cleaned_df[categorical_features] = self.imputers['categorical'].transform(cleaned_df[categorical_features])
+            if 'numeric' in self.imputers and hasattr(self, 'numeric_features'):
+                for col in self.numeric_features:
+                    if col not in cleaned_df.columns:
+                        cleaned_df[col] = np.nan
+                cleaned_df[self.numeric_features] = self.imputers['numeric'].transform(cleaned_df[self.numeric_features])
+            if 'categorical' in self.imputers and hasattr(self, 'categorical_features'):
+                for col in self.categorical_features:
+                    if col not in cleaned_df.columns:
+                        cleaned_df[col] = 'Missing'
+                cleaned_df[self.categorical_features] = self.imputers['categorical'].transform(cleaned_df[self.categorical_features])
 
         # 7. Outlier Handling via IQR Capping for Non-Target Skewed Numerical Features
         for col in numeric_features:
@@ -619,7 +627,7 @@ class HTEModelTrainer:
             scoring='r2',
             cv=cv,
             random_state=42,
-            n_jobs=-1
+            n_jobs=1
         )
         search.fit(X_train, y_train)
 
