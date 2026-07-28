@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maharashtra HTE Executive Decision Intelligence Platform (Django Edition)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dashboard: {
+              primary: "#0f172a",
+              success: "#10b981",
+              warning: "#f97316",
+              destructive: "#ef4444",
+            }
+          },
+          fontFamily: {
+            sans: ["Inter", "sans-serif"],
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans flex h-screen overflow-hidden">
+  
+  <!-- Executive Sidebar -->
+  <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 shadow-xl z-20">
+    <div class="p-5 border-b border-slate-800 flex items-center gap-2.5">
+      <div class="p-2 bg-blue-600 rounded-lg text-white font-bold text-sm shadow-md">HTE</div>
+      <div>
+        <h2 class="text-sm font-bold text-white leading-tight">Maharashtra HTE</h2>
+        <p class="text-[10px] text-blue-400 font-semibold uppercase tracking-wider">Decision Intelligence</p>
+      </div>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-4">
+      <div class="px-4 mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Decision Support</div>
+      <ul class="space-y-1 px-3">
+        <li>
+          <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-md">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Executive Workspace
+          </a>
+        </li>
+        <li>
+          <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-slate-100">
+            <i data-lucide="bot" class="w-4 h-4"></i> AI Assistant
+          </a>
+        </li>
+        <li>
+          <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-slate-100">
+            <i data-lucide="file-bar-chart" class="w-4 h-4"></i> Government Reports
+          </a>
+        </li>
+        <li>
+          <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-slate-100">
+            <i data-lucide="settings" class="w-4 h-4"></i> Platform Settings
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="flex-1 flex flex-col min-w-0">
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 shadow-sm">
+      <div class="flex items-center gap-4">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Seal_of_Maharashtra.svg/1024px-Seal_of_Maharashtra.svg.png" alt="Govt of Maharashtra" class="w-10 h-10 object-contain">
+        <div>
+          <h1 class="text-sm font-bold text-slate-900 leading-tight">Government of Maharashtra</h1>
+          <p class="text-xs text-slate-500 font-medium">Higher & Technical Education Department (Django Backend Framework)</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full border border-emerald-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live Django REST Framework API
+        </span>
+      </div>
+    </header>
+
+    <main class="flex-1 p-6 lg:p-8 overflow-y-auto">
+      <div class="max-w-7xl mx-auto w-full relative space-y-6">
+        
+        <!-- Search -->
+        <div class="bg-slate-900 rounded-xl p-5 text-white shadow-xl">
+          <h2 class="text-lg font-bold text-white mb-2">Executive College & District Search</h2>
+          <input type="text" id="django-search" placeholder="Search VJTI, COEP, ICT, Pune, Mumbai..." class="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-xs text-white outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+          <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+            <div class="text-xs text-slate-500 font-semibold mb-1">Total Students</div>
+            <div class="text-2xl font-bold text-slate-900">6.12L</div>
+          </div>
+          <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+            <div class="text-xs text-slate-500 font-semibold mb-1">Total Colleges</div>
+            <div class="text-2xl font-bold text-slate-900">2,000</div>
+          </div>
+          <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+            <div class="text-xs text-slate-500 font-semibold mb-1">Total Faculty</div>
+            <div class="text-2xl font-bold text-slate-900">45.2K</div>
+          </div>
+          <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+            <div class="text-xs text-slate-500 font-semibold mb-1">Placement Rate</div>
+            <div class="text-2xl font-bold text-emerald-600">78.5%</div>
+          </div>
+          <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+            <div class="text-xs text-slate-500 font-semibold mb-1">Average CGPA</div>
+            <div class="text-2xl font-bold text-slate-900">7.9</div>
+          </div>
+          <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+            <div class="text-xs text-slate-500 font-semibold mb-1">Scholarship Students</div>
+            <div class="text-2xl font-bold text-purple-600">1.85L</div>
+          </div>
+        </div>
+
+        <!-- Highlighted AI Prediction Card -->
+        <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 rounded-xl p-6 text-white shadow-xl space-y-4">
+          <div class="flex justify-between items-center">
+            <div>
+              <span class="text-[10px] uppercase font-bold tracking-wider text-blue-300 bg-white/10 px-2.5 py-1 rounded-full">Django ML Predictive Engine v3.0</span>
+              <h3 class="text-xl font-bold mt-2">Enrollment Forecast: Veermata Jijabai Technological Institute (VJTI)</h3>
+            </div>
+            <div class="text-right">
+              <div class="text-3xl font-bold text-emerald-400">97.7%</div>
+              <div class="text-xs text-slate-300">Predicted Seat Utilization</div>
+            </div>
+          </div>
+          <p class="text-xs text-blue-200">High capacity utilization (97.7%) driven by strong reputation, demand ratio (3.33x), placement rate (80.0%), and NAAC grade (A++).</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
