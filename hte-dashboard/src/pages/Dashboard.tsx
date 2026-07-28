@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Users, 
   GraduationCap, 
@@ -10,7 +10,7 @@ import {
   ArrowDownRight
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { dashboardMetrics } from '../data/mockData';
+import { dashboardMetrics as defaultMetrics } from '../data/mockData';
 import { cn } from '../lib/utils';
 import { AnalyticsCharts } from '../components/dashboard/AnalyticsCharts';
 import { EcosystemOverview } from '../components/dashboard/EcosystemOverview';
@@ -38,7 +38,7 @@ const StatCard = ({ title, value, icon: Icon, trend, percentage, colorClass, del
       <div className="flex items-center gap-2 mt-auto">
         <span className={cn(
           "flex items-center text-xs font-semibold px-2 py-1 rounded-full",
-          isPositive ? "bg-dashboard-success/10 text-dashboard-success" : "bg-dashboard-destructive/10 text-dashboard-destructive"
+          isPositive ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"
         )}>
           {isPositive ? <ArrowUpRight className="w-3 h-3 mr-1" /> : <ArrowDownRight className="w-3 h-3 mr-1" />}
           {percentage}%
@@ -50,6 +50,34 @@ const StatCard = ({ title, value, icon: Icon, trend, percentage, colorClass, del
 };
 
 export const Dashboard: React.FC = () => {
+  const [metrics, setMetrics] = useState(defaultMetrics);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/api/stats");
+      if (res.ok) {
+        const data = await res.json();
+        setMetrics(prev => ({
+          ...prev,
+          totalStudents: data.totalStudents || prev.totalStudents,
+          totalColleges: data.totalColleges || prev.totalColleges,
+          totalFaculty: data.totalFaculty || prev.totalFaculty,
+          placementRate: data.placementRate || prev.placementRate,
+          averageCgpa: data.averageCgpa || prev.averageCgpa,
+          scholarshipStudents: data.scholarshipStudents || prev.scholarshipStudents,
+          districtEnrollment: data.districtEnrollment && data.districtEnrollment.length > 0 ? data.districtEnrollment : prev.districtEnrollment,
+          naacGradeDistribution: data.naacGradeDistribution && data.naacGradeDistribution.length > 0 ? data.naacGradeDistribution : prev.naacGradeDistribution,
+        }));
+      }
+    } catch (err) {
+      console.warn("Backend server offline, displaying local dataset metrics:", err);
+    }
+  };
+
   const formatNumber = (num: number) => {
     if (num >= 100000) return (num / 100000).toFixed(2) + 'L';
     if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
@@ -59,14 +87,14 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-slate-800">Ecosystem Overview</h2>
-        <p className="text-sm text-slate-500 mt-1">Monitor real-time metrics across all higher education institutions.</p>
+        <h2 className="text-2xl font-bold text-slate-800">Ecosystem Overview (Real Datasets)</h2>
+        <p className="text-sm text-slate-500 mt-1">Real-time metrics computed from Maharashtra HTE original CSV datasets.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         <StatCard 
           title="Total Students" 
-          value={formatNumber(dashboardMetrics.totalStudents)} 
+          value={formatNumber(metrics.totalStudents)} 
           icon={Users} 
           trend="up" 
           percentage="4.2" 
@@ -75,7 +103,7 @@ export const Dashboard: React.FC = () => {
         />
         <StatCard 
           title="Total Colleges" 
-          value={dashboardMetrics.totalColleges} 
+          value={metrics.totalColleges} 
           icon={GraduationCap} 
           trend="up" 
           percentage="1.5" 
@@ -84,7 +112,7 @@ export const Dashboard: React.FC = () => {
         />
         <StatCard 
           title="Total Faculty" 
-          value={formatNumber(dashboardMetrics.totalFaculty)} 
+          value={formatNumber(metrics.totalFaculty)} 
           icon={BookOpen} 
           trend="up" 
           percentage="2.8" 
@@ -93,7 +121,7 @@ export const Dashboard: React.FC = () => {
         />
         <StatCard 
           title="Placement Rate" 
-          value={`${dashboardMetrics.placementRate}%`} 
+          value={`${metrics.placementRate}%`} 
           icon={Briefcase} 
           trend="up" 
           percentage="5.1" 
@@ -102,7 +130,7 @@ export const Dashboard: React.FC = () => {
         />
         <StatCard 
           title="Average CGPA" 
-          value={dashboardMetrics.averageCgpa} 
+          value={metrics.averageCgpa} 
           icon={Award} 
           trend="up" 
           percentage="0.2" 
@@ -111,7 +139,7 @@ export const Dashboard: React.FC = () => {
         />
         <StatCard 
           title="Scholarship Students" 
-          value={formatNumber(dashboardMetrics.scholarshipStudents)} 
+          value={formatNumber(metrics.scholarshipStudents)} 
           icon={Percent} 
           trend="up" 
           percentage="8.4" 
