@@ -102,6 +102,16 @@ export const Dashboard: React.FC = () => {
     fetchCollegesData();
   }, []);
 
+  // Dynamic API Search on Search Query change
+  useEffect(() => {
+    if (searchQuery.length >= 2) {
+      const delayDebounceFn = setTimeout(() => {
+        searchCollegesApi(searchQuery);
+      }, 200);
+      return () => clearTimeout(delayDebounceFn);
+    }
+  }, [searchQuery]);
+
   // Run prediction whenever selected college changes
   useEffect(() => {
     if (selectedCollege) {
@@ -111,15 +121,37 @@ export const Dashboard: React.FC = () => {
 
   const fetchCollegesData = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/colleges?limit=100");
+      const res = await fetch("http://localhost:8000/api/colleges?limit=150");
       if (res.ok) {
         const data = await res.json();
         if (data.colleges && data.colleges.length > 0) {
-          setColleges(data.colleges);
+          // Merge API colleges with default premier colleges so VJTI/COEP/ICT are always present
+          const existingIds = new Set(data.colleges.map((c: any) => c.id));
+          const defaults = mockColleges.map(c => ({ ...c, nirfRank: String(c.nirfRank || 'Not Ranked') }))
+            .filter(c => !existingIds.has(c.id));
+          setColleges([...data.colleges, ...defaults]);
         }
       }
     } catch (e) {
       console.warn("Backend colleges API offline, using dataset defaults.");
+    }
+  };
+
+  const searchCollegesApi = async (query: string) => {
+    try {
+      const res = await fetch(`http://localhost:8000/api/colleges?search=${encodeURIComponent(query)}&limit=20`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.colleges && data.colleges.length > 0) {
+          setColleges(prev => {
+            const map = new Map(prev.map(c => [c.id, c]));
+            data.colleges.forEach((c: any) => map.set(c.id, c));
+            return Array.from(map.values());
+          });
+        }
+      }
+    } catch (e) {
+      // ignore offline
     }
   };
 
