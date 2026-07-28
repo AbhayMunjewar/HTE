@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTE Decision Intelligence</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dashboard: {
+              primary: "#0f172a",
+              success: "#10b981",
+              warning: "#f97316",
+              destructive: "#ef4444",
+            }
+          },
+          fontFamily: {
+            sans: ["Inter", "sans-serif"],
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans flex h-screen overflow-hidden">
+  
+  <!-- Sidebar -->
+  <aside class="w-64 bg-dashboard-primary text-slate-300 flex flex-col shrink-0 shadow-xl z-20">
+    <div class="p-6 border-b border-slate-700/50">
+      <h2 class="text-xl font-bold text-white tracking-tight leading-tight">HTE Decision<br/>Intelligence</h2>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-4">
+      <ul class="space-y-1 px-3" id="nav-menu">
+        <li>
+          <a href="#" data-page="dashboard" class="nav-link active flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 text-sm font-medium bg-blue-600/20 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(37,99,235,0.1)]">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="#" data-page="students" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 text-sm font-medium hover:bg-slate-800/50 hover:text-slate-100">
+            <i data-lucide="users" class="w-5 h-5"></i> Students
+          </a>
+        </li>
+        <li>
+          <a href="#" data-page="colleges" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 text-sm font-medium hover:bg-slate-800/50 hover:text-slate-100">
+            <i data-lucide="graduation-cap" class="w-5 h-5"></i> Colleges
+          </a>
+        </li>
+        <li>
+          <a href="#" data-page="prediction" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 text-sm font-medium hover:bg-slate-800/50 hover:text-slate-100">
+            <i data-lucide="trending-up" class="w-5 h-5"></i> Prediction
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="flex-1 flex flex-col min-w-0">
+    
+    <!-- Topbar -->
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 shadow-sm">
+      <div class="flex items-center gap-4">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Seal_of_Maharashtra.svg/1024px-Seal_of_Maharashtra.svg.png" alt="Govt of Maharashtra" class="w-10 h-10 object-contain">
+        <div>
+          <h1 class="text-sm font-bold text-slate-900 leading-tight">Government of Maharashtra</h1>
+          <p class="text-xs text-slate-500 font-medium">Higher & Technical Education Department</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-6">
+        <div class="relative hidden md:block">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="text" placeholder="Search..." class="pl-9 pr-4 py-1.5 bg-slate-100 border-none rounded-full text-sm w-64 focus:ring-2 focus:ring-blue-500/20 focus:bg-white outline-none">
+        </div>
+        <button class="relative p-1.5 hover:bg-slate-100 rounded-full">
+          <i data-lucide="bell" class="w-5 h-5 text-slate-500"></i>
+          <span class="absolute top-1 right-1 w-2 h-2 bg-dashboard-destructive rounded-full border border-white"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Pages Container -->
+    <main class="flex-1 p-6 lg:p-8 overflow-y-auto">
+      <div class="max-w-7xl mx-auto w-full relative h-full">
+        
+        <!-- Dashboard Page -->
+        <div id="page-dashboard" class="page-section active block space-y-8">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-800">Ecosystem Overview</h2>
+            <p class="text-sm text-slate-500 mt-1">Monitor real-time metrics across all higher education institutions.</p>
+          </div>
+
+          <!-- Stats Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4" id="stats-container">
+            <!-- Injected via JS -->
+          </div>
+
+          <!-- Charts -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+            <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm h-[350px]">
+              <h3 class="text-sm font-bold text-slate-800 mb-4">Student Admission Trend</h3>
+              <div class="relative h-[280px] w-full"><canvas id="chart1"></canvas></div>
+            </div>
+            <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm h-[350px]">
+              <h3 class="text-sm font-bold text-slate-800 mb-4">Students by Branch</h3>
+              <div class="relative h-[280px] w-full"><canvas id="chart2"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Other Pages placeholder -->
+        <div id="page-students" class="page-section hidden">
+          <h2 class="text-2xl font-bold text-slate-800">Student Analytics</h2>
+          <p class="text-slate-500 mt-4">Module under development for Vanilla JS.</p>
+        </div>
+        
+        <div id="page-colleges" class="page-section hidden">
+          <h2 class="text-2xl font-bold text-slate-800">Colleges List</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6" id="colleges-container">
+             <!-- Injected via JS -->
+          </div>
+        </div>
+        
+        <div id="page-prediction" class="page-section hidden">
+          <h2 class="text-2xl font-bold text-slate-800">Enrollment Prediction</h2>
+          <p class="text-slate-500 mt-4">Prediction module under development.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

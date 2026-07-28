@@ -1,0 +1,35 @@
+/* Custom styles on top of Tailwind */
+body {
+  margin: 0;
+}
+
+.page-section {
+  display: none;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.page-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.nav-link {
+  color: #94a3b8;
+  border: 1px solid transparent;
+}
+
+.nav-link.active {
+  background-color: rgba(37, 99, 235, 0.2);
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.1);
+}
+
+.nav-link:hover:not(.active) {
+  background-color: rgba(30, 41, 59, 0.5);
+  color: #f1f5f9;
+}
