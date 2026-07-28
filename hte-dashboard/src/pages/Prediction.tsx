@@ -121,7 +121,7 @@ export const Prediction: React.FC = () => {
       const seats = sanctionedSeats;
       const apps = applications;
       const naacVal = naacGrade.includes('A') ? 1.0 : (naacGrade.includes('B') ? 0.7 : 0.4);
-      const tierFactor = (0.35 * (apps / max(1, seats)) + 0.25 * (cutoffPercentile / 100) + 0.20 * (placementRate / 100) + 0.20 * naacVal);
+      const tierFactor = (0.35 * (apps / Math.max(1, seats)) + 0.25 * (cutoffPercentile / 100) + 0.20 * (placementRate / 100) + 0.20 * naacVal);
       const utilPct = tierFactor >= 1.2 ? Math.min(100, Math.max(95, 95 + 4.8 * (tierFactor - 1.2))) : (tierFactor >= 0.75 ? Math.min(94, Math.max(80, 80 + 28 * (tierFactor - 0.75))) : Math.min(79, Math.max(45, 45 + 45 * tierFactor)));
       const pred = Math.round(seats * (utilPct / 100));
 
@@ -147,8 +147,6 @@ export const Prediction: React.FC = () => {
       setLoading(false);
     }
   };
-
-  const max(a: number, b: number) { return a > b ? a : b; }
 
   return (
     <div className="space-y-6">
@@ -431,7 +429,7 @@ export const Prediction: React.FC = () => {
                       <XAxis type="number" unit="%" tick={{ fill: '#64748b', fontSize: 11 }} />
                       <YAxis type="category" dataKey="name" tick={{ fill: '#475569', fontSize: 10, fontWeight: 600 }} width={120} />
                       <Tooltip
-                        formatter={(value: number) => [`${value.toFixed(2)}%`, 'Weight']}
+                        formatter={(value: any) => [`${Number(value || 0).toFixed(2)}%`, 'Weight']}
                         contentStyle={{ borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px' }}
                       />
                       <Bar dataKey="weight" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={16} />
