@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HTE Decision Intelligence System</title>
+  <title>Maharashtra HTE Executive Decision Intelligence Platform</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -31,26 +31,36 @@
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans flex h-screen overflow-hidden">
   
-  <!-- Sidebar -->
-  <aside class="w-64 bg-dashboard-primary text-slate-300 flex flex-col shrink-0 shadow-xl z-20">
-    <div class="p-6 border-b border-slate-700/50">
-      <h2 class="text-xl font-bold text-white tracking-tight leading-tight">HTE Decision<br/>Intelligence</h2>
+  <!-- Executive Sidebar -->
+  <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 shadow-xl z-20">
+    <div class="p-5 border-b border-slate-800 flex items-center gap-2.5">
+      <div class="p-2 bg-blue-600 rounded-lg text-white font-bold text-sm shadow-md">HTE</div>
+      <div>
+        <h2 className="text-sm font-bold text-white leading-tight">Maharashtra HTE</h2>
+        <p className="text-[10px] text-blue-400 font-semibold uppercase tracking-wider">Decision Intelligence</p>
+      </div>
     </div>
     <nav class="flex-1 overflow-y-auto py-4">
+      <div class="px-4 mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Decision Support</div>
       <ul class="space-y-1 px-3" id="nav-menu">
         <li>
-          <a href="#" data-page="dashboard" class="nav-link active flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 text-sm font-medium bg-blue-600/20 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(37,99,235,0.1)]">
-            <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+          <a href="#" data-page="dashboard" class="nav-link active flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-md">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Executive Workspace
           </a>
         </li>
         <li>
-          <a href="#" data-page="colleges" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 text-sm font-medium hover:bg-slate-800/50 hover:text-slate-100">
-            <i data-lucide="graduation-cap" class="w-5 h-5"></i> Colleges
+          <a href="#" data-page="ai-assistant" class="nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-slate-100">
+            <i data-lucide="bot" class="w-4 h-4"></i> AI Assistant
           </a>
         </li>
         <li>
-          <a href="#" data-page="prediction" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 text-sm font-medium hover:bg-slate-800/50 hover:text-slate-100">
-            <i data-lucide="trending-up" class="w-5 h-5"></i> AI Prediction Engine
+          <a href="#" data-page="reports" class="nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-slate-100">
+            <i data-lucide="file-bar-chart" class="w-4 h-4"></i> Government Reports
+          </a>
+        </li>
+        <li>
+          <a href="#" data-page="settings" class="nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-slate-100">
+            <i data-lucide="settings" class="w-4 h-4"></i> Platform Settings
           </a>
         </li>
       </ul>
@@ -80,11 +90,32 @@
     <main class="flex-1 p-6 lg:p-8 overflow-y-auto">
       <div class="max-w-7xl mx-auto w-full relative h-full">
         
-        <!-- Dashboard Page -->
-        <div id="page-dashboard" class="page-section active block space-y-8">
-          <div>
-            <h2 class="text-2xl font-bold text-slate-800">Ecosystem Overview</h2>
-            <p class="text-sm text-slate-500 mt-1">Monitor real-time metrics across all higher education institutions.</p>
+        <!-- Single Workspace Executive Dashboard -->
+        <div id="page-dashboard" class="page-section active block space-y-6">
+          
+          <!-- Top Global Search Bar -->
+          <div class="bg-slate-900 rounded-xl p-5 text-white shadow-xl">
+            <h2 class="text-lg font-bold text-white mb-2">Executive College & District Search</h2>
+            <input type="text" id="v-global-search" placeholder="Search VJTI, COEP, Pune, Mumbai, Autonomous..." class="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-xs text-white outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+
+          <!-- Filter Bar -->
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex flex-wrap items-center gap-3">
+              <span class="font-bold text-slate-700">FILTERS:</span>
+              <select id="v-college-select" class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 font-semibold text-slate-700">
+                <option value="">All Colleges (State Aggregate)</option>
+                <option value="vjti">VJTI Mumbai</option>
+                <option value="coep">COEP Pune</option>
+                <option value="walchand">Walchand Sangli</option>
+              </select>
+              <select id="v-district-select" class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 font-semibold text-slate-700">
+                <option value="">All Districts</option>
+                <option value="Pune">Pune</option>
+                <option value="Mumbai">Mumbai</option>
+              </select>
+            </div>
+            <button id="v-reset-btn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-1.5 rounded-lg">Reset Filters</button>
           </div>
 
           <!-- Stats Grid -->
@@ -93,7 +124,7 @@
           </div>
 
           <!-- Charts -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm h-[350px]">
               <h3 class="text-sm font-bold text-slate-800 mb-4">Student Admission Trend</h3>
               <div class="relative h-[280px] w-full"><canvas id="chart1"></canvas></div>
@@ -103,109 +134,45 @@
               <div class="relative h-[280px] w-full"><canvas id="chart2"></canvas></div>
             </div>
           </div>
-        </div>
 
-        <!-- Colleges Page -->
-        <div id="page-colleges" class="page-section hidden">
-          <h2 class="text-2xl font-bold text-slate-800">Colleges List</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6" id="colleges-container">
-             <!-- Injected via JS -->
+          <!-- Highlighted Integrated AI Prediction Card -->
+          <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 rounded-xl p-6 text-white shadow-xl space-y-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <span class="text-[10px] uppercase font-bold tracking-wider text-blue-300 bg-white/10 px-2.5 py-1 rounded-full">AI Predictive Engine v3.0</span>
+                <h3 class="text-xl font-bold mt-2" id="v-pred-title">Enrollment Forecast: VJTI Mumbai</h3>
+              </div>
+              <div class="text-right">
+                <div class="text-3xl font-bold text-emerald-400" id="v-pred-util">97.7%</div>
+                <div class="text-xs text-slate-300">Predicted Seat Utilization</div>
+              </div>
+            </div>
+            <p class="text-xs text-blue-200" id="v-pred-reason">High capacity utilization (97.7%) driven by strong reputation, demand ratio (3.33x), placement rate (80.0%), and NAAC grade (A++).</p>
           </div>
         </div>
 
-        <!-- Prediction Page -->
-        <div id="page-prediction" class="page-section hidden space-y-6">
-          <div>
-            <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
-              <i data-lucide="cpu" class="w-6 h-6 text-blue-600"></i> AI Enrollment Prediction Engine
-            </h2>
-            <p class="text-sm text-slate-500 mt-1">Predict enrollment and capacity utilization using trained ML models.</p>
+        <!-- AI Assistant Page -->
+        <div id="page-ai-assistant" class="page-section hidden">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-800 mb-2">AI Assistant</h2>
+            <p class="text-xs text-slate-500 mb-4">Ask policy, admission, or dataset queries.</p>
+            <input type="text" placeholder="Ask AI Assistant..." class="w-full text-xs p-3 border border-slate-200 rounded-lg">
           </div>
+        </div>
 
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- Input Form -->
-            <div class="lg:col-span-5 bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
-              <h3 class="font-bold text-slate-800 border-b border-slate-100 pb-3 text-base">College Parameters</h3>
-              <form id="prediction-form" class="space-y-3">
-                <div>
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">College Name</label>
-                  <input type="text" id="p-college" value="Veermata Jijabai Technological Institute (VJTI)" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Sanctioned Seats</label>
-                    <input type="number" id="p-seats" value="120" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
-                  </div>
-                  <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Current Filled Seats</label>
-                    <input type="number" id="p-filled" value="100" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
-                  </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Applications</label>
-                    <input type="number" id="p-apps" value="400" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
-                  </div>
-                  <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Placement Rate %</label>
-                    <input type="number" id="p-placement" value="80" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
-                  </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Avg Package (LPA)</label>
-                    <input type="number" step="0.1" id="p-pkg" value="12.0" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
-                  </div>
-                  <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Cutoff Percentile</label>
-                    <input type="number" step="0.1" id="p-cutoff" value="92" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
-                  </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Faculty Count</label>
-                    <input type="number" id="p-faculty" value="17" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
-                  </div>
-                  <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">NAAC Grade</label>
-                    <select id="p-naac" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg">
-                      <option value="A++">A++</option>
-                      <option value="A+">A+</option>
-                      <option value="A">A</option>
-                      <option value="B++">B++</option>
-                      <option value="B+">B+</option>
-                    </select>
-                  </div>
-                </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
-                  <i data-lucide="zap" class="w-4 h-4 text-amber-300"></i> Predict Enrollment
-                </button>
-              </form>
-            </div>
+        <!-- Reports Page -->
+        <div id="page-reports" class="page-section hidden">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-800 mb-2">Government Reports Generator</h2>
+            <p class="text-xs text-slate-500">Export PDF and Excel reports for decision support.</p>
+          </div>
+        </div>
 
-            <!-- Prediction Result -->
-            <div class="lg:col-span-7 space-y-4" id="prediction-result">
-              <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 rounded-xl p-6 text-white shadow-md">
-                <span class="text-xs uppercase font-semibold text-blue-300 bg-white/10 px-2.5 py-1 rounded-full" id="res-college">Veermata Jijabai Technological Institute (VJTI)</span>
-                <div class="text-4xl font-bold mt-3" id="res-enrollment">117 / 120 Seats</div>
-                <div class="text-xs text-blue-200 mt-1">Predicted Enrollment for 2025</div>
-                <div class="w-full bg-white/10 rounded-full h-3 mt-4 overflow-hidden p-0.5">
-                  <div class="h-full rounded-full bg-emerald-400 transition-all duration-500" id="res-progress" style="width: 97.7%"></div>
-                </div>
-                <div class="grid grid-cols-3 gap-3 pt-4 mt-4 border-t border-white/10 text-xs">
-                  <div><span class="text-slate-400">Utilization:</span> <strong class="text-emerald-300" id="res-util">97.7%</strong></div>
-                  <div><span class="text-slate-400">Growth:</span> <strong class="text-emerald-300" id="res-growth">+17.0%</strong></div>
-                  <div><span class="text-slate-400">Confidence:</span> <strong class="text-amber-300" id="res-conf">60.0%</strong></div>
-                </div>
-              </div>
-
-              <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <h4 class="font-bold text-slate-800 text-sm mb-2">Model Rationale</h4>
-                <p class="text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100 font-medium" id="res-reason">
-                  High capacity utilization (97.7%) driven by strong reputation, demand ratio (3.33x), placement rate (80.0%), and NAAC grade (A++).
-                </p>
-              </div>
-            </div>
+        <!-- Settings Page -->
+        <div id="page-settings" class="page-section hidden">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold text-slate-800 mb-2">Platform Settings</h2>
+            <p class="text-xs text-slate-500">FastAPI backend endpoint: http://localhost:8000/api/predict</p>
           </div>
         </div>
 
