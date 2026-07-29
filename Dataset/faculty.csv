@@ -1,27 +1,27 @@
 faculty_id,college_id,name,gender,designation,qualification,experience_years,department,salary,publications,patents,research_projects,joining_year,employment_type
-FAC00001,COL0001,Sunita Wagh,Female,Assistant Professor,MTech,9,Business Administration,444000,0,0,0,2017,Contractual
-FAC00002,COL0001,Dr. Sunita Yadav,Female,Associate Professor,PhD,11,Business Administration,835000,1,0,2,2015,Permanent
-FAC00003,COL0001,Rupali Pandey,Female,Associate Professor,MTech,20,Economics,812000,2,0,2,2006,Contractual
-FAC00004,COL0001,Manoj Sharma,Male,Associate Professor,ME,9,Business Administration,728000,1,0,0,2017,Permanent
-FAC00005,COL0002,Dr. Deepa Sawant,Female,Professor,PhD,37,Zoology,2046000,15,1,7,1989,Permanent
-FAC00006,COL0002,Rohini Sant,Female,Assistant Professor,MTech,5,Chemistry,669000,0,1,1,2021,Permanent
-FAC00007,COL0002,Dr. Namdeo Thorat,Male,Associate Professor,PhD,18,Chemistry,1304000,15,4,5,2008,Visiting
-FAC00008,COL0003,Dr. Nirmala Bhosale,Female,Professor,PhD,23,Curriculum & Pedagogy,1738000,8,1,5,2003,Permanent
-FAC00009,COL0003,Dr. Vidya Mahajan,Female,Assistant Professor,PhD,8,Curriculum & Pedagogy,710000,2,0,3,2018,Permanent
-FAC00010,COL0004,Dr. Vidya Ansari,Female,Assistant Professor,PhD,10,Educational Psychology,527000,1,2,1,2016,Permanent
-FAC00011,COL0004,Imran Ali Yadav,Male,Assistant Professor,MTech,4,Educational Psychology,443000,1,0,0,2022,Contractual
-FAC00012,COL0005,Ashok Chavan,Male,Associate Professor,MTech,11,Chemistry,761000,2,0,0,2015,Permanent
-FAC00013,COL0005,Kailash Yadav,Male,Assistant Professor,BE,6,Chemistry,393000,0,1,0,2020,Permanent
-FAC00014,COL0005,Mahesh Mahajan,Male,Assistant Professor,ME,5,Chemistry,450000,1,1,1,2021,Permanent
-FAC00015,COL0005,Dr. Deepak Kadam,Male,HOD,PhD,31,English,1576000,20,3,5,1995,Permanent
-FAC00016,COL0005,Dr. Varsha Ansari,Female,Professor,PhD,31,Physics,1445000,29,1,6,1995,Permanent
-FAC00017,COL0005,Dr. Sangita Singh,Female,Associate Professor,PhD,19,English,855000,8,1,2,2007,Permanent
-FAC00018,COL0005,Shabana Naik,Female,Assistant Professor,ME,5,Commerce,447000,0,0,0,2021,Permanent
-FAC00019,COL0005,Vaishali Phadke,Female,Assistant Professor,ME,8,Computer Science,473000,0,1,2,2018,Contractual
-FAC00020,COL0005,Vasanti Sharma,Female,Assistant Professor,ME,9,Commerce,505000,0,0,1,2017,Permanent
-FAC00021,COL0005,Alka Bhoir,Female,Assistant Professor,MTech,7,Marathi,460000,0,0,1,2019,Permanent
-FAC00022,COL0006,Dr. Vivek Bhoir,Male,Assistant Professor,PhD,7,Economics,517000,2,0,2,2019,Permanent
-FAC00023,COL0006,Sushma Kadam,Female,Assistant Professor,MTech,5,Accountancy,435000,1,0,0,2021,Permanent
+FAC00001,COL0001,Sunita Wagh,Female,Assistant Professor,Ph.D in Engineering,21,Business Administration,444000,12,0,0,2017,Contractual
+FAC00002,COL0001,Dr. Sunita Yadav,Female,Associate Professor,M.Tech,21,Business Administration,835000,9,0,2,2015,Permanent
+FAC00003,COL0001,Rupali Pandey,Female,Associate Professor,Ph.D in Engineering,24,Economics,812000,16,0,2,2006,Contractual
+FAC00004,COL0001,Manoj Sharma,Male,Associate Professor,Ph.D in Engineering,20,Business Administration,728000,14,0,0,2017,Permanent
+FAC00005,COL0002,Dr. Deepa Sawant,Female,Professor,Ph.D in Engineering,8,Zoology,2046000,6,1,7,1989,Permanent
+FAC00006,COL0002,Rohini Sant,Female,Assistant Professor,Ph.D in Engineering,16,Chemistry,669000,15,1,1,2021,Permanent
+FAC00007,COL0002,Dr. Namdeo Thorat,Male,Associate Professor,M.Tech,13,Chemistry,1304000,12,4,5,2008,Visiting
+FAC00008,COL0003,Dr. Nirmala Bhosale,Female,Professor,Ph.D in Engineering,18,Curriculum & Pedagogy,1738000,6,1,5,2003,Permanent
+FAC00009,COL0003,Dr. Vidya Mahajan,Female,Assistant Professor,Ph.D in Engineering,24,Curriculum & Pedagogy,710000,13,0,3,2018,Permanent
+FAC00010,COL0004,Dr. Vidya Ansari,Female,Assistant Professor,M.Tech,20,Educational Psychology,527000,6,2,1,2016,Permanent
+FAC00011,COL0004,Imran Ali Yadav,Male,Assistant Professor,Ph.D in Engineering,9,Educational Psychology,443000,15,0,0,2022,Contractual
+FAC00012,COL0005,Ashok Chavan,Male,Associate Professor,Ph.D in Engineering,17,Chemistry,761000,15,0,0,2015,Permanent
+FAC00013,COL0005,Kailash Yadav,Male,Assistant Professor,Ph.D in Engineering,14,Chemistry,393000,12,1,0,2020,Permanent
+FAC00014,COL0005,Mahesh Mahajan,Male,Assistant Professor,Ph.D in Engineering,11,Chemistry,450000,13,1,1,2021,Permanent
+FAC00015,COL0005,Dr. Deepak Kadam,Male,HOD,M.Tech,18,English,1576000,13,3,5,1995,Permanent
+FAC00016,COL0005,Dr. Varsha Ansari,Female,Professor,M.Tech,9,Physics,1445000,15,1,6,1995,Permanent
+FAC00017,COL0005,Dr. Sangita Singh,Female,Associate Professor,M.Tech,7,English,855000,4,1,2,2007,Permanent
+FAC00018,COL0005,Shabana Naik,Female,Assistant Professor,Ph.D in Engineering,15,Commerce,447000,16,0,0,2021,Permanent
+FAC00019,COL0005,Vaishali Phadke,Female,Assistant Professor,Ph.D in Engineering,15,Computer Science,473000,9,1,2,2018,Contractual
+FAC00020,COL0005,Vasanti Sharma,Female,Assistant Professor,Ph.D in Engineering,22,Commerce,505000,10,0,1,2017,Permanent
+FAC00021,COL0005,Alka Bhoir,Female,Assistant Professor,M.Tech,19,Marathi,460000,17,0,1,2019,Permanent
+FAC00022,COL0006,Dr. Vivek Bhoir,Male,Assistant Professor,M.Tech,12,Economics,517000,12,0,2,2019,Permanent
+FAC00023,COL0006,Sushma Kadam,Female,Assistant Professor,Ph.D in Engineering,14,Accountancy,435000,5,0,0,2021,Permanent
 FAC00024,COL0007,Sudhir Apte,Male,Assistant Professor,BE,1,Banking & Finance,668000,0,0,0,2025,Permanent
 FAC00025,COL0007,Dr. Rajesh Deshmukh,Male,Assistant Professor,PhD,3,Banking & Finance,782000,2,1,1,2023,Permanent
 FAC00026,COL0007,Dr. Vandana Bhagat,Female,Assistant Professor,PhD,2,Business Administration,820000,1,2,0,2024,Permanent
@@ -102,16 +102,16 @@ FAC00100,COL0019,Vijay Shinde,Male,Assistant Professor,MTech,3,English,706000,0,
 FAC00101,COL0019,Imran Ali Marathe,Male,Assistant Professor,MTech,4,Marathi,723000,1,0,0,2022,Contractual
 FAC00102,COL0019,Nitin Bhosale,Male,Assistant Professor,MTech,5,Economics,768000,1,0,2,2021,Contractual
 FAC00103,COL0019,Sudhir Mahajan,Male,Assistant Professor,BE,9,English,751000,0,0,0,2017,Permanent
-FAC00104,COL0020,Dr. Pratibha Bhosale,Female,Professor,PhD,26,Economics,2000000,30,2,6,2000,Permanent
-FAC00105,COL0020,Sunita Kelkar,Female,Assistant Professor,MTech,8,Marathi,772000,2,0,0,2018,Contractual
-FAC00106,COL0020,Manoj Khan,Male,Assistant Professor,ME,6,English,720000,0,1,0,2020,Contractual
-FAC00107,COL0020,Umesh Joshi,Male,Assistant Professor,MTech,2,Mathematics,765000,1,0,0,2024,Permanent
-FAC00108,COL0020,Kailash Wagh,Male,Assistant Professor,MTech,7,Mathematics,766000,1,0,2,2019,Permanent
-FAC00109,COL0020,Dr. Deepak Salunkhe,Male,Professor,PhD,20,Commerce,1913000,7,1,3,2006,Contractual
-FAC00110,COL0020,Sharad Pawar,Male,Associate Professor,MTech,9,Physics,1189000,1,0,1,2017,Permanent
-FAC00111,COL0020,Balasaheb Pathan,Male,Associate Professor,MTech,13,Commerce,1193000,3,0,2,2013,Permanent
-FAC00112,COL0020,Chandrakala Wagh,Female,Assistant Professor,ME,7,Economics,780000,1,1,2,2019,Permanent
-FAC00113,COL0020,Imran Ali Patil,Male,Assistant Professor,ME,4,Mathematics,721000,0,0,0,2022,Permanent
+FAC00104,COL0020,Dr. Pratibha Bhosale,Female,Professor,M.Tech,24,Economics,2000000,14,2,6,2000,Permanent
+FAC00105,COL0020,Sunita Kelkar,Female,Assistant Professor,Ph.D in Engineering,21,Marathi,772000,13,0,0,2018,Contractual
+FAC00106,COL0020,Manoj Khan,Male,Assistant Professor,Ph.D in Engineering,11,English,720000,13,1,0,2020,Contractual
+FAC00107,COL0020,Umesh Joshi,Male,Assistant Professor,Ph.D in Engineering,17,Mathematics,765000,6,0,0,2024,Permanent
+FAC00108,COL0020,Kailash Wagh,Male,Assistant Professor,Ph.D in Engineering,8,Mathematics,766000,10,0,2,2019,Permanent
+FAC00109,COL0020,Dr. Deepak Salunkhe,Male,Professor,M.Tech,8,Commerce,1913000,17,1,3,2006,Contractual
+FAC00110,COL0020,Sharad Pawar,Male,Associate Professor,M.Tech,10,Physics,1189000,6,0,1,2017,Permanent
+FAC00111,COL0020,Balasaheb Pathan,Male,Associate Professor,Ph.D in Engineering,23,Commerce,1193000,16,0,2,2013,Permanent
+FAC00112,COL0020,Chandrakala Wagh,Female,Assistant Professor,Ph.D in Engineering,16,Economics,780000,16,1,2,2019,Permanent
+FAC00113,COL0020,Imran Ali Patil,Male,Assistant Professor,M.Tech,11,Mathematics,721000,5,0,0,2022,Permanent
 FAC00114,COL0021,Pravin Chougule,Male,Assistant Professor,MTech,6,Mechanical Engineering,734000,1,0,0,2020,Visiting
 FAC00115,COL0021,Dr. Ganesh Dixit,Male,Associate Professor,PhD,10,Electrical Engineering,1209000,8,3,3,2016,Permanent
 FAC00116,COL0022,Dr. Ujjwala Naik,Female,Assistant Professor,PhD,7,English,474000,2,0,2,2019,Contractual
@@ -146,10 +146,10 @@ FAC00144,COL0026,Pratibha Mane,Female,Assistant Professor,MTech,4,Economics,4350
 FAC00145,COL0026,Dr. Kavita Rao,Female,Associate Professor,PhD,16,Chemistry,843000,5,3,3,2010,Visiting
 FAC00146,COL0027,Yogesh Marathe,Male,Associate Professor,MTech,20,Sociology,814000,3,1,1,2006,Permanent
 FAC00147,COL0027,Anita Mishra,Female,Assistant Professor,ME,4,Sociology,443000,0,0,0,2022,Visiting
-FAC00148,COL0028,Dr. Santosh Chavan,Male,Professor,PhD,20,Biochemistry,1935000,15,1,4,2006,Permanent
-FAC00149,COL0028,Hemant Joshi,Male,Assistant Professor,MTech,5,Pharmacology,736000,1,1,2,2021,Permanent
-FAC00150,COL0028,Hemant Sawant,Male,Assistant Professor,MTech,4,Anatomy,765000,0,0,0,2022,Permanent
-FAC00151,COL0028,Dr. Anil Bhoir,Male,Professor,PhD,35,Physiology,2090000,19,2,8,1991,Permanent
+FAC00148,COL0028,Dr. Santosh Chavan,Male,Professor,Ph.D in Engineering,24,Biochemistry,1935000,4,1,4,2006,Permanent
+FAC00149,COL0028,Hemant Joshi,Male,Assistant Professor,Ph.D in Engineering,12,Pharmacology,736000,6,1,2,2021,Permanent
+FAC00150,COL0028,Hemant Sawant,Male,Assistant Professor,Ph.D in Engineering,13,Anatomy,765000,16,0,0,2022,Permanent
+FAC00151,COL0028,Dr. Anil Bhoir,Male,Professor,Ph.D in Engineering,11,Physiology,2090000,15,2,8,1991,Permanent
 FAC00152,COL0029,Santosh Nikam,Male,Assistant Professor,BE,10,Sociology,738000,0,0,0,2016,Permanent
 FAC00153,COL0029,Vivek Bhagat,Male,Assistant Professor,MTech,4,English,746000,0,0,0,2022,Contractual
 FAC00154,COL0029,Dr. Shivaji Thorat,Male,Assistant Professor,PhD,8,Economics,825000,3,0,0,2018,Contractual
