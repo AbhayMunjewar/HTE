@@ -87,24 +87,12 @@ def predict_enrollment(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def ai_assistant_query(request):
-    query = request.data.get("query", "").lower()
+    import decision_intelligence_llm
+    query = request.data.get("query", "")
+    context = request.data.get("context", {})
+    result = decision_intelligence_llm.decision_llm_engine.process_query(query, context)
+    return Response(result)
 
-    if "vjti" in query:
-        return Response({
-            "answer": "VJTI Mumbai is one of Maharashtra's premier engineering institutions. Our v3.0 ML Model forecasts 97.7% seat utilization (117/120 seats) for 2025 based on an 80% placement rate, A++ NAAC grade, and a 3.33x application demand ratio."
-        })
-    elif "coep" in query:
-        return Response({
-            "answer": "COEP Pune maintains a 96.4% predicted seat utilization (116/120 seats) for 2025 with an average placement package of 14.0 LPA and 90% placement rate."
-        })
-    elif "placement" in query or "salary" in query:
-        return Response({
-            "answer": "Across 2,000 Maharashtra technical institutions, the average placement rate is 78.5%. Computer Engineering and IT lead recruitment with average packages of 8.5 LPA and 7.8 LPA respectively."
-        })
-    else:
-        return Response({
-            "answer": f"Based on original dataset analytics across 2,000 colleges and 612,450 students: {query.strip('.')} is strongly correlated with institutional reputation, NIRF ranking, and demand ratio."
-        })
 
 
 @api_view(['GET'])

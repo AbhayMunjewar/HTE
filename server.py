@@ -90,7 +90,8 @@ class PredictionRequest(BaseModel):
 
 
 class AssistantRequest(BaseModel):
-    query: str = Field("Which college has the highest placement rate in Pune?", example="Highest placement in Pune?")
+    query: str = Field(..., example="Highest placement in Pune?")
+    context: Optional[Dict[str, Any]] = None
 
 
 @app.get("/")
@@ -126,7 +127,7 @@ def predict_enrollment(req: PredictionRequest):
         "cutoff_percentile": req.cutoff_percentile,
         "faculty_count": req.faculty_count,
         "naac_grade": req.naac_grade,
-        "nirf_rank": req.nirf_rank if req.nirf_rank else 100.0,
+        "nirf_rank": req.nirf_rank,
         "autonomous": req.autonomous,
     }
 
@@ -140,28 +141,9 @@ def predict_enrollment(req: PredictionRequest):
 
 @app.post("/api/assistant")
 def ai_assistant_query(req: AssistantRequest):
-    query_lower = req.query.lower()
+    import decision_intelligence_llm
+    return decision_intelligence_llm.decision_llm_engine.process_query(req.query, req.context)
 
-    if "vjti" in query_lower:
-        return {
-            "answer": "VJTI Mumbai is one of Maharashtra's premier engineering institutions. Our v3.0 ML Model forecasts 97.7% seat utilization (117/120 seats) for 2025 based on an 80% placement rate, A++ NAAC grade, and a 3.33x application demand ratio."
-        }
-    elif "coep" in query_lower:
-        return {
-            "answer": "COEP Pune maintains a 96.4% predicted seat utilization (116/120 seats) for 2025 with an average placement package of 14.0 LPA and 90% placement rate."
-        }
-    elif "placement" in query_lower or "salary" in query_lower:
-        return {
-            "answer": "Across 2,000 Maharashtra technical institutions, the average placement rate is 78.5%. Computer Engineering and IT lead recruitment with average packages of 8.5 LPA and 7.8 LPA respectively."
-        }
-    elif "faculty" in query_lower or "research" in query_lower:
-        return {
-            "answer": "Maharashtra technical colleges employ 45,210 faculty members. Institutions with higher PhD faculty ratios (>60%) consistently show a 15% higher research grant allocation and higher student retention."
-        }
-    else:
-        return {
-            "answer": f"Based on original dataset analytics across 2,000 colleges and 612,450 students: {req.query.strip('.')} is strongly correlated with institutional reputation, NIRF ranking, and demand ratio."
-        }
 
 
 @app.get("/api/stats")
