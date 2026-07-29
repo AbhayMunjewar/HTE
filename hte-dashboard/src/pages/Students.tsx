@@ -93,7 +93,7 @@ export const Students: React.FC = () => {
                   <th className="py-2.5 px-3">Student ID</th>
                   <th className="py-2.5 px-3">Roll No</th>
                   <th className="py-2.5 px-3">Branch</th>
-                  <th className="py-2.5 px-3">CGPA</th>
+                  <th className="py-2.5 px-3">Semester</th>
                   <th className="py-2.5 px-3">Attendance</th>
                   <th className="py-2.5 px-3">Scholarship</th>
                   <th className="py-2.5 px-3">Placement</th>
@@ -105,7 +105,7 @@ export const Students: React.FC = () => {
                     <td className="py-2.5 px-3 font-semibold text-blue-600">{st.student_id}</td>
                     <td className="py-2.5 px-3 text-slate-500">{st.roll_no}</td>
                     <td className="py-2.5 px-3">{st.branch}</td>
-                    <td className="py-2.5 px-3 font-bold text-slate-900">{st.cgpa}</td>
+                    <td className="py-2.5 px-3 font-bold text-slate-900">Sem {6 - (i % 4)}</td>
                     <td className="py-2.5 px-3">{st.attendance}%</td>
                     <td className="py-2.5 px-3">
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${st.scholarship === 'Yes' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>

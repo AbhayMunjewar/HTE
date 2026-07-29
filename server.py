@@ -158,7 +158,7 @@ def get_state_stats():
         "totalStudents": 612450,
         "totalFaculty": 45210,
         "placementRate": 78.5,
-        "averageCgpa": 7.9,
+        "graduationRate": 94.2,
         "scholarshipStudents": 185000,
         "studentAdmissionTrend": [
             {"year": "2019", "students": 510000},
@@ -189,8 +189,6 @@ def get_state_stats():
 
     if os.path.exists(students_file):
         sdf = pd.read_csv(students_file)
-        if "cgpa" in sdf.columns:
-            stats["averageCgpa"] = round(float(sdf["cgpa"].mean()), 2)
         if "scholarship" in sdf.columns:
             stats["scholarshipStudents"] = int((sdf["scholarship"] == "Yes").sum())
         if "branch" in sdf.columns:

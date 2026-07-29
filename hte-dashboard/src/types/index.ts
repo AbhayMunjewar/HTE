@@ -7,7 +7,7 @@ export interface College {
   totalStudents: number;
   facultyCount: number;
   placementRate: number;
-  averageCgpa: number;
+  graduationRate?: number;
   nirfRank: string | number;
   type: string;
 }
@@ -19,7 +19,7 @@ export interface Student {
   gender: string;
   branch: string;
   graduationYear: number;
-  cgpa: number;
+  semester?: string;
   attendance: number;
   hasScholarship: boolean;
   backlogs: number;

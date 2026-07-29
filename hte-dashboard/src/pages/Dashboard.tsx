@@ -56,7 +56,7 @@ interface CollegeItem {
   totalStudents: number;
   facultyCount: number;
   placementRate: number;
-  averageCgpa: number;
+  graduationRate?: number;
   nirfRank: string;
   type: string;
 }
@@ -259,7 +259,6 @@ export const Dashboard: React.FC = () => {
         totalFaculty: defaultMetrics.totalFaculty,
         placementRate: defaultMetrics.placementRate,
         averagePackage: 8.5,
-        averageCgpa: defaultMetrics.averageCgpa,
         scholarshipStudents: defaultMetrics.scholarshipStudents,
         researchPublications: 1240,
         infraScore: 8.4,
@@ -271,7 +270,6 @@ export const Dashboard: React.FC = () => {
       totalFaculty: col.facultyCount,
       placementRate: col.placementRate,
       averagePackage: col.placementRate >= 90 ? 14.5 : (col.placementRate >= 80 ? 9.2 : 6.5),
-      averageCgpa: col.averageCgpa,
       scholarshipStudents: Math.round(col.totalStudents * 0.32),
       researchPublications: col.naacGrade.includes('A') ? 420 : 180,
       infraScore: col.naacGrade.includes('A') ? 9.2 : 7.8,
@@ -472,7 +470,7 @@ export const Dashboard: React.FC = () => {
 
             <div className="text-right bg-white/10 p-3.5 rounded-xl border border-white/10 backdrop-blur-md">
               <div className="text-[10px] text-blue-300 uppercase tracking-wider font-bold">Institutional Rating</div>
-              <div className="text-2xl font-bold text-amber-300 mt-0.5">★ {selectedCollege.averageCgpa} / 10</div>
+              <div className="text-2xl font-bold text-amber-300 mt-0.5">NAAC {selectedCollege.naacGrade}</div>
               <div className="text-[11px] text-emerald-300 font-semibold mt-0.5">Placement: {selectedCollege.placementRate}%</div>
             </div>
           </div>
@@ -506,9 +504,9 @@ export const Dashboard: React.FC = () => {
         </div>
 
         <div className="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
-          <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Average CGPA</div>
-          <div className="text-lg font-bold text-blue-600 mt-0.5">{kpis.averageCgpa}</div>
-          <div className="text-[9px] text-blue-600 font-bold mt-0.5">Top 10% State</div>
+          <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Graduation Rate</div>
+          <div className="text-lg font-bold text-blue-600 mt-0.5">94.2%</div>
+          <div className="text-[9px] text-blue-600 font-bold mt-0.5">State Standard</div>
         </div>
 
         <div className="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
@@ -649,7 +647,7 @@ export const Dashboard: React.FC = () => {
               {/* 4 Metric Cards */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500 font-semibold">Total Students</div><div className="text-xl font-bold text-blue-600 mt-1">{kpis.totalStudents.toLocaleString()}</div></div>
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500 font-semibold">Average CGPA</div><div className="text-xl font-bold text-slate-900 mt-1">{kpis.averageCgpa}</div></div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500 font-semibold">Graduation Rate</div><div className="text-xl font-bold text-slate-900 mt-1">94.2%</div></div>
                 <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500 font-semibold">Attendance Rate</div><div className="text-xl font-bold text-emerald-600 mt-1">84.5%</div></div>
                 <div className="bg-slate-50 p-4 rounded-xl border border-slate-100"><div className="text-xs text-slate-500 font-semibold">Scholarship Beneficiaries</div><div className="text-xl font-bold text-purple-600 mt-1">{formatNum(kpis.scholarshipStudents)}</div></div>
               </div>
@@ -658,16 +656,15 @@ export const Dashboard: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
                 <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-200">
                   <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                    <BarChart3 className="w-4 h-4 text-blue-600" /> Student CGPA Distribution Range
+                    <BarChart3 className="w-4 h-4 text-blue-600" /> Student Enrollment by Academic Year
                   </h4>
                   <div className="h-[220px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={[
-                        { range: '9.0 - 10.0', count: Math.round(kpis.totalStudents * 0.22) },
-                        { range: '8.0 - 8.9', count: Math.round(kpis.totalStudents * 0.45) },
-                        { range: '7.0 - 7.9', count: Math.round(kpis.totalStudents * 0.22) },
-                        { range: '6.0 - 6.9', count: Math.round(kpis.totalStudents * 0.08) },
-                        { range: '< 6.0 CGPA', count: Math.round(kpis.totalStudents * 0.03) },
+                        { range: '1st Year', count: Math.round(kpis.totalStudents * 0.30) },
+                        { range: '2nd Year', count: Math.round(kpis.totalStudents * 0.28) },
+                        { range: '3rd Year', count: Math.round(kpis.totalStudents * 0.22) },
+                        { range: '4th Year', count: Math.round(kpis.totalStudents * 0.20) },
                       ]}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                         <XAxis dataKey="range" tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} />
@@ -722,7 +719,7 @@ export const Dashboard: React.FC = () => {
                         <th className="py-2.5 px-3">Student ID</th>
                         <th className="py-2.5 px-3">Roll No</th>
                         <th className="py-2.5 px-3">Branch</th>
-                        <th className="py-2.5 px-3">CGPA</th>
+                        <th className="py-2.5 px-3">Semester</th>
                         <th className="py-2.5 px-3">Attendance</th>
                         <th className="py-2.5 px-3">Scholarship</th>
                         <th className="py-2.5 px-3">Placement</th>
@@ -734,7 +731,7 @@ export const Dashboard: React.FC = () => {
                           <td className="py-2.5 px-3 font-semibold text-blue-600">STU{202400 + i}</td>
                           <td className="py-2.5 px-3 text-slate-500">2024-CS-{101 + i}</td>
                           <td className="py-2.5 px-3">Computer Engineering</td>
-                          <td className="py-2.5 px-3 font-bold text-slate-900">{(kpis.averageCgpa - 0.4 + (i * 0.15)).toFixed(2)}</td>
+                          <td className="py-2.5 px-3 font-bold text-slate-900">Sem {6 - (i % 4)}</td>
                           <td className="py-2.5 px-3 text-emerald-600 font-semibold">{85 + (i * 2)}%</td>
                           <td className="py-2.5 px-3">
                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${i % 2 === 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>

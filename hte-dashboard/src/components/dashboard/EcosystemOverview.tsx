@@ -71,7 +71,7 @@ export const EcosystemOverview: React.FC = () => {
                 <MetricNode icon={Users} label="Total Students" value={selectedCollege.totalStudents} />
                 <MetricNode icon={BookOpen} label="Faculty Members" value={selectedCollege.facultyCount} />
                 <MetricNode icon={Briefcase} label="Placement Rate" value={`${selectedCollege.placementRate}%`} />
-                <MetricNode icon={Award} label="Average CGPA" value={selectedCollege.averageCgpa} />
+                <MetricNode icon={Award} label="Graduation Rate" value={`${selectedCollege.graduationRate || 94.2}%`} />
                 <MetricNode icon={Award} label="NAAC Grade" value={selectedCollege.naacGrade} />
                 <MetricNode icon={FileText} label="NIRF Rank" value={selectedCollege.nirfRank} />
               </div>

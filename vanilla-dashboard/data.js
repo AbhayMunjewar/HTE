@@ -1,9 +1,9 @@
 const mockColleges = [
-  { id: "c1", name: "Government College of Engineering, Pune (COEP)", district: "Pune", naacGrade: "A++", university: "Savitribai Phule Pune University", totalStudents: 4500, facultyCount: 350, placementRate: 92, averageCgpa: 8.5 },
-  { id: "c2", name: "Veermata Jijabai Technological Institute (VJTI)", district: "Mumbai", naacGrade: "A++", university: "Mumbai University", totalStudents: 3800, facultyCount: 300, placementRate: 95, averageCgpa: 8.7 },
-  { id: "c3", name: "Walchand College of Engineering", district: "Sangli", naacGrade: "A+", university: "Shivaji University", totalStudents: 3000, facultyCount: 220, placementRate: 85, averageCgpa: 8.1 },
-  { id: "c4", name: "Government College of Engineering, Aurangabad", district: "Aurangabad", naacGrade: "A", university: "Dr. BAMU", totalStudents: 2500, facultyCount: 180, placementRate: 75, averageCgpa: 7.8 },
-  { id: "c5", name: "Visvesvaraya National Institute of Technology (VNIT)", district: "Nagpur", naacGrade: "A++", university: "Autonomous (NIT)", totalStudents: 5000, facultyCount: 400, placementRate: 96, averageCgpa: 8.8 }
+  { id: "c1", name: "Government College of Engineering, Pune (COEP)", district: "Pune", naacGrade: "A++", university: "Savitribai Phule Pune University", totalStudents: 4500, facultyCount: 350, placementRate: 92, graduationRate: 95.5 },
+  { id: "c2", name: "Veermata Jijabai Technological Institute (VJTI)", district: "Mumbai", naacGrade: "A++", university: "Mumbai University", totalStudents: 3800, facultyCount: 300, placementRate: 95, graduationRate: 96.2 },
+  { id: "c3", name: "Walchand College of Engineering", district: "Sangli", naacGrade: "A+", university: "Shivaji University", totalStudents: 3000, facultyCount: 220, placementRate: 85, graduationRate: 91.0 },
+  { id: "c4", name: "Government College of Engineering, Aurangabad", district: "Aurangabad", naacGrade: "A", university: "Dr. BAMU", totalStudents: 2500, facultyCount: 180, placementRate: 75, graduationRate: 88.5 },
+  { id: "c5", name: "Visvesvaraya National Institute of Technology (VNIT)", district: "Nagpur", naacGrade: "A++", university: "Autonomous (NIT)", totalStudents: 5000, facultyCount: 400, placementRate: 96, graduationRate: 97.0 }
 ];
 
 const dashboardMetrics = {
@@ -11,7 +11,7 @@ const dashboardMetrics = {
   totalColleges: 384,
   totalFaculty: 45210,
   placementRate: 78.5,
-  averageCgpa: 7.9,
+  graduationRate: 94.2,
   scholarshipStudents: 185000,
   studentAdmissionTrend: [
     { year: '2019', students: 510000 },

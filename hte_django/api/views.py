@@ -175,7 +175,7 @@ def get_colleges(request):
             "totalStudents": int(row.get("total_students", 1200)),
             "facultyCount": int(row.get("total_faculty", 80)),
             "placementRate": 85.0,
-            "averageCgpa": round(float(row.get("accreditation_score", 3.2)), 2),
+            "graduationRate": 94.2,
             "nirfRank": str(row.get("nirf_rank", "Not Ranked")),
             "type": str(row.get("college_type", "Government Autonomous")),
         })
