@@ -678,6 +678,63 @@ export const Dashboard: React.FC = () => {
 
                 <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-200">
                   <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                    <PieIcon className="w-4 h-4 text-purple-600" /> Student Category Demographics Split
+                  </h4>
+                  <div className="h-[220px] flex items-center justify-center">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: 'General', value: 45 },
+                            { name: 'OBC', value: 27 },
+                            { name: 'SC', value: 13 },
+                            { name: 'ST', value: 7 },
+                            { name: 'EWS / NT', value: 8 },
+                          ]}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={45}
+                          outerRadius={75}
+                          paddingAngle={3}
+                          dataKey="value"
+                        >
+                          <Cell fill="#6366f1" />
+                          <Cell fill="#10b981" />
+                          <Cell fill="#f59e0b" />
+                          <Cell fill="#ef4444" />
+                          <Cell fill="#8b5cf6" />
+                        </Pie>
+                        <Tooltip formatter={(v: any) => [`${v}% Students`, 'Share']} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-200">
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                    <BarChart3 className="w-4 h-4 text-emerald-600" /> Semester Examination Grade Curve
+                  </h4>
+                  <div className="h-[220px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={[
+                        { grade: 'O (Outstanding)', count: Math.round(kpis.totalStudents * 0.18) },
+                        { grade: 'A+ (Excellent)', count: Math.round(kpis.totalStudents * 0.32) },
+                        { grade: 'A (Very Good)', count: Math.round(kpis.totalStudents * 0.28) },
+                        { grade: 'B+ (Good)', count: Math.round(kpis.totalStudents * 0.14) },
+                        { grade: 'Pass / Re-Exam', count: Math.round(kpis.totalStudents * 0.08) },
+                      ]}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                        <XAxis dataKey="grade" tick={{fontSize: 10, fill: '#64748b'}} axisLine={false} tickLine={false} />
+                        <YAxis tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} />
+                        <Tooltip />
+                        <Bar dataKey="count" fill="#10b981" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-200">
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
                     <PieIcon className="w-4 h-4 text-emerald-600" /> Attendance Category Split
                   </h4>
                   <div className="h-[220px] flex items-center justify-center">
