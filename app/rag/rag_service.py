@@ -14,36 +14,75 @@ class CollegeRAGService:
     def __init__(self, base_docs_dir: str = None, base_index_dir: str = None):
         self.retriever = RAGRetriever(base_docs_dir, base_index_dir)
 
+    def _get_db_dataset_facts(self, college_name: str) -> str:
+        """Fetches official structured dataset records from SQLite hte_platform.db as fallback/supplement."""
+        import sqlite3
+        from app.config import DB_PATH
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            conn.row_factory = sqlite3.Row
+            c = conn.cursor()
+            c.execute("SELECT * FROM colleges WHERE college_name LIKE ? OR college_name LIKE ? LIMIT 1", (f"%{college_name}%", f"%{college_name.split()[0]}%"))
+            row = c.fetchone()
+            if row:
+                d = dict(row)
+                return (
+                    f"\nOfficial Structured Dataset Facts ({d.get('college_name')}):\n"
+                    f"- Established Year: {d.get('established_year')}\n"
+                    f"- District/City: {d.get('district')}, {d.get('city')}\n"
+                    f"- NAAC Accreditation Grade: {d.get('naac_grade')} (Score: {d.get('accreditation_score')})\n"
+                    f"- Total Enrolled Active Students: {d.get('total_students')}\n"
+                    f"- Total Approved Faculty Count: {d.get('total_faculty')}\n"
+                    f"- Autonomous Status: {d.get('autonomous')}\n"
+                    f"- Hostel Facility Available: {d.get('hostel_available')}\n"
+                    f"- Official Website: {d.get('website')}\n"
+                    f"- Courses Offered: {d.get('courses_offered')}\n"
+                )
+        except Exception:
+            pass
+        return ""
+
     def answer_college_query(self, college_name: str, query: str) -> Dict[str, Any]:
-        """Answers a college-specific query using ONLY that college's document RAG index."""
+        """Answers a college-specific query using uploaded documents + Dataset SQLite fallback."""
         # 1. Update college memory
         college_memory.set_college(college_name)
 
         # 2. Retrieve relevant document chunks from target college vector store
         chunks_with_scores = self.retriever.retrieve(college_name, query, top_k=5)
+        db_facts = self._get_db_dataset_facts(college_name)
 
-        # 3. If no relevant chunks found in documents, return strict no-info response
+        # 3. If no document chunks found, fallback to SQLite Dataset facts!
         if not chunks_with_scores:
-            no_info_text = f"This information is not available in the uploaded documents for {college_name}."
-            return {
-                "answer": no_info_text,
-                "citations": [],
-                "college_name": college_name,
-                "confidence_score": 0
-            }
+            if db_facts:
+                raw_answer = f"### 📄 Institutional Dataset Summary ({college_name})\n\nBased on official Maharashtra HTE database records:\n" + db_facts
+                citations = [{"document_name": "hte_platform.db (Dataset)", "page_number": 1, "confidence_pct": 95}]
+                return {
+                    "answer": CitationManager.append_citations_markdown(raw_answer, citations),
+                    "citations": citations,
+                    "college_name": college_name,
+                    "confidence_score": 95
+                }
+            else:
+                no_info_text = f"This information is not available in the uploaded documents or dataset for {college_name}."
+                return {
+                    "answer": no_info_text,
+                    "citations": [],
+                    "college_name": college_name,
+                    "confidence_score": 0
+                }
 
         # 4. Format citations
         citations = CitationManager.format_citations(chunks_with_scores)
 
-        # 5. Build RAG Prompt
-        prompt = RAGPromptBuilder.build_prompt(college_name, query, chunks_with_scores)
+        # 5. Build RAG Prompt combining document chunks + SQLite Dataset facts
+        prompt = RAGPromptBuilder.build_prompt(college_name, query, chunks_with_scores) + db_facts
 
         # 6. Call Groq LLM for grounded answer synthesis
         raw_answer = GroqClient.generate_response(user_query=query, grounded_facts=prompt)
 
         if not raw_answer:
-            # Smart grounded fallback extraction directly answering the user query
-            raw_answer = self._smart_grounded_fallback(query, college_name, chunks_with_scores)
+            # Smart grounded fallback extraction
+            raw_answer = self._smart_grounded_fallback(query, college_name, chunks_with_scores, db_facts)
 
         # 7. Append citations to answer markdown
         final_answer = CitationManager.append_citations_markdown(raw_answer, citations)
@@ -60,7 +99,7 @@ class CollegeRAGService:
             "confidence_score": top_confidence
         }
 
-    def _smart_grounded_fallback(self, query: str, college_name: str, chunks_with_scores: List[Tuple[Dict[str, Any], float]]) -> str:
+    def _smart_grounded_fallback(self, query: str, college_name: str, chunks_with_scores: List[Tuple[Dict[str, Any], float]], db_facts: str = "") -> str:
         """Synthesizes structured grounded answers directly matching the query if LLM is offline."""
         q = query.lower()
         combined_text = "\n".join([chunk[0]["text"] for chunk in chunks_with_scores])
