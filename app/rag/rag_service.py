@@ -105,66 +105,11 @@ class CollegeRAGService:
         combined_text = "\n".join([chunk[0]["text"] for chunk in chunks_with_scores])
         lines = [l.strip() for l in combined_text.split('\n') if l.strip()]
 
-        # 1. Salary / Packages / Companies > 40 LPA
-        if any(k in q for k in ['40', 'package', 'salary', 'lpa', 'ctc', 'company', 'companies', 'recruiter']):
-            if "vjti" in college_name.lower():
-                ans = f"### Top Recruiting Companies & Packages (> 40 LPA) ({college_name})\n\n"
-                ans += f"Based on official uploaded records for **{college_name}**:\n\n"
-                ans += f"- **Computer Engineering** (Highest CTC: **57.00 LPA**): Google, Microsoft, Morgan Stanley, Goldman Sachs\n"
-                ans += f"- **Information Technology** (Highest CTC: **52.00 LPA**): Amazon, Wells Fargo, BNY Mellon, PhonePe\n"
-                ans += f"- **Electronics & Telecommunication (E&TC)** (Highest CTC: **44.00 LPA**): Texas Instruments, Nvidia, Qualcomm\n"
-                return ans
-
-            matched_items = []
-
-            def extract_ctc(l_text: str) -> float:
-                import re
-                m = re.search(r'(\d+(\.\d+)?)\+?\s*lpa', l_text, re.IGNORECASE)
-                if m:
-                    return float(m.group(1))
-                return 0.0
-
-            # If user asked for > 40 LPA or 40+ LPA
-            if '40' in q or 'forty' in q or 'highest' in q:
-                for line in lines:
-                    if line.startswith('--- RANGE OF SALARY') or line.startswith('==='):
-                        continue
-                    ctc_val = extract_ctc(line)
-                    if ctc_val >= 40.0 or any(c in line.lower() for c in ['deshaw', 'nutanix', 'cohesity', 'arcesium', 'texas instruments', 'phone pe', 'arista', 'microsoft', 'palo alto', 'transguard']):
-                        if ctc_val > 0 and ctc_val < 40.0:
-                            continue # Strict safety check against 4+ LPA or 8+ LPA
-                        if line not in matched_items:
-                            matched_items.append(line)
-
-            # General package fallback if specific list empty
-            if not matched_items:
-                for line in lines:
-                    if not line.startswith('--- RANGE OF SALARY') and not line.startswith('===') and any(k in line.lower() for k in ['lpa', 'ctc', 'highest', 'company', 'salary', 'placed']):
-                        ctc_val = extract_ctc(line)
-                        if ctc_val == 0.0 or ctc_val >= 40.0:
-                            if line not in matched_items:
-                                matched_items.append(line)
-
-            if matched_items:
-                ans = f"### Salary Packages & Top Companies (> 40 LPA) ({college_name})\n\n"
-                ans += f"Based on official uploaded records for **{college_name}**:\n\n"
-                for item in matched_items[:15]:
-                    if not item.startswith('--- RANGE'):
-                        ans += f"- {item}\n"
-                return ans
-
-        # 2. Placement Coordinators / Faculty
-        if any(k in q for k in ['coordinator', 'coordinators', 'faculty', 'tpo', 'officer', 'contact']):
-            matched_items = [l for l in lines if any(k in l.lower() for k in ['dr.', 'tpo', 'coordinator', 'officer', 'email', 'mobile', '@coeptech', '@vjti'])]
-            if matched_items:
-                ans = f"### Training & Placement Coordinators ({college_name})\n\n"
-                for item in matched_items[:12]:
-                    ans += f"- {item}\n"
-                return ans
-
-        # 3. Diagnostic & Strategy Queries ("why low", "how to increase", "tips to improve", "ranking low", "enrollment low", "placement low")
-        if any(k in q for k in ['why', 'how to', 'increase', 'improve', 'tips', 'boost', 'strategy', 'low', 'decline', 'drop']):
-            if any(k in q for k in ['placement', 'job', 'package', 'hiring']):
+        # ----------------------------------------------------------------------
+        # PRIORITY 1: Diagnostic & Strategy Queries ("why low", "how to increase", "tips to improve", "ranking low", "enrollment low", "placement low")
+        # ----------------------------------------------------------------------
+        if any(k in q for k in ['why', 'how to', 'increase', 'improve', 'tips', 'boost', 'strategy', 'low', 'decline', 'drop', 'reason']):
+            if any(k in q for k in ['placement', 'placements', 'job', 'hiring', 'package']):
                 ans = f"### 📊 Placement Diagnostic & Strategic Action Plan ({college_name})\n\n"
                 ans += f"#### 🔍 Key Root Causes for Placement Gaps in **{college_name}**:\n"
                 ans += "1. **Core Branch vs. Tech Sector Mismatch**: Civil, Mechanical, and Electrical branches experience slower campus recruitment compared to Computer & IT.\n"
@@ -209,7 +154,66 @@ class CollegeRAGService:
                     ans += f"\n{db_facts}"
                 return ans
 
-        # Default fallback: Clean bullet points
+        # ----------------------------------------------------------------------
+        # PRIORITY 2: Specific Package / Salary Queries (> 40 LPA)
+        # ----------------------------------------------------------------------
+        if any(k in q for k in ['40', 'package', 'salary', 'lpa', 'ctc', 'company', 'companies', 'recruiter']):
+            if "vjti" in college_name.lower():
+                ans = f"### Top Recruiting Companies & Packages (> 40 LPA) ({college_name})\n\n"
+                ans += f"Based on official uploaded records for **{college_name}**:\n\n"
+                ans += f"- **Computer Engineering** (Highest CTC: **57.00 LPA**): Google, Microsoft, Morgan Stanley, Goldman Sachs\n"
+                ans += f"- **Information Technology** (Highest CTC: **52.00 LPA**): Amazon, Wells Fargo, BNY Mellon, PhonePe\n"
+                ans += f"- **Electronics & Telecommunication (E&TC)** (Highest CTC: **44.00 LPA**): Texas Instruments, Nvidia, Qualcomm\n"
+                return ans
+
+            matched_items = []
+
+            def extract_ctc(l_text: str) -> float:
+                import re
+                m = re.search(r'(\d+(\.\d+)?)\+?\s*lpa', l_text, re.IGNORECASE)
+                if m:
+                    return float(m.group(1))
+                return 0.0
+
+            if '40' in q or 'forty' in q or 'highest' in q:
+                for line in lines:
+                    if line.startswith('--- RANGE OF SALARY') or line.startswith('==='):
+                        continue
+                    ctc_val = extract_ctc(line)
+                    if ctc_val >= 40.0 or any(c in line.lower() for c in ['deshaw', 'nutanix', 'cohesity', 'arcesium', 'texas instruments', 'phone pe', 'arista', 'microsoft', 'palo alto', 'transguard']):
+                        if ctc_val > 0 and ctc_val < 40.0:
+                            continue
+                        if line not in matched_items:
+                            matched_items.append(line)
+
+            if not matched_items:
+                for line in lines:
+                    if not line.startswith('--- RANGE OF SALARY') and not line.startswith('===') and any(k in line.lower() for k in ['lpa', 'ctc', 'highest', 'company', 'salary', 'placed']):
+                        ctc_val = extract_ctc(line)
+                        if ctc_val == 0.0 or ctc_val >= 40.0:
+                            if line not in matched_items:
+                                matched_items.append(line)
+
+            if matched_items:
+                ans = f"### Salary Packages & Top Companies (> 40 LPA) ({college_name})\n\n"
+                ans += f"Based on official uploaded records for **{college_name}**:\n\n"
+                for item in matched_items[:15]:
+                    if not item.startswith('--- RANGE'):
+                        ans += f"- {item}\n"
+                return ans
+
+        # ----------------------------------------------------------------------
+        # PRIORITY 3: Placement Coordinators / Faculty
+        # ----------------------------------------------------------------------
+        if any(k in q for k in ['coordinator', 'coordinators', 'faculty', 'tpo', 'officer', 'contact']):
+            matched_items = [l for l in lines if any(k in l.lower() for k in ['dr.', 'tpo', 'coordinator', 'officer', 'email', 'mobile', '@coeptech', '@vjti'])]
+            if matched_items:
+                ans = f"### Training & Placement Coordinators ({college_name})\n\n"
+                for item in matched_items[:12]:
+                    ans += f"- {item}\n"
+                return ans
+
+        # Default fallback
         clean_lines = [l for l in lines if not l.startswith('===') and not l.startswith('---')]
         ans = f"### Document Intelligence Summary ({college_name})\n\n"
         for l in clean_lines[:10]:
