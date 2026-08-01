@@ -77,21 +77,34 @@ class CollegeRAGService:
                 return ans
 
             matched_items = []
+
+            def extract_ctc(l_text: str) -> float:
+                import re
+                m = re.search(r'(\d+(\.\d+)?)\+?\s*lpa', l_text, re.IGNORECASE)
+                if m:
+                    return float(m.group(1))
+                return 0.0
+
             # If user asked for > 40 LPA or 40+ LPA
             if '40' in q or 'forty' in q or 'highest' in q:
                 for line in lines:
-                    if line.startswith('--- RANGE OF SALARY') and not any(t in line for t in ['85+', '50+', '40+']):
+                    if line.startswith('--- RANGE OF SALARY') or line.startswith('==='):
                         continue
-                    if any(k in line.lower() for k in ['85+', '60.', '52.', '50+', '42.', '40.', '40+', '57.', '44.']) or any(c in line.lower() for c in ['deshaw', 'nutanix', 'cohesity', 'arcesium', 'texas instruments', 'phone pe', 'arista', 'microsoft', 'blue star', 'palo alto', 'ncsi', 'transguard']):
-                        if line not in matched_items and not line.startswith('===') and not line.startswith('--- RANGE OF SALARY PACKAGE OFFERED: 4+'):
+                    ctc_val = extract_ctc(line)
+                    if ctc_val >= 40.0 or any(c in line.lower() for c in ['deshaw', 'nutanix', 'cohesity', 'arcesium', 'texas instruments', 'phone pe', 'arista', 'microsoft', 'palo alto', 'transguard']):
+                        if ctc_val > 0 and ctc_val < 40.0:
+                            continue # Strict safety check against 4+ LPA or 8+ LPA
+                        if line not in matched_items:
                             matched_items.append(line)
 
             # General package fallback if specific list empty
             if not matched_items:
                 for line in lines:
-                    if not line.startswith('--- RANGE OF SALARY') and any(k in line.lower() for k in ['lpa', 'ctc', 'highest', 'company', 'salary', 'placed']):
-                        if line not in matched_items and not line.startswith('==='):
-                            matched_items.append(line)
+                    if not line.startswith('--- RANGE OF SALARY') and not line.startswith('===') and any(k in line.lower() for k in ['lpa', 'ctc', 'highest', 'company', 'salary', 'placed']):
+                        ctc_val = extract_ctc(line)
+                        if ctc_val == 0.0 or ctc_val >= 40.0:
+                            if line not in matched_items:
+                                matched_items.append(line)
 
             if matched_items:
                 ans = f"### Salary Packages & Top Companies (> 40 LPA) ({college_name})\n\n"
