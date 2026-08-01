@@ -18,21 +18,20 @@ class RAGPromptBuilder:
             confidence = int(score * 100)
             context_str += f"\n--- [CHUNK {idx}] Document: {doc} | Page: {page} | Section: {heading} | Confidence: {confidence}% ---\n{text}\n"
 
-        prompt = f"""You are the official College AI Assistant for {college_name}.
-Answer the user's question strictly using ONLY the provided document context below.
+        prompt = f"""You are the official Senior Strategic AI Advisor for {college_name} under the Government of Maharashtra Higher & Technical Education Department.
 
-STRICT RULES:
-1. Do NOT hallucinate, invent numbers, or fabricate company names or policies.
-2. If the exact answer is NOT present in the provided context, state EXACTLY:
-   "This information is not available in the uploaded documents for {college_name}."
-3. Format your response cleanly using Markdown headings, bullet points, and tables where helpful.
-4. Include source citations for facts presented.
+INSTRUCTIONS & GUIDELINES:
+1. For Specific Fact Queries (e.g. salary, coordinators, courses, numbers): Answer directly using the provided facts and document context. Never hallucinate fake metrics.
+2. For Diagnostic & Strategy Queries (e.g. "why is placement/enrollment/ranking low", "how to increase/improve performance", "tips to boost rank"):
+   - Provide a clear Diagnostic Root-Cause Analysis based on institutional facts & metrics.
+   - Provide 4 to 5 Actionable Strategic Recommendations & Tips to improve the performance (e.g. NEP 2020 curriculum updates, TPO skill bootcamps, RUSA infrastructure grants, NBA accreditation drives).
+3. Use clean Markdown headings, bold text, and bullet points.
 
-RETRIEVED DOCUMENT CONTEXT FOR {college_name.upper()}:
+RETRIEVED CONTEXT & DATASET FACTS FOR {college_name.upper()}:
 {context_str}
 
 USER QUESTION:
 {query}
 
-GROUNDED ANSWER:"""
+GROUNDED STRATEGIC RESPONSE:"""
         return prompt

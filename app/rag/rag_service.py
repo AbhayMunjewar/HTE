@@ -162,6 +162,53 @@ class CollegeRAGService:
                     ans += f"- {item}\n"
                 return ans
 
+        # 3. Diagnostic & Strategy Queries ("why low", "how to increase", "tips to improve", "ranking low", "enrollment low", "placement low")
+        if any(k in q for k in ['why', 'how to', 'increase', 'improve', 'tips', 'boost', 'strategy', 'low', 'decline', 'drop']):
+            if any(k in q for k in ['placement', 'job', 'package', 'hiring']):
+                ans = f"### 📊 Placement Diagnostic & Strategic Action Plan ({college_name})\n\n"
+                ans += f"#### 🔍 Key Root Causes for Placement Gaps in **{college_name}**:\n"
+                ans += "1. **Core Branch vs. Tech Sector Mismatch**: Civil, Mechanical, and Electrical branches experience slower campus recruitment compared to Computer & IT.\n"
+                ans += "2. **Skill & Industry Alignment Gap**: Emerging tech skills (AI/ML, DevOps, Cloud Architecture) require continuous curriculum updates under NEP 2020.\n"
+                ans += "3. **TPO Industrial Outreach Footprint**: Regional industrial ties require expansion to tier-1 corporate tech hubs (Pune, Mumbai, Bangalore).\n\n"
+                ans += "#### 💡 Strategic Actionable Tips to Increase Placement Rate:\n"
+                ans += "- **Establish Corporate Co-Op Internships**: Mandatory 6-month industrial internships for final-year students under AICTE guidelines.\n"
+                ans += "- **Skill Bootcamps & Mock Interviews**: Organize mandatory coding, aptitude, and communication bootcamps starting from 3rd semester.\n"
+                ans += "- **Industry-Sponsored Innovation Labs**: Partner with tech leaders (TCS, Infosys, Nvidia, L&T) to set up dedicated lab infrastructure.\n"
+                ans += "- **Alumni Placement Network**: Activate local and international alumni networks for direct referral hiring drives.\n"
+                if db_facts:
+                    ans += f"\n{db_facts}"
+                return ans
+
+            if any(k in q for k in ['enrollment', 'admission', 'intake', 'seat']):
+                ans = f"### 📉 Enrollment Diagnostic & Growth Strategy ({college_name})\n\n"
+                ans += f"#### 🔍 Key Root Causes for Enrollment Vacancies in **{college_name}**:\n"
+                ans += "1. **Branch Demand Shift**: High student preference for CSE/IT over traditional core engineering streams.\n"
+                ans += "2. **Perceived Infrastructure & Campus Amenities**: Hostel availability and modern lab facilities heavily influence CAP round choices.\n"
+                ans += "3. **District & Regional Brand Visibility**: Remote or non-metro location perception affecting out-of-district student applications.\n\n"
+                ans += "#### 💡 Strategic Actionable Tips to Boost Student Enrollment:\n"
+                ans += "- **Launch High-Demand Emerging Branches**: Introduce AI, Data Science, Cyber Security, and Robotics specializations.\n"
+                ans += "- **Leverage RUSA Infrastructure Grants**: Modernize campus hostels, smart classrooms, and high-speed Wi-Fi facilities.\n"
+                ans += "- **Enhanced Scholarship Awareness**: Promote State EBC, Post-Matric, and Pragati Girls Scholarship programs to rural applicants.\n"
+                ans += "- **Active MHT-CET Admission Counseling Drives**: Host campus open-house days and virtual tours before CAP option form filling.\n"
+                if db_facts:
+                    ans += f"\n{db_facts}"
+                return ans
+
+            if any(k in q for k in ['ranking', 'rank', 'naac', 'nirf', 'accreditation']):
+                ans = f"### 🏆 Institutional Ranking & NAAC Acceleration Plan ({college_name})\n\n"
+                ans += f"#### 🔍 Key Root Causes for Ranking Gaps in **{college_name}**:\n"
+                ans += "1. **Research Publication & IPR Output**: Lower Scopus/IEEE indexed journal publications and patent registrations per faculty.\n"
+                ans += "2. **Faculty Ph.D. Ratio**: Percentage of regular faculty with Ph.D. qualifications impacts NIRF & NAAC Criteria 2.\n"
+                ans += "3. **Consultancy & Industry Sponsored Research Funds**: Revenue generated from corporate research and testing consultancy.\n\n"
+                ans += "#### 💡 Strategic Actionable Tips to Elevate NIRF / NAAC Rank:\n"
+                ans += "- **Research Seed Funding Incentives**: Provide internal seed grants for faculty publishing in Q1/Q2 high-impact journals.\n"
+                ans += "- **Faculty Qualification Upgrade Drives**: Sponsor existing faculty for Ph.D. programs at top IITs/NITs.\n"
+                ans += "- **Industry Consultancy Cell**: Establish a dedicated Industrial Consultancy & Testing Division to boost non-fee revenue.\n"
+                ans += "- **NBA Accreditation Acceleration**: Complete NBA accreditation for 100% of eligible UG and PG programs.\n"
+                if db_facts:
+                    ans += f"\n{db_facts}"
+                return ans
+
         # Default fallback: Clean bullet points
         clean_lines = [l for l in lines if not l.startswith('===') and not l.startswith('---')]
         ans = f"### Document Intelligence Summary ({college_name})\n\n"
