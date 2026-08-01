@@ -278,6 +278,35 @@ export const Dashboard: React.FC = () => {
     };
   }, [selectedCollege]);
 
+  const chartData = useMemo(() => {
+    if (!selectedCollege) {
+      return {
+        admissionTrend: defaultMetrics.studentAdmissionTrend,
+        branchMetrics: defaultMetrics.studentsByBranch,
+        isStateWide: true
+      };
+    }
+    const total = selectedCollege.totalStudents;
+    return {
+      admissionTrend: [
+        { year: '2019', students: Math.round(total * 0.83) },
+        { year: '2020', students: Math.round(total * 0.86) },
+        { year: '2021', students: Math.round(total * 0.88) },
+        { year: '2022', students: Math.round(total * 0.92) },
+        { year: '2023', students: Math.round(total * 0.96) },
+        { year: '2024', students: total }
+      ],
+      branchMetrics: [
+        { name: 'Computer', value: Math.round(total * 0.30) },
+        { name: 'IT', value: Math.round(total * 0.23) },
+        { name: 'Mechanical', value: Math.round(total * 0.18) },
+        { name: 'Civil', value: Math.round(total * 0.15) },
+        { name: 'Electrical', value: Math.round(total * 0.14) }
+      ],
+      isStateWide: false
+    };
+  }, [selectedCollege]);
+
   const aiInsights = useMemo(() => {
     const col = selectedCollege || mockColleges[1];
     return [
@@ -597,11 +626,11 @@ export const Dashboard: React.FC = () => {
                 </h3>
                 <div className="h-[260px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={defaultMetrics.studentAdmissionTrend}>
+                    <LineChart data={chartData.admissionTrend}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                       <XAxis dataKey="year" tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} />
-                      <YAxis tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} tickFormatter={(v) => `${v/1000}k`} />
-                      <Tooltip formatter={(v: any) => [`${(Number(v)/1000).toFixed(1)}k Students`, 'Enrolled']} />
+                      <YAxis tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} tickFormatter={(v) => v >= 10000 ? `${(v/1000).toFixed(0)}k` : v.toLocaleString()} />
+                      <Tooltip formatter={(v: any) => [`${Number(v).toLocaleString()} Students`, 'Enrolled']} />
                       <Line type="monotone" dataKey="students" stroke="#3b82f6" strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} />
                     </LineChart>
                   </ResponsiveContainer>
@@ -615,11 +644,11 @@ export const Dashboard: React.FC = () => {
                 </h3>
                 <div className="h-[260px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={defaultMetrics.studentsByBranch}>
+                    <BarChart data={chartData.branchMetrics}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                       <XAxis dataKey="name" tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} />
-                      <YAxis tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} tickFormatter={(v) => `${v/1000}k`} />
-                      <Tooltip formatter={(v: any) => [`${v} Students`, 'Count']} />
+                      <YAxis tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} tickFormatter={(v) => v >= 10000 ? `${(v/1000).toFixed(0)}k` : v.toLocaleString()} />
+                      <Tooltip formatter={(v: any) => [`${Number(v).toLocaleString()} Students`, 'Count']} />
                       <Bar dataKey="value" fill="#6366f1" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
