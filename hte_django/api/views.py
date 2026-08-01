@@ -184,7 +184,21 @@ def college_assistant_query(request):
     college_name = data.get("college_name", "COEP")
     query = data.get("query", "")
 
-    folder_name = "COEP" if "coep" in college_name.lower() else college_name
+    c_lower = college_name.lower()
+    if "vjti" in c_lower or "veermata" in c_lower:
+        folder_name = "VJTI"
+    elif "coep" in c_lower or "pune" in c_lower:
+        folder_name = "COEP"
+    elif "ict" in c_lower:
+        folder_name = "ICT"
+    elif "spit" in c_lower:
+        folder_name = "SPIT"
+    elif "pict" in c_lower:
+        folder_name = "PICT"
+    elif "walchand" in c_lower:
+        folder_name = "Walchand"
+    else:
+        folder_name = college_name.split()[0]
 
     try:
         result = college_rag_service.answer_college_query(folder_name, query)

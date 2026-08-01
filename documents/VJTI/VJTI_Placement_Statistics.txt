@@ -1,0 +1,47 @@
+================================================================================
+VEERMATA JIJABAI TECHNOLOGICAL INSTITUTE (VJTI), MUMBAI
+TRAINING AND PLACEMENT CELL — PLACEMENT STATISTICS (AY 2025-26)
+================================================================================
+
+Total Registered Students: 580
+Total Students Placed: 551 (95.0% Placement Rate)
+Highest Salary Package: 57.00 LPA (Morgan Stanley / Google)
+Average Salary Package: 15.20 LPA
+Total Recruiting Companies Visited: 210 Companies
+
+Branch-wise Placement Breakdown (AY 2025-26):
+1. Computer Engineering:
+   - Placement Rate: 98.2%
+   - Highest CTC: 57.00 LPA
+   - Average CTC: 20.40 LPA
+   - Top Recruiters: Google, Microsoft, Morgan Stanley, Goldman Sachs
+
+2. Information Technology:
+   - Placement Rate: 97.5%
+   - Highest CTC: 52.00 LPA
+   - Average CTC: 18.80 LPA
+   - Top Recruiters: Amazon, Wells Fargo, BNY Mellon, PhonePe
+
+3. Electronics & Telecommunication (E&TC):
+   - Placement Rate: 94.0%
+   - Highest CTC: 44.00 LPA
+   - Average CTC: 14.50 LPA
+   - Top Recruiters: Texas Instruments, Nvidia, Qualcomm
+
+4. Mechanical Engineering:
+   - Placement Rate: 91.5%
+   - Highest CTC: 22.00 LPA
+   - Average CTC: 11.20 LPA
+   - Top Recruiters: Bajaj Auto, Tata Motors, Mercedes-Benz, Schlumberger
+
+5. Electrical Engineering:
+   - Placement Rate: 93.8%
+   - Highest CTC: 28.00 LPA
+   - Average CTC: 12.80 LPA
+   - Top Recruiters: Siemens, Schneider Electric, L&T
+
+6. Civil Engineering:
+   - Placement Rate: 88.0%
+   - Highest CTC: 18.00 LPA
+   - Average CTC: 9.50 LPA
+   - Top Recruiters: L&T Construction, Shapoorji Pallonji, Afcons

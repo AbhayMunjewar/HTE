@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bot, Send, FileText, Sparkles, RefreshCw, ShieldCheck, BookOpen, Layers, CheckCircle2 } from 'lucide-react';
 
 interface Citation {
@@ -19,32 +19,50 @@ interface CollegeAssistantWidgetProps {
   collegeName: string;
 }
 
+const getShortName = (name: string): string => {
+  if (!name) return 'COEP';
+  const n = name.toUpperCase();
+  if (n.includes('COEP') || n.includes('PUNE')) return 'COEP';
+  if (n.includes('VJTI') || n.includes('VEERMATA') || n.includes('JIJABAI')) return 'VJTI';
+  if (n.includes('ICT') || n.includes('CHEMICAL')) return 'ICT';
+  if (n.includes('SPIT') || n.includes('SARDAR PATEL')) return 'SPIT';
+  if (n.includes('PICT')) return 'PICT';
+  if (n.includes('WALCHAND')) return 'Walchand';
+  return name.split(' (')[0].split(',')[0].trim();
+};
+
 export const CollegeAssistantWidget: React.FC<CollegeAssistantWidgetProps> = ({ collegeName }) => {
-  const shortName = collegeName.includes('COEP') ? 'COEP' : collegeName;
+  const shortName = getShortName(collegeName);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      sender: 'ai',
-      text: `### 🏛️ ${shortName} Institution Document AI Assistant (RAG Grounded)
-Welcome! I am reading exclusively from **${shortName}'s uploaded document repository** (\`documents/${shortName}/\`).
+  // Reset conversation history and initial welcome message whenever collegeName changes
+  useEffect(() => {
+    const activeName = getShortName(collegeName);
+    setMessages([
+      {
+        id: Date.now().toString(),
+        sender: 'ai',
+        text: `### 🏛️ ${activeName} Institutional Document AI Assistant (RAG Grounded)
+Welcome! I am reading exclusively from **${activeName}'s uploaded document repository** (\`documents/${activeName}/\`).
 
-Ask me anything about ${shortName}'s official documents:
-- **Placement Statistics**: *"What is the highest package in ${shortName}?"*
+Ask me anything about ${activeName}'s official documents:
+- **Placement Statistics**: *"What is the highest package in ${activeName}?"*
 - **Companies Visited**: *"Which companies offered more than 40 LPA?"*
 - **Faculty Coordinators**: *"Who are the TPO faculty coordinators?"*
 - **AICTE & NBA**: *"Which programs are NBA accredited?"*
 - **Scholarships**: *"List available government and private scholarships"*`,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    },
-  ]);
-
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      },
+    ]);
+  }, [collegeName]);
 
   const handleSend = async (queryOverride?: string) => {
     const queryText = queryOverride || input;
     if (!queryText.trim() || loading) return;
+
+    const currentShortName = getShortName(collegeName);
 
     const userMsg: Message = {
       id: Date.now().toString(),
@@ -62,7 +80,7 @@ Ask me anything about ${shortName}'s official documents:
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          college_name: shortName,
+          college_name: currentShortName,
           query: queryText,
         }),
       });
@@ -85,7 +103,7 @@ Ask me anything about ${shortName}'s official documents:
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: 'ai',
-        text: `### 📄 Grounded Document Search (${shortName})\n\nBased on official ${shortName} uploaded records:\n- **Highest CTC Salary**: **60.30 LPA** (DESHAW - CSE)\n- **Average CTC Salary**: **12.55 LPA**\n- **Companies Visited**: **288 Companies** (2025-26)\n- **TPO Contact**: Dr. Sunil B. Mane (\`tpo@coeptech.ac.in\`)`,
+        text: `### 📄 Grounded Document Search (${currentShortName})\n\nBased on official ${currentShortName} uploaded records:\n- **Target Institute**: ${currentShortName}\n- **Status**: Document search active for \`documents/${currentShortName}/\``,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, aiMsg]);
