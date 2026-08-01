@@ -32,7 +32,7 @@ class CitationManager:
         if not citations:
             return answer
 
-        markdown = answer + "\n\n### 📌 Document Sources & Citations\n"
+        markdown = answer + "\n\n### Document Sources & Citations\n"
         for c in citations:
             markdown += f"- **Source**: `{c['document_name']}` | **Page**: {c['page_number']} | **Confidence**: {c['confidence_pct']}%\n"
 

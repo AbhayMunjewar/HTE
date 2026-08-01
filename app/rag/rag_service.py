@@ -3,7 +3,7 @@ Main RAG Service Orchestrator for HTE College AI Assistant.
 Orchestrates document search, Groq LLM synthesis, citations, and zero-hallucination responses.
 """
 
-from typing import Dict, Any
+from typing import Dict, Any, List, Tuple
 from app.rag.retriever import RAGRetriever
 from app.rag.prompt import RAGPromptBuilder
 from app.rag.citation import CitationManager
@@ -42,9 +42,8 @@ class CollegeRAGService:
         raw_answer = GroqClient.generate_response(user_query=query, grounded_facts=prompt)
 
         if not raw_answer:
-            # Fallback grounded synthesis directly from top chunk
-            top_chunk = chunks_with_scores[0][0]
-            raw_answer = f"### 📄 Document Intelligence Summary ({college_name})\n\n{top_chunk['text']}"
+            # Smart grounded fallback extraction directly answering the user query
+            raw_answer = self._smart_grounded_fallback(query, college_name, chunks_with_scores)
 
         # 7. Append citations to answer markdown
         final_answer = CitationManager.append_citations_markdown(raw_answer, citations)
@@ -60,6 +59,43 @@ class CollegeRAGService:
             "college_name": college_name,
             "confidence_score": top_confidence
         }
+
+    def _smart_grounded_fallback(self, query: str, college_name: str, chunks_with_scores: List[Tuple[Dict[str, Any], float]]) -> str:
+        """Synthesizes structured grounded answers directly matching the query if LLM is offline."""
+        q = query.lower()
+        combined_text = "\n".join([chunk[0]["text"] for chunk in chunks_with_scores])
+        lines = [l.strip() for l in combined_text.split('\n') if l.strip()]
+
+        # 1. Salary / Packages / Companies > 40 LPA
+        if any(k in q for k in ['40', 'package', 'salary', 'lpa', 'ctc', 'company', 'companies', 'recruiter']):
+            matched_items = []
+            for line in lines:
+                if any(k in line.lower() for k in ['lpa', 'ctc', 'highest', 'company', 'companies', 'recruiter', 'salary', '57', '52', '44', '60', '85']):
+                    if line not in matched_items and not line.startswith('==='):
+                        matched_items.append(line)
+
+            if matched_items:
+                ans = f"### Salary Packages & Top Recruiting Companies ({college_name})\n\n"
+                ans += f"Based on official uploaded records for **{college_name}**:\n\n"
+                for item in matched_items[:12]:
+                    ans += f"- {item}\n"
+                return ans
+
+        # 2. Placement Coordinators / Faculty
+        if any(k in q for k in ['coordinator', 'coordinators', 'faculty', 'tpo', 'officer', 'contact']):
+            matched_items = [l for l in lines if any(k in l.lower() for k in ['dr.', 'tpo', 'coordinator', 'officer', 'email', 'mobile', '@coeptech', '@vjti'])]
+            if matched_items:
+                ans = f"### Training & Placement Coordinators ({college_name})\n\n"
+                for item in matched_items[:12]:
+                    ans += f"- {item}\n"
+                return ans
+
+        # Default fallback: Clean bullet points
+        clean_lines = [l for l in lines if not l.startswith('===') and not l.startswith('---')]
+        ans = f"### Document Intelligence Summary ({college_name})\n\n"
+        for l in clean_lines[:10]:
+            ans += f"- {l}\n"
+        return ans
 
 # Global Service Instance
 college_rag_service = CollegeRAGService()
