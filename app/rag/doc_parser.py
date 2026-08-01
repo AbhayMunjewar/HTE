@@ -26,8 +26,8 @@ class DocumentParser:
                 if not line_str:
                     continue
 
-                # Detect Section Headings (Markdown ###, --- SECTION ---, UPPERCASE HEADINGS)
-                if line_str.startswith('### ') or line_str.startswith('--- ') or re.match(r'^[0-9]+\.\s+[A-Z\s]{3,}', line_str):
+                # Detect Section Headings (Markdown ###, --- SECTION ---)
+                if line_str.startswith('### ') or line_str.startswith('--- '):
                     if current_lines:
                         structured_blocks.append({
                             "document_name": doc_name,

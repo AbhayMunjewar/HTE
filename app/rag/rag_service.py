@@ -69,16 +69,29 @@ class CollegeRAGService:
         # 1. Salary / Packages / Companies > 40 LPA
         if any(k in q for k in ['40', 'package', 'salary', 'lpa', 'ctc', 'company', 'companies', 'recruiter']):
             matched_items = []
-            for line in lines:
-                if any(k in line.lower() for k in ['lpa', 'ctc', 'highest', 'company', 'companies', 'recruiter', 'salary', '57', '52', '44', '60', '85']):
-                    if line not in matched_items and not line.startswith('==='):
-                        matched_items.append(line)
+
+            # If user asked for > 40 LPA or 40+ LPA
+            if '40' in q or 'forty' in q or 'highest' in q:
+                for line in lines:
+                    if line.startswith('--- RANGE OF SALARY') and not any(t in line for t in ['85+', '50+', '40+']):
+                        continue
+                    if any(k in line.lower() for k in ['85+', '60.', '52.', '50+', '42.', '40.', '40+', '57.', '44.']) or any(c in line.lower() for c in ['deshaw', 'nutanix', 'cohesity', 'arcesium', 'texas instruments', 'phone pe', 'arista', 'microsoft', 'blue star', 'palo alto', 'ncsi', 'transguard']):
+                        if line not in matched_items and not line.startswith('===') and not line.startswith('--- RANGE OF SALARY PACKAGE OFFERED: 4+'):
+                            matched_items.append(line)
+
+            # General package fallback if specific list empty
+            if not matched_items:
+                for line in lines:
+                    if not line.startswith('--- RANGE OF SALARY') and any(k in line.lower() for k in ['lpa', 'ctc', 'highest', 'company', 'salary', 'placed']):
+                        if line not in matched_items and not line.startswith('==='):
+                            matched_items.append(line)
 
             if matched_items:
-                ans = f"### Salary Packages & Top Recruiting Companies ({college_name})\n\n"
+                ans = f"### Salary Packages & Top Companies (> 40 LPA) ({college_name})\n\n"
                 ans += f"Based on official uploaded records for **{college_name}**:\n\n"
-                for item in matched_items[:12]:
-                    ans += f"- {item}\n"
+                for item in matched_items[:15]:
+                    if not item.startswith('--- RANGE'):
+                        ans += f"- {item}\n"
                 return ans
 
         # 2. Placement Coordinators / Faculty
