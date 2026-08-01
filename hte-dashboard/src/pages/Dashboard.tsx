@@ -45,6 +45,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell 
 } from 'recharts';
 import { dashboardMetrics as defaultMetrics, mockColleges } from '../data/mockData';
+import { CollegeAssistantWidget } from '../components/dashboard/CollegeAssistantWidget';
 import { cn } from '../lib/utils';
 
 interface CollegeItem {
@@ -474,6 +475,8 @@ export const Dashboard: React.FC = () => {
               <div className="text-[11px] text-emerald-400 font-bold mt-0.5">Placement: {selectedCollege.placementRate}%</div>
             </div>
           </div>
+          {/* ISOLATED COLLEGE RAG ASSISTANT */}
+          <CollegeAssistantWidget collegeName={selectedCollege.name} />
         </motion.div>
       )}
 

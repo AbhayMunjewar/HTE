@@ -1,0 +1,127 @@
+================================================================================
+COEP TECHNOLOGICAL UNIVERSITY, PUNE
+TRAINING AND PLACEMENT CELL — PLACEMENT STATISTICS
+================================================================================
+
+--- B. TECH PLACEMENT STATISTICS FOR AY 2025-26 (Date: 21st May 2026) ---
+Total Registered Students: 695
+Total Students Placed: 568
+Overall Placement Percentage: 81.73%
+Total Students Placed in CORE: 514 (73.96%)
+Total Students Placed in NON-CORE: 54 (7.77%)
+Total Number of Companies Visited: 288 Companies
+Average CTC Salary: 12.55 LPA
+Median CTC Salary: 10.50 LPA
+
+Programme-wise B.Tech Placement Breakdown (AY 2025-26):
+1. Computer Science & Engineering (CSE):
+   - Registered Students: 185
+   - Students Placed in CORE: 164 (88.65%)
+   - Total Placed: 164 (88.65%)
+   - Minimum Salary: 4.20 LPA (Accenture)
+   - Maximum Salary: 60.30 LPA (DESHAW)
+   - Average Salary: 17.96 LPA
+   - Median Salary: 16.20 LPA
+
+2. Electronics & Telecommunication Engineering (E & TC):
+   - Registered Students: 86
+   - Placed in CORE: 23 (26.74%) | Placed in NON-CORE: 24 (27.91%)
+   - Total Placed: 47 (54.65%)
+   - Minimum Salary: 6.42 LPA (Blue Star)
+   - Maximum Salary: 40.07 LPA (Texas Instruments)
+   - Average Salary: 13.94 LPA
+   - Median Salary: 12.00 LPA
+
+3. Mechanical Engineering (MECH):
+   - Registered Students: 147
+   - Placed in CORE: 121 (82.31%) | Placed in NON-CORE: 6 (4.08%)
+   - Total Placed: 127 (86.39%)
+   - Minimum Salary: 5.68 LPA (Sunflag Iron)
+   - Maximum Salary: 23.50 LPA (Meesho)
+   - Average Salary: 10.04 LPA
+   - Median Salary: 9.00 LPA
+
+4. Manufacturing Science & Engineering (MANU):
+   - Registered Students: 65
+   - Placed in CORE: 42 (64.62%) | Placed in NON-CORE: 8 (12.31%)
+   - Total Placed: 50 (76.92%)
+   - Minimum Salary: 6.00 LPA (ACG World)
+   - Maximum Salary: 18.00 LPA (Havelock One)
+   - Average Salary: 10.52 LPA
+   - Median Salary: 10.00 LPA
+
+5. Electrical Engineering (ELECT):
+   - Registered Students: 75
+   - Placed in CORE: 59 (78.67%) | Placed in NON-CORE: 9 (12.00%)
+   - Total Placed: 68 (90.67%)
+   - Minimum Salary: 5.00 LPA (Replus Engitech)
+   - Maximum Salary: 14.15 LPA (ZS Associates)
+   - Average Salary: 9.25 LPA
+   - Median Salary: 8.40 LPA
+
+6. Instrumentation & Control Engineering (INSTRU):
+   - Registered Students: 30
+   - Placed in CORE: 24 (80.00%) | Placed in NON-CORE: 3 (10.00%)
+   - Total Placed: 27 (90.00%)
+   - Minimum Salary: 5.50 LPA (Global Quest)
+   - Maximum Salary: 38.25 LPA (Texas Instruments)
+   - Average Salary: 12.38 LPA
+   - Median Salary: 9.00 LPA
+
+7. Metallurgy & Material Technology (META):
+   - Registered Students: 55
+   - Placed in CORE: 48 (87.27%) | Placed in NON-CORE: 3 (5.45%)
+   - Total Placed: 51 (92.73%)
+   - Minimum Salary: 4.90 LPA (Saarloha)
+   - Maximum Salary: 22.00 LPA (DMW Corporation Japan)
+   - Average Salary: 8.18 LPA
+   - Median Salary: 6.50 LPA
+
+8. Civil Engineering (CIVIL):
+   - Registered Students: 43
+   - Placed in CORE: 27 (62.79%) | Placed in NON-CORE: 1 (2.33%)
+   - Total Placed: 28 (65.12%)
+   - Minimum Salary: 5.00 LPA (Shapoorji Pallonji)
+   - Maximum Salary: 20.88 LPA (Bharat Petroleum / BPCL)
+   - Average Salary: 10.04 LPA
+   - Median Salary: 8.50 LPA
+
+9. Planning (PLANN):
+   - Registered Students: 9
+   - Placed in CORE: 6 (66.67%)
+   - Total Placed: 6 (66.67%)
+   - Minimum Salary: 5.40 LPA (Ajnhawk)
+   - Maximum Salary: 18.00 LPA (Havelock One)
+   - Average Salary: 10.10 LPA
+   - Median Salary: 6.38 LPA
+
+
+--- B. TECH PLACEMENT STATISTICS FOR AY 2024-25 (As On 28th August 2025) ---
+Total Number of Students Enrolled (UG): 630
+Total UG Placed: 528 (83.81%)
+Total Number of PG Enrolled: 231
+Total PG Placed: 102 (44.16%)
+Combined Total Enrolled: 630 UG + 231 PG = 861 Total
+Combined Total Placed: 528 UG + 102 PG = 630 (73.17%)
+Total Number of Companies Visited: 245 Companies
+Highest CTC Salary: 52.57 LPA (Nutanix)
+Average CTC Salary: 11.62 LPA
+
+UG Branch Placement % (AY 2024-25):
+- Computer Science Engg: 91.82% (146 placed / 159 enrolled) | Avg CTC: 17.31 LPA | Highest: 52.57 LPA (Nutanix)
+- E & TC Engg: 82.19% (60 placed / 73 enrolled) | Avg CTC: 12.65 LPA | Highest: 52.57 LPA (Nutanix)
+- Electrical Engg: 100.00% (67 placed / 67 enrolled) | Avg CTC: 10.28 LPA | Highest: 52.57 LPA (Nutanix)
+- Instrumentation & Control Engg: 90.00% (27 placed / 30 enrolled) | Avg CTC: 11.63 LPA | Highest: 52.57 LPA (Nutanix)
+- Mechanical Engg: 84.68% (105 placed / 124 enrolled) | Avg CTC: 8.34 LPA | Highest: 21.10 LPA (FINIQ)
+- Manufacturing Science & Engg: 85.19% (46 placed / 54 enrolled) | Avg CTC: 8.81 LPA | Highest: 21.10 LPA (FINIQ)
+- Metallurgy & Material Tech: 67.31% (35 placed / 52 enrolled) | Avg CTC: 5.47 LPA | Highest: 19.18 LPA (Oracle)
+- Civil Engg: 61.54% (40 placed / 65 enrolled) | Avg CTC: 7.86 LPA | Highest: 19.18 LPA (Oracle)
+- Planning: 33.33% (2 placed / 6 enrolled) | Avg CTC: 5.80 LPA | Highest: 13.88 LPA (Future First)
+
+Historical 5-Year B.Tech Placement Rate Comparison:
+- 2020-21: 193 companies | 50.50 LPA highest | 11.20 LPA avg
+- 2021-22: 235 companies
+- 2022-23: 214 companies | 788 enrolled | 590 placed (74.87%) | 50.50 LPA highest | 11.20 LPA avg
+- 2023-24: 241 companies | 695 enrolled | 549 placed (79.00%) | 87.00 LPA highest | 12.00 LPA avg
+- 2024-25: 245 companies | 630 enrolled | 528 placed (84.00%) | 52.57 LPA highest | 11.62 LPA avg
+- 2025-26: 288 companies | 695 enrolled | 568 placed (81.73%) | 60.30 LPA highest | 12.55 LPA avg
