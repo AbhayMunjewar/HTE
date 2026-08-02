@@ -573,7 +573,7 @@ export const Dashboard: React.FC = () => {
           { id: 'students', label: 'Students', icon: Users },
           { id: 'faculty', label: 'Faculty', icon: BookOpen },
           { id: 'placements', label: 'Placements', icon: Briefcase },
-          { id: 'prediction', label: 'Enrollment Prediction', icon: TrendingUp },
+          { id: 'prediction', label: 'Enrollment Prediction with Data Entry', icon: TrendingUp },
           { id: 'research', label: 'Research', icon: Activity },
           { id: 'finance', label: 'Finance', icon: DollarSign },
           { id: 'infrastructure', label: 'Infrastructure', icon: Building2 },
@@ -685,7 +685,7 @@ export const Dashboard: React.FC = () => {
               </div>
 
               {/* 2 Visual Analytics Charts for Students */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
+              <div className="grid grid-cols-1 gap-6 pt-2">
                 <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-200">
                   <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
                     <BarChart3 className="w-4 h-4 text-blue-600" /> Student Enrollment by Academic Year
@@ -761,36 +761,6 @@ export const Dashboard: React.FC = () => {
                         <Tooltip />
                         <Bar dataKey="count" fill="#10b981" radius={[4, 4, 0, 0]} />
                       </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-200">
-                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                    <PieIcon className="w-4 h-4 text-emerald-600" /> Attendance Category Split
-                  </h4>
-                  <div className="h-[220px] flex items-center justify-center">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={[
-                            { name: '> 85% Excellent', value: 65 },
-                            { name: '75% - 85% Satisfactory', value: 25 },
-                            { name: '< 75% Critical Alert', value: 10 },
-                          ]}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={50}
-                          outerRadius={80}
-                          paddingAngle={4}
-                          dataKey="value"
-                        >
-                          <Cell fill="#10b981" />
-                          <Cell fill="#3b82f6" />
-                          <Cell fill="#ef4444" />
-                        </Pie>
-                        <Tooltip formatter={(v: any) => [`${v}% Students`, 'Share']} />
-                      </PieChart>
                     </ResponsiveContainer>
                   </div>
                 </div>
@@ -983,7 +953,7 @@ export const Dashboard: React.FC = () => {
               <div className="lg:col-span-5 bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
                 <h3 className="font-bold text-slate-800 border-b border-slate-100 pb-3 text-base flex items-center justify-between">
                   <span className="flex items-center gap-2">
-                    <Sliders className="w-5 h-5 text-blue-600" /> Model Controls & Physics
+                    <Sliders className="w-5 h-5 text-blue-600" /> Enrollment Prediction with Data Entry
                   </span>
                   <span className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-mono font-bold">ExtraTrees v3.0</span>
                 </h3>
@@ -1052,7 +1022,7 @@ export const Dashboard: React.FC = () => {
 
                 <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
                   <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-blue-600" /> Model Rationale & Physics
+                    <Sparkles className="w-4 h-4 text-blue-600" /> Enrollment Prediction Rationale
                   </h4>
                   <p className="text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100 font-medium leading-relaxed">
                     {predResult.reason_summary}
@@ -1111,7 +1081,7 @@ export const Dashboard: React.FC = () => {
             </div>
 
             {/* Accurate College Infrastructure Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
                 <div className="text-xs text-slate-500 font-semibold flex items-center gap-1"><Home className="w-3.5 h-3.5 text-blue-600" /> Campus Area</div>
                 <div className="text-xl font-bold text-slate-900 mt-1">{selectedCollege && selectedCollege.naacGrade.includes('A') ? '36.0 Acres' : '16.0 Acres'}</div>
@@ -1125,11 +1095,6 @@ export const Dashboard: React.FC = () => {
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
                 <div className="text-xs text-slate-500 font-semibold flex items-center gap-1"><Building className="w-3.5 h-3.5 text-purple-600" /> Hostel Capacity</div>
                 <div className="text-xl font-bold text-purple-600 mt-1">{selectedCollege ? Math.round(kpis.totalStudents * 0.25) : 850} Beds</div>
-              </div>
-
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <div className="text-xs text-slate-500 font-semibold flex items-center gap-1"><Wifi className="w-3.5 h-3.5 text-emerald-600" /> IT Bandwidth</div>
-                <div className="text-xl font-bold text-emerald-600 mt-1">{selectedCollege && selectedCollege.naacGrade.includes('A') ? '1 Gbps Fiber' : '500 Mbps Fiber'}</div>
               </div>
             </div>
 
