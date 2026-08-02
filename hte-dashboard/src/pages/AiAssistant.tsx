@@ -13,15 +13,7 @@ export const AiAssistant: React.FC = () => {
     {
       id: '1',
       sender: 'ai',
-      text: `### 🤖 Maharashtra HTE Decision Intelligence LLM Assistant
-Welcome! I am connected to all **11 verified HTE datasets** in SQLite and the **v3.0 ExtraTrees ML Enrollment Predictor**.
-
-Ask me anything about:
-- **Enrollment Predictions**: *"Predict admissions for COEP"*
-- **Faculty Shortages**: *"Which colleges require more faculty?"*
-- **College Analysis**: *"Compare VJTI and COEP"*
-- **Placements & Packages**: *"Top placement colleges"*
-- **Executive Reports**: *"Generate report for VJTI"*`,
+      text: `Hello! I am your AI Assistant for the Higher & Technical Education Department, Government of Maharashtra. You can ask me any question about colleges, student admissions, placements, faculty, enrollment predictions, or executive reports!`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -145,7 +137,7 @@ Based on original dataset analytics across 2,000 colleges and 612,450 students: 
           </div>
         </div>
         <span className="flex items-center gap-1.5 text-xs text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20 shadow-sm">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" /> Grounded Anti-Hallucination Engine
+          <ShieldCheck className="w-4 h-4 text-emerald-400" /> Active AI Assistant
         </span>
       </div>
 

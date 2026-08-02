@@ -44,15 +44,7 @@ export const CollegeAssistantWidget: React.FC<CollegeAssistantWidgetProps> = ({ 
       {
         id: Date.now().toString(),
         sender: 'ai',
-        text: `### 🏛️ ${activeName} Institutional Document AI Assistant (RAG Grounded)
-Welcome! I am reading exclusively from **${activeName}'s uploaded document repository** (\`documents/${activeName}/\`).
-
-Ask me anything about ${activeName}'s official documents:
-- **Placement Statistics**: *"What is the highest package in ${activeName}?"*
-- **Companies Visited**: *"Which companies offered more than 40 LPA?"*
-- **Faculty Coordinators**: *"Who are the TPO faculty coordinators?"*
-- **AICTE & NBA**: *"Which programs are NBA accredited?"*
-- **Scholarships**: *"List available government and private scholarships"*`,
+        text: `Hello! I am your AI Assistant for ${activeName}. You can ask me any question about official placement statistics, recruiting companies, faculty coordinators, or campus details!`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       },
     ]);
@@ -157,17 +149,12 @@ Ask me anything about ${activeName}'s official documents:
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-extrabold text-white text-sm">{shortName} Institutional Document AI Assistant</h3>
-              <span className="text-[10px] font-extrabold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/30">
-                RAG Document Mode
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-400 font-medium">Isolated Document Repository: <code className="text-blue-300">documents/{shortName}/</code></p>
+            <h3 className="font-extrabold text-white text-sm">{shortName} Institutional AI Assistant</h3>
+            <p className="text-[11px] text-slate-400 font-medium">Official Institutional Records & Document Intelligence</p>
           </div>
         </div>
         <span className="flex items-center gap-1.5 text-xs text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 shadow-sm">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" /> Isolated FAISS Index
+          <ShieldCheck className="w-4 h-4 text-emerald-400" /> Active Assistant
         </span>
       </div>
 
