@@ -1,2 +1,2 @@
-2026-07-28 19:59:02,394 [INFO] HTE_Pipeline_v3 - Predictor loaded all v3.0 artifacts successfully.
-2026-07-28 19:59:02,394 [INFO] HTE_Django_API - Django ML Predictor initialized successfully.
+2026-08-02 15:56:14,474 [INFO] HTE_Pipeline_v3 - Predictor loaded all v3.0 artifacts successfully.
+2026-08-02 15:56:14,474 [INFO] HTE_ML_Predictor - ML Predictor v3.0 initialized successfully.

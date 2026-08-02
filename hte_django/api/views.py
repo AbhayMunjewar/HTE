@@ -28,6 +28,7 @@ from app.services.placement_service import PlacementService
 from app.ml.predictor import ml_predictor_service
 from app.chatbot.engine import chatbot_engine
 from app.rag.rag_service import college_rag_service
+from app.services.report_service import ReportService
 
 logger = logging.getLogger("HTE_Django_API")
 
@@ -206,3 +207,93 @@ def college_assistant_query(request):
     except Exception as e:
         logger.error("College Assistant error in Django: %s", e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_state_report_view(request):
+    print(">>> GET_STATE_REPORT_VIEW CALLED! <<<", flush=True)
+    year = request.GET.get("year")
+    db = SessionLocal()
+    try:
+        report = ReportService.get_state_report(db, year=year)
+        return Response(report)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        logger.error("Error in get_state_report_view: %s", e)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    finally:
+        db.close()
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_district_report_view(request):
+    district = request.GET.get("name", "Pune")
+    year = request.GET.get("year")
+    db = SessionLocal()
+    try:
+        report = ReportService.get_district_report(db, district_name=district, year=year)
+        return Response(report)
+    except Exception as e:
+        logger.error("Error in get_district_report_view: %s", e)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    finally:
+        db.close()
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_college_report_view(request):
+    college_name = request.GET.get("name", "COEP")
+    year = request.GET.get("year")
+    db = SessionLocal()
+    try:
+        report = ReportService.get_college_report(db, college_name=college_name, year=year)
+        return Response(report)
+    except Exception as e:
+        logger.error("Error in get_college_report_view: %s", e)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    finally:
+        db.close()
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def generate_report_view(request):
+    data = request.data or {}
+    report_type = data.get("type", "state")
+    target = data.get("target", "")
+    year = data.get("year", "2025-2026")
+
+    db = SessionLocal()
+    try:
+        if report_type == "district":
+            report = ReportService.get_district_report(db, district_name=target or "Pune", year=year)
+        elif report_type == "college":
+            report = ReportService.get_college_report(db, college_name=target or "COEP", year=year)
+        else:
+            report = ReportService.get_state_report(db, year=year)
+        return Response(report)
+    except Exception as e:
+        logger.error("Error in generate_report_view: %s", e)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    finally:
+        db.close()
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def download_report_view(request):
+    data = request.data or {}
+    report_type = data.get("type", "state")
+    target = data.get("target", "")
+
+    return Response({
+        "status": "ready",
+        "download_url": f"/api/reports/{report_type}?name={target}",
+        "export_format": "PDF / Printable Government Document",
+        "timestamp": "2026-08-02T15:52:00Z"
+    })
+

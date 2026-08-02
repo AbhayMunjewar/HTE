@@ -12,8 +12,9 @@ import { Students } from './pages/Students';
 import { Faculty } from './pages/Faculty';
 import { Placements } from './pages/Placements';
 
+import { Reports } from './pages/Reports';
+
 // Mock empty pages for now
-const Reports = () => <div className="p-8 text-center text-slate-500">Reports Module Coming Soon</div>;
 const Settings = () => <div className="p-8 text-center text-slate-500">Settings Module Coming Soon</div>;
 
 /**
