@@ -7,12 +7,14 @@ import {
   Settings,
   ShieldCheck,
   Building2,
-  Sparkles
+  Sparkles,
+  Landmark
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const navItems = [
-  { icon: LayoutDashboard, label: 'Executive Workspace', path: '/' },
+  { icon: Landmark, label: 'Government Portal', path: '/' },
+  { icon: LayoutDashboard, label: 'Executive Workspace', path: '/dashboard' },
   { icon: Building2, label: 'Colleges Directory', path: '/colleges' },
   { icon: Bot, label: 'AI Intelligence Assistant', path: '/ai-assistant' },
   { icon: FileBarChart, label: 'Government Reports', path: '/reports' },
