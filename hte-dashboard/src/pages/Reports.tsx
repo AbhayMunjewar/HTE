@@ -175,7 +175,6 @@ export const Reports: React.FC = () => {
           {[
             { id: 'state', label: 'Statewide Maharashtra Report', icon: Landmark },
             { id: 'district', label: 'District Performance Audit', icon: MapPin },
-            { id: 'college', label: 'College Institutional Audit', icon: Building2 },
           ].map((tab) => {
             const IconComp = tab.icon;
             const active = reportType === tab.id;
@@ -194,6 +193,20 @@ export const Reports: React.FC = () => {
               </button>
             );
           })}
+
+          {reportType === 'college' && (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-blue-500/10 text-blue-300 border border-blue-500/30 ml-auto">
+              <Building2 className="w-3.5 h-3.5 text-blue-400" />
+              <span>Auditing: {selectedCollegeName.split(' (')[0]}</span>
+              <button
+                onClick={() => setReportType('state')}
+                className="ml-2 text-slate-400 hover:text-white font-bold bg-slate-800 hover:bg-slate-700 px-1.5 py-0.5 rounded text-[10px]"
+                title="Return to Statewide Report"
+              >
+                ✕ Clear
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Dropdown Filters Grid */}
@@ -204,7 +217,10 @@ export const Reports: React.FC = () => {
             <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">District</label>
             <select
               value={selectedDistrict}
-              onChange={(e) => setSelectedDistrict(e.target.value)}
+              onChange={(e) => {
+                setSelectedDistrict(e.target.value);
+                if (reportType !== 'district') setReportType('district');
+              }}
               disabled={reportType === 'state'}
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none disabled:opacity-50"
             >
@@ -214,16 +230,23 @@ export const Reports: React.FC = () => {
             </select>
           </div>
 
-          {/* College Dropdown */}
+          {/* Institution Search & Selection */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Institution</label>
+            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Search & Audit Institution</label>
             <select
-              value={selectedCollegeName}
-              onChange={(e) => setSelectedCollegeName(e.target.value)}
-              disabled={reportType !== 'college'}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none disabled:opacity-50"
+              value={reportType === 'college' ? selectedCollegeName : ''}
+              onChange={(e) => {
+                if (e.target.value) {
+                  setSelectedCollegeName(e.target.value);
+                  setReportType('college');
+                }
+              }}
+              className={`w-full bg-slate-950 border ${
+                reportType === 'college' ? 'border-blue-500/80 ring-2 ring-blue-500/30' : 'border-slate-800'
+              } rounded-xl px-3 py-2 text-xs font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all`}
             >
-              <option value="College of Engineering Pune (COEP Technological University)">COEP Pune</option>
+              <option value="">-- Search / Select Institution --</option>
+              <option value="College of Engineering Pune (COEP Technological University)">COEP Technological University, Pune</option>
               <option value="Veermata Jijabai Technological Institute (VJTI), Mumbai">VJTI Mumbai</option>
               <option value="Walchand College of Engineering, Sangli">Walchand Sangli</option>
               <option value="Government College of Engineering, Karad">GCOE Karad</option>
