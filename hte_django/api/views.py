@@ -245,6 +245,21 @@ def get_district_report_view(request):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
+def get_district_report_path_view(request, district: str):
+    year = request.GET.get("year")
+    db = SessionLocal()
+    try:
+        report = ReportService.get_district_report(db, district_name=district, year=year)
+        return Response(report)
+    except Exception as e:
+        logger.error("Error in get_district_report_path_view: %s", e)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    finally:
+        db.close()
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
 def get_college_report_view(request):
     college_name = request.GET.get("name", "COEP")
     year = request.GET.get("year")
@@ -254,6 +269,21 @@ def get_college_report_view(request):
         return Response(report)
     except Exception as e:
         logger.error("Error in get_college_report_view: %s", e)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    finally:
+        db.close()
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_college_report_path_view(request, college: str):
+    year = request.GET.get("year")
+    db = SessionLocal()
+    try:
+        report = ReportService.get_college_report(db, college_name=college, year=year)
+        return Response(report)
+    except Exception as e:
+        logger.error("Error in get_college_report_path_view: %s", e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     finally:
         db.close()

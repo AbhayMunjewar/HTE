@@ -63,6 +63,8 @@ export const Reports: React.FC = () => {
   const [selectedCollegeName, setSelectedCollegeName] = useState<string>('College of Engineering Pune');
   const [selectedYear, setSelectedYear] = useState<string>('2025-2026');
   const [naacFilter, setNaacFilter] = useState<string>('All');
+  const [branchFilter, setBranchFilter] = useState<string>('All');
+  const [categoryFilter, setCategoryFilter] = useState<string>('All');
   
   const [collegesList, setCollegesList] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -246,8 +248,60 @@ export const Reports: React.FC = () => {
             </select>
           </div>
 
+          {/* NAAC Grade Filter */}
+          <div>
+            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">NAAC Grade</label>
+            <select
+              value={naacFilter}
+              onChange={(e) => setNaacFilter(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none"
+            >
+              <option value="All">All NAAC Grades</option>
+              <option value="A++">A++ Grade</option>
+              <option value="A+">A+ Grade</option>
+              <option value="A">A Grade</option>
+              <option value="B++">B++ Grade</option>
+              <option value="B+">B+ Grade</option>
+              <option value="B">B Grade</option>
+            </select>
+          </div>
+
+          {/* Branch Filter */}
+          <div>
+            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Academic Stream</label>
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none"
+            >
+              <option value="All">All Streams / Branches</option>
+              <option value="Computer">Computer Engineering</option>
+              <option value="IT">Information Technology</option>
+              <option value="Mechanical">Mechanical Engineering</option>
+              <option value="Civil">Civil Engineering</option>
+              <option value="Electrical">Electrical Engineering</option>
+            </select>
+          </div>
+
+          {/* Category Filter */}
+          <div>
+            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Student Category</label>
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none"
+            >
+              <option value="All">All Categories</option>
+              <option value="General">General / Open</option>
+              <option value="OBC">OBC</option>
+              <option value="SC">SC</option>
+              <option value="ST">ST</option>
+              <option value="EWS">EWS</option>
+            </select>
+          </div>
+
           {/* Generate Button */}
-          <div className="flex items-end">
+          <div className="flex items-end sm:col-span-2 md:col-span-1">
             <button
               onClick={handleGenerateReport}
               disabled={loading}
