@@ -15,11 +15,26 @@ class AnalyticsComparisons:
     def compare_colleges(db: Session, college_ids_or_names: List[str]) -> List[Dict[str, Any]]:
         comparison_results = []
         
+        import re
         for item in college_ids_or_names:
-            q = item.strip()
-            col = db.query(College).filter(
-                (College.college_id == q) | (College.college_name.ilike("%{}%".format(q)))
-            ).first()
+            q = item.strip().lower()
+            
+            # Acronym match for key institutions
+            acronyms = ["coep", "vjti", "ict", "spit", "pict", "walchand", "vnit"]
+            col = None
+            for ac in acronyms:
+                if ac in q:
+                    col = db.query(College).filter(College.college_name.ilike(f"%{ac}%")).first()
+                    if col:
+                        break
+            
+            if not col:
+                clean_q = re.sub(r'\(.*?\)', '', q).strip()
+                col = db.query(College).filter(
+                    (College.college_id.ilike(q)) | 
+                    (College.college_name.ilike(f"%{q}%")) |
+                    (College.college_name.ilike(f"%{clean_q}%"))
+                ).first()
 
             if not col:
                 continue

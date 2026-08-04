@@ -36,7 +36,7 @@ class ChatbotRouter:
             college_name = colleges[0] if colleges else target_college
             pred_res = ml_predictor_service.predict(college_name, 2025)
             
-            fact_text = f"### 📈 Enrollment Prediction: {college_name} (2025)\n\n"
+            fact_text = f"### Enrollment Prediction: {college_name} (2025)\n\n"
             fact_text += f"- **Predicted Enrollment**: {pred_res['predicted_enrollment']} Students\n"
             fact_text += f"- **Sanctioned Capacity**: {pred_res['admission_capacity']} Seats\n"
             fact_text += f"- **Seat Utilization**: {pred_res['seat_utilization_pct']}%\n"
@@ -49,21 +49,21 @@ class ChatbotRouter:
             comp_cols = colleges if len(colleges) >= 2 else ["VJTI Mumbai", "COEP Pune"]
             comp_data = AnalyticsComparisons.compare_colleges(db, comp_cols)
             
-            fact_text = "### 📊 Side-by-Side College Comparison\n\n"
+            fact_text = "### Side-by-Side College Comparison\n\n"
             fact_text += "| Metric | " + " | ".join(c["college_name"] for c in comp_data) + " |\n"
             fact_text += "|--------|" + "|".join(["-------"] * len(comp_data)) + "|\n"
             fact_text += "| **NAAC Grade** | " + " | ".join(c["naac_grade"] for c in comp_data) + " |\n"
             fact_text += "| **Total Students** | " + " | ".join(str(c["total_students"]) for c in comp_data) + " |\n"
             fact_text += "| **Faculty Count** | " + " | ".join(str(c["total_faculty"]) for c in comp_data) + " |\n"
             fact_text += "| **Placement Rate** | " + " | ".join(f"{c['placement_rate']}%" for c in comp_data) + " |\n"
-            fact_text += "| **Avg Package (LPA)** | " + " | ".join(f"₹{c['avg_package_lpa']} LPA" for c in comp_data) + " |\n"
+            fact_text += "| **Avg Package (LPA)** | " + " | ".join(f"Rs {c['avg_package_lpa']} LPA" for c in comp_data) + " |\n"
             return {"grounded_facts": fact_text, "hint": "Present comparison as a markdown table."}
 
         # 4. GLOBAL RANKINGS
         elif scope == "GLOBAL":
             if topic == "faculty" or "faculty" in query.lower():
                 shortage = AnalyticsRankings.get_faculty_shortage_ranking(db, 10)
-                fact_text = "### 🏫 State-Wide Colleges Requiring Faculty (Faculty Deficit Ranking)\n\n"
+                fact_text = "### State-Wide Colleges Requiring Faculty (Faculty Deficit Ranking)\n\n"
                 fact_text += "| Rank | College Name | District | Students | Current Faculty | Deficit | Student:Faculty Ratio |\n"
                 fact_text += "|------|--------------|----------|----------|-----------------|---------|----------------------|\n"
                 for idx, c in enumerate(shortage, 1):
@@ -72,16 +72,16 @@ class ChatbotRouter:
 
             elif topic == "placements" or "placement" in query.lower():
                 placements = AnalyticsRankings.get_placement_ranking(db, 10)
-                fact_text = "### 🏆 Top Colleges by Placement Average Package\n\n"
+                fact_text = "### Top Colleges by Placement Average Package\n\n"
                 fact_text += "| Rank | College Name | District | Avg Package | Max Package | NAAC Grade |\n"
                 fact_text += "|------|--------------|----------|-------------|-------------|------------|\n"
                 for idx, c in enumerate(placements, 1):
-                    fact_text += f"| {idx} | {c['college_name']} | {c['district']} | ₹{c['avg_package_lpa']} LPA | ₹{c['max_package_lpa']} LPA | {c['naac_grade']} |\n"
+                    fact_text += f"| {idx} | {c['college_name']} | {c['district']} | Rs {c['avg_package_lpa']} LPA | Rs {c['max_package_lpa']} LPA | {c['naac_grade']} |\n"
                 return {"grounded_facts": fact_text, "hint": "Return top placement ranking table."}
 
             elif topic == "research" or "publication" in query.lower():
                 research = AnalyticsRankings.get_research_ranking(db, 10)
-                fact_text = "### 🔬 Top Colleges by Research Output\n\n"
+                fact_text = "### Top Colleges by Research Output\n\n"
                 fact_text += "| Rank | College Name | District | Publications | Patents | Funded Projects |\n"
                 fact_text += "|------|--------------|----------|--------------|---------|-----------------|\n"
                 for idx, c in enumerate(research, 1):
@@ -90,9 +90,9 @@ class ChatbotRouter:
 
             else:
                 placements = AnalyticsRankings.get_placement_ranking(db, 5)
-                fact_text = "### 🏛️ Top Maharashtra Engineering Colleges Overview\n\n"
+                fact_text = "### Top Maharashtra Engineering Colleges Overview\n\n"
                 for c in placements:
-                    fact_text += f"- **{c['college_name']}** ({c['district']}): Avg Package ₹{c['avg_package_lpa']} LPA | NAAC {c['naac_grade']}\n"
+                    fact_text += f"- **{c['college_name']}** ({c['district']}): Avg Package Rs {c['avg_package_lpa']} LPA | NAAC {c['naac_grade']}\n"
                 return {"grounded_facts": fact_text, "hint": "Return top colleges list."}
 
         # 5. DISTRICT
@@ -102,7 +102,7 @@ class ChatbotRouter:
             if "error" in summary:
                 return {"grounded_facts": f"No data found for district {dist_name}.", "hint": "State that data is unavailable."}
 
-            fact_text = f"### 📍 Higher Education Profile: {summary['district']} District\n\n"
+            fact_text = f"### Higher Education Profile: {summary['district']} District\n\n"
             fact_text += f"- **Total Colleges**: {summary['total_colleges']}\n"
             fact_text += f"- **Total Enrolled Students**: {summary['total_students']}\n"
             fact_text += f"- **Total Faculty**: {summary['total_faculty']}\n"
@@ -137,7 +137,7 @@ class ChatbotRouter:
             elif topic == "placements" and response_type == "FOCUSED":
                 pl = db.query(Placement).filter(Placement.college_id == cid, Placement.placement_status == "Placed").first()
                 avg_pkg = pl.package_lpa if pl else 12.0
-                fact_text = f"**{cname}** placement statistics: Average Package is **₹{avg_pkg} LPA** with strong recruitment from top companies like TCS, Infosys, and Cognizant."
+                fact_text = f"**{cname}** placement statistics: Average Package is **Rs {avg_pkg} LPA** with strong recruitment from top companies like TCS, Infosys, and Cognizant."
                 return {"grounded_facts": fact_text, "hint": "Answer directly with placement metrics."}
 
             else:
@@ -146,7 +146,7 @@ class ChatbotRouter:
                 naac = col.naac_grade if col else "A++"
                 ratio = round(st_count / max(1, f_count), 1)
 
-                fact_text = f"### 🏫 College Profile: {cname}\n\n"
+                fact_text = f"### College Profile: {cname}\n\n"
                 fact_text += f"- **District**: {col.district if col else 'Mumbai'}\n"
                 fact_text += f"- **NAAC Grade**: {naac} | **NIRF Rank**: #{col.nirf_rank if col and col.nirf_rank else '71'}\n"
                 fact_text += f"- **Total Students**: {st_count}\n"

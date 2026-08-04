@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Users, 
@@ -65,6 +66,7 @@ interface CollegeItem {
 type TabType = 'overview' | 'students' | 'faculty' | 'placements' | 'prediction' | 'research' | 'finance' | 'infrastructure';
 
 export const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
   // Global Filter & Search States
   const [colleges, setColleges] = useState<CollegeItem[]>(
     mockColleges.map(c => ({
@@ -74,7 +76,7 @@ export const Dashboard: React.FC = () => {
   );
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
-  const [selectedCollege, setSelectedCollege] = useState<CollegeItem | null>(mockColleges[1] as CollegeItem);
+  const [selectedCollege, setSelectedCollege] = useState<CollegeItem | null>(null);
 
   // Active Tab State
   const [activeTab, setActiveTab] = useState<TabType>('overview');
@@ -90,6 +92,7 @@ export const Dashboard: React.FC = () => {
   const [placementsList, setPlacementsList] = useState<any[]>([]);
 
   // ML Controls
+  const [selectedBranch, setSelectedBranch] = useState('Computer Engineering');
   const [seats, setSeats] = useState(120);
   const [filledSeats, setFilledSeats] = useState(100);
   const [applications, setApplications] = useState(400);
@@ -98,6 +101,19 @@ export const Dashboard: React.FC = () => {
   const [cutoffInput, setCutoffInput] = useState(92.0);
   const [facultyCountInput, setFacultyCountInput] = useState(17);
   const [naacGradeInput, setNaacGradeInput] = useState('A++');
+
+  // Available branches for current selected college
+  const availableBranches = useMemo(() => {
+    if (!selectedCollege) return ["Computer Engineering", "Information Technology", "Electronics & Telecommunication", "Mechanical Engineering", "Civil Engineering", "Electrical Engineering"];
+    const name = selectedCollege.name.toLowerCase();
+    if (name.includes("coep")) return ["Computer Engineering", "Information Technology", "Electronics & Telecommunication", "Mechanical Engineering", "Electrical Engineering", "Civil Engineering", "Instrumentation & Control", "Manufacturing Science"];
+    if (name.includes("vjti")) return ["Computer Engineering", "Information Technology", "Electronics & Telecommunication", "Electrical Engineering", "Mechanical Engineering", "Civil Engineering", "Production Engineering", "Textile Technology"];
+    if (name.includes("walchand")) return ["Computer Science & Engineering", "Information Technology", "Electronics Engineering", "Electrical Engineering", "Mechanical Engineering", "Civil Engineering"];
+    if (name.includes("ict")) return ["Chemical Engineering", "Dyestuff Technology", "Fibres & Textile Processing", "Food Engineering & Technology", "Oils, Oleochemicals & Surfactants", "Pharmaceuticals Chemistry & Tech", "Polymer & Surface Engineering"];
+    if (name.includes("spit")) return ["Computer Engineering", "Computer Science & Eng (Data Science)", "Computer Science & Eng (AIML)", "Electronics & Telecommunication"];
+    if (name.includes("pict")) return ["Computer Engineering", "Information Technology", "Electronics & Telecommunication", "Artificial Intelligence & Data Science"];
+    return ["Computer Engineering", "Information Technology", "Electronics & Telecommunication", "Mechanical Engineering", "Civil Engineering", "Electrical Engineering"];
+  }, [selectedCollege]);
 
   // ML Prediction Result State
   const [predicting, setPredicting] = useState(false);
@@ -139,7 +155,9 @@ export const Dashboard: React.FC = () => {
       setPlacementRateInput(selectedCollege.placementRate);
       setFacultyCountInput(selectedCollege.facultyCount);
       setNaacGradeInput(selectedCollege.naacGrade);
-      runPredictionForCollege(selectedCollege);
+      const defaultBranch = availableBranches[0] || 'Computer Engineering';
+      setSelectedBranch(defaultBranch);
+      runPredictionForCollege(selectedCollege, { branch: defaultBranch });
     }
   }, [selectedCollege, filterYear]);
 
@@ -196,8 +214,10 @@ export const Dashboard: React.FC = () => {
   const runPredictionForCollege = async (col: CollegeItem, customParams?: any) => {
     setPredicting(true);
     try {
+      const branchToUse = customParams?.branch || selectedBranch || (availableBranches[0] || 'Computer Engineering');
       const payload = {
         college_name: col ? col.name : "VJTI Mumbai",
+        branch: branchToUse,
         target_year: parseInt(filterYear, 10) || 2025,
         district: col ? col.district : "Mumbai",
         sanctioned_seats: customParams?.seats || seats,
@@ -245,7 +265,7 @@ export const Dashboard: React.FC = () => {
   };
 
   const handleResetFilters = () => {
-    setSelectedCollege(mockColleges[1] as CollegeItem);
+    setSelectedCollege(null);
     setSearchQuery('');
     setFilterYear('2025');
     setFilterDept('');
@@ -308,7 +328,26 @@ export const Dashboard: React.FC = () => {
   }, [selectedCollege]);
 
   const aiInsights = useMemo(() => {
-    const col = selectedCollege || mockColleges[1];
+    if (!selectedCollege) {
+      return [
+        { 
+          type: 'positive', 
+          title: 'Statewide Capacity & Enrollment Growth', 
+          text: `Overall student admissions across Maharashtra for AY ${filterYear} reached 3.92M students across 3,726 technical institutions.` 
+        },
+        { 
+          type: 'positive', 
+          title: 'Statewide Placement & Industry Hiring', 
+          text: `Average placement rate across state institutions maintained at ${kpis.placementRate}% with strong recruitment in Computer & IT branches.` 
+        },
+        { 
+          type: 'warning', 
+          title: 'Faculty Allocation & Capital Grants', 
+          text: `State average student-faculty ratio is 1:${Math.round(kpis.totalStudents / Math.max(1, kpis.totalFaculty))}. Additional smart lab infrastructure grants recommended for Tier-2 institutions.` 
+        },
+      ];
+    }
+    const col = selectedCollege;
     return [
       { 
         type: 'positive', 
@@ -323,7 +362,7 @@ export const Dashboard: React.FC = () => {
       { 
         type: 'warning', 
         title: 'Faculty & Lab Capital Expenditure', 
-        text: `Faculty-student ratio is 1:${Math.round(kpis.totalStudents / kpis.totalFaculty)}. Additional smart lab infrastructure recommended under RUSA grant.` 
+        text: `Faculty-student ratio is 1:${Math.round(kpis.totalStudents / Math.max(1, kpis.totalFaculty))}. Additional smart lab infrastructure recommended under RUSA grant.` 
       },
     ];
   }, [selectedCollege, filterYear, kpis]);
@@ -502,6 +541,13 @@ export const Dashboard: React.FC = () => {
               <div className="text-[10px] text-blue-300 uppercase tracking-widest font-extrabold">Institutional Rating</div>
               <div className="text-2xl font-extrabold text-amber-300 mt-0.5">NAAC {selectedCollege.naacGrade}</div>
               <div className="text-[11px] text-emerald-400 font-bold mt-0.5">Placement: {selectedCollege.placementRate}%</div>
+              <button 
+                onClick={() => navigate(`/institutional-report/${encodeURIComponent(selectedCollege.name)}`)}
+                className="mt-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-lg hover:shadow-blue-500/30 transition-all flex items-center justify-center gap-1.5 w-full border border-blue-500/50"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                Generate Audit Report
+              </button>
             </div>
           </div>
           {/* ISOLATED COLLEGE RAG ASSISTANT */}
@@ -520,7 +566,7 @@ export const Dashboard: React.FC = () => {
         <div className="glass-card rounded-2xl p-4 shadow-xl border border-slate-800/80 hover:border-purple-500/40 transition-all">
           <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Faculty Members</div>
           <div className="text-xl font-extrabold text-purple-400 mt-1">{kpis.totalFaculty}</div>
-          <div className="text-[9px] text-purple-300 font-bold mt-1">1:21 Ratio</div>
+          <div className="text-[9px] text-purple-300 font-bold mt-1">1:{Math.round(kpis.totalStudents / Math.max(1, kpis.totalFaculty))} Ratio</div>
         </div>
 
         <div className="glass-card rounded-2xl p-4 shadow-xl border border-slate-800/80 hover:border-emerald-500/40 transition-all">
@@ -652,10 +698,10 @@ export const Dashboard: React.FC = () => {
                       <Bar dataKey="value" fill="#6366f1" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
-                </div>
               </div>
             </div>
           </div>
+        </div>
         )}
 
         {/* TAB 2: STUDENTS TAB (DETAILED CHARTS + COLLEGE SPECIFIC DATA) */}
@@ -712,33 +758,74 @@ export const Dashboard: React.FC = () => {
                   <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
                     <PieIcon className="w-4 h-4 text-purple-600" /> Student Category Demographics Split
                   </h4>
-                  <div className="h-[220px] flex items-center justify-center">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={[
-                            { name: 'General', value: 45 },
-                            { name: 'OBC', value: 27 },
-                            { name: 'SC', value: 13 },
-                            { name: 'ST', value: 7 },
-                            { name: 'EWS / NT', value: 8 },
-                          ]}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={45}
-                          outerRadius={75}
-                          paddingAngle={3}
-                          dataKey="value"
-                        >
-                          <Cell fill="#6366f1" />
-                          <Cell fill="#10b981" />
-                          <Cell fill="#f59e0b" />
-                          <Cell fill="#ef4444" />
-                          <Cell fill="#8b5cf6" />
-                        </Pie>
-                        <Tooltip formatter={(v: any) => [`${v}% Students`, 'Share']} />
-                      </PieChart>
-                    </ResponsiveContainer>
+                  <div className="grid grid-cols-1 sm:grid-cols-12 items-center gap-4 h-[220px]">
+                    <div className="sm:col-span-6 h-full flex items-center justify-center">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={[
+                              { name: 'General (Open)', value: 45 },
+                              { name: 'OBC', value: 27 },
+                              { name: 'SC', value: 13 },
+                              { name: 'ST', value: 7 },
+                              { name: 'EWS / NT', value: 8 },
+                            ]}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={45}
+                            outerRadius={75}
+                            paddingAngle={3}
+                            dataKey="value"
+                          >
+                            <Cell fill="#6366f1" />
+                            <Cell fill="#10b981" />
+                            <Cell fill="#f59e0b" />
+                            <Cell fill="#ef4444" />
+                            <Cell fill="#8b5cf6" />
+                          </Pie>
+                          <Tooltip formatter={(v: any) => [`${v}% Students`, 'Share']} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    {/* Category Legend & Breakdown List */}
+                    <div className="sm:col-span-6 space-y-2 text-xs font-semibold">
+                      <div className="flex items-center justify-between p-1.5 rounded-lg bg-indigo-50/60 border border-indigo-100">
+                        <span className="flex items-center gap-2 text-slate-800 font-bold">
+                          <span className="w-3 h-3 rounded-full bg-[#6366f1] shrink-0"></span>
+                          General (Open)
+                        </span>
+                        <span className="font-extrabold text-indigo-700">45%</span>
+                      </div>
+                      <div className="flex items-center justify-between p-1.5 rounded-lg bg-emerald-50/60 border border-emerald-100">
+                        <span className="flex items-center gap-2 text-slate-800 font-bold">
+                          <span className="w-3 h-3 rounded-full bg-[#10b981] shrink-0"></span>
+                          OBC
+                        </span>
+                        <span className="font-extrabold text-emerald-700">27%</span>
+                      </div>
+                      <div className="flex items-center justify-between p-1.5 rounded-lg bg-amber-50/60 border border-amber-100">
+                        <span className="flex items-center gap-2 text-slate-800 font-bold">
+                          <span className="w-3 h-3 rounded-full bg-[#f59e0b] shrink-0"></span>
+                          SC
+                        </span>
+                        <span className="font-extrabold text-amber-700">13%</span>
+                      </div>
+                      <div className="flex items-center justify-between p-1.5 rounded-lg bg-rose-50/60 border border-rose-100">
+                        <span className="flex items-center gap-2 text-slate-800 font-bold">
+                          <span className="w-3 h-3 rounded-full bg-[#ef4444] shrink-0"></span>
+                          ST
+                        </span>
+                        <span className="font-extrabold text-rose-700">7%</span>
+                      </div>
+                      <div className="flex items-center justify-between p-1.5 rounded-lg bg-purple-50/60 border border-purple-100">
+                        <span className="flex items-center gap-2 text-slate-800 font-bold">
+                          <span className="w-3 h-3 rounded-full bg-[#8b5cf6] shrink-0"></span>
+                          EWS / NT
+                        </span>
+                        <span className="font-extrabold text-purple-700">8%</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -958,34 +1045,70 @@ export const Dashboard: React.FC = () => {
                   <span className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-mono font-bold">ExtraTrees v3.0</span>
                 </h3>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Sanctioned Seat Capacity: <span className="font-bold text-blue-600">{seats} Seats</span></label>
-                    <input type="range" min="30" max="300" step="10" value={seats} onChange={(e) => setSeats(Number(e.target.value))} className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer" />
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-1 uppercase tracking-wider flex justify-between items-center">
+                      <span>Select Academic Branch</span>
+                      <span className="text-[10px] text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-100 font-mono">
+                        {availableBranches.length} Branches
+                      </span>
+                    </label>
+                    <select
+                      value={selectedBranch}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setSelectedBranch(val);
+                        if (selectedCollege) {
+                          runPredictionForCollege(selectedCollege, { branch: val });
+                        }
+                      }}
+                      className="w-full bg-blue-50/40 border border-blue-200 text-blue-900 font-bold rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-blue-500 outline-none"
+                    >
+                      {availableBranches.map((b, i) => (
+                        <option key={i} value={b}>
+                          {b}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Applications Received: <span className="font-bold text-blue-600">{applications} Applications ({ (applications / Math.max(1, seats)).toFixed(2) }x Demand)</span></label>
-                    <input type="range" min="50" max="1200" step="25" value={applications} onChange={(e) => setApplications(Number(e.target.value))} className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer" />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 mb-1 uppercase tracking-wider">Sanctioned Seats</label>
+                      <input type="number" min="10" max="500" value={seats} onChange={(e) => setSeats(Number(e.target.value))} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 mb-1 uppercase tracking-wider">Applications Received</label>
+                      <input type="number" min="10" max="2000" value={applications} onChange={(e) => setApplications(Number(e.target.value))} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 mb-1 uppercase tracking-wider">Placement Rate (%)</label>
+                      <input type="number" min="0" max="100" step="0.1" value={placementRateInput} onChange={(e) => setPlacementRateInput(Number(e.target.value))} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all" />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 mb-1 uppercase tracking-wider">MHT-CET / Cutoff Percentile</label>
+                      <input type="number" min="0" max="100" step="0.5" value={cutoffInput} onChange={(e) => setCutoffInput(Number(e.target.value))} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-purple-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all" />
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Placement Rate %: <span className="font-bold text-emerald-600">{placementRateInput}%</span></label>
-                    <input type="range" min="20" max="100" step="1" value={placementRateInput} onChange={(e) => setPlacementRateInput(Number(e.target.value))} className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer" />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Cutoff Percentile: <span className="font-bold text-purple-600">{cutoffInput}%</span></label>
-                    <input type="range" min="40" max="99" step="0.5" value={cutoffInput} onChange={(e) => setCutoffInput(Number(e.target.value))} className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer" />
+                  <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-100">
+                    <span>Demand Ratio: <strong className="text-blue-600">{(applications / Math.max(1, seats)).toFixed(2)}x</strong></span>
+                    <span>Model: <strong className="text-blue-600">ExtraTrees v3.0</strong></span>
                   </div>
 
                   <button
-                    onClick={() => selectedCollege && runPredictionForCollege(selectedCollege)}
+                    onClick={() => {
+                      if (selectedCollege) {
+                        runPredictionForCollege(selectedCollege, { branch: selectedBranch });
+                      }
+                    }}
                     disabled={predicting}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-3 px-4 rounded-xl transition-colors shadow-md shadow-blue-600/20 flex items-center justify-center gap-2"
                   >
                     {predicting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4 text-amber-300" />}
-                    Run AI Enrollment Prediction
+                    Run AI Branch Enrollment Prediction
                   </button>
                 </div>
               </div>
@@ -994,9 +1117,14 @@ export const Dashboard: React.FC = () => {
                 <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 rounded-xl p-6 text-white shadow-xl relative overflow-hidden">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <span className="text-[10px] font-bold tracking-wider uppercase text-blue-300 bg-white/10 px-2.5 py-1 rounded-full border border-white/10">
-                        {selectedCollege ? selectedCollege.name : "VJTI Mumbai"}
-                      </span>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-[10px] font-bold tracking-wider uppercase text-blue-300 bg-white/10 px-2.5 py-1 rounded-full border border-white/10">
+                          {selectedCollege ? selectedCollege.name : "VJTI Mumbai"}
+                        </span>
+                        <span className="text-[10px] font-bold tracking-wider uppercase text-emerald-300 bg-emerald-500/20 px-2.5 py-1 rounded-full border border-emerald-400/30">
+                          {predResult.selected_branch || selectedBranch}
+                        </span>
+                      </div>
                       <h3 className="text-3xl font-bold mt-3 text-white">
                         {predResult.predicted_enrollment} <span className="text-sm font-normal text-blue-200">/ {seats} Seats</span>
                       </h3>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   FileBarChart,
   Landmark,
@@ -58,14 +59,27 @@ interface ReportData {
 }
 
 export const Reports: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [reportType, setReportType] = useState<'state' | 'district' | 'college'>('state');
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const collegeParam = searchParams.get('college');
+    if (collegeParam) {
+      setReportType('college');
+      setSelectedCollegeName(collegeParam);
+    }
+  }, [location.search]);
+
   const [selectedDistrict, setSelectedDistrict] = useState<string>('Pune');
   const [selectedCollegeName, setSelectedCollegeName] = useState<string>('College of Engineering Pune');
   const [selectedYear, setSelectedYear] = useState<string>('2025-2026');
   const [naacFilter, setNaacFilter] = useState<string>('All');
   const [branchFilter, setBranchFilter] = useState<string>('All');
   const [categoryFilter, setCategoryFilter] = useState<string>('All');
-  
+
   const [collegesList, setCollegesList] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [reportData, setReportData] = useState<ReportData | null>(null);
@@ -82,10 +96,10 @@ export const Reports: React.FC = () => {
       .catch((err) => console.warn('Colleges fetch error:', err));
   }, []);
 
-  // Automatically fetch initial report on mount
+  // Automatically fetch initial report on mount and when type/targets change
   useEffect(() => {
     handleGenerateReport();
-  }, [reportType]);
+  }, [reportType, selectedDistrict, selectedCollegeName, selectedYear]);
 
   const handleGenerateReport = async () => {
     setLoading(true);
@@ -124,7 +138,7 @@ export const Reports: React.FC = () => {
 
   return (
     <div className="space-y-6 selection:bg-blue-600 selection:text-white">
-      
+
       {/* ========================================================================= */}
       {/* 1. HEADER & CONTROL TOOLBAR                                               */}
       {/* ========================================================================= */}
@@ -165,7 +179,7 @@ export const Reports: React.FC = () => {
 
       {/* FILTER & GENERATE BAR */}
       <div className="bg-slate-900/90 backdrop-blur-xl p-5 rounded-2xl border border-slate-800/80 shadow-xl space-y-4">
-        
+
         {/* Report Type Selector Tabs */}
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-2 flex items-center gap-1.5">
@@ -182,11 +196,10 @@ export const Reports: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setReportType(tab.id as any)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-extrabold transition-all ${
-                  active
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-extrabold transition-all ${active
                     ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 border border-blue-400/40'
                     : 'bg-slate-950 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-slate-800'
-                }`}
+                  }`}
               >
                 <IconComp className="w-3.5 h-3.5" />
                 <span>{tab.label}</span>
@@ -199,7 +212,10 @@ export const Reports: React.FC = () => {
               <Building2 className="w-3.5 h-3.5 text-blue-400" />
               <span>Auditing: {selectedCollegeName.split(' (')[0]}</span>
               <button
-                onClick={() => setReportType('state')}
+                onClick={() => {
+                  setReportType('state');
+                  navigate('/reports');
+                }}
                 className="ml-2 text-slate-400 hover:text-white font-bold bg-slate-800 hover:bg-slate-700 px-1.5 py-0.5 rounded text-[10px]"
                 title="Return to Statewide Report"
               >
@@ -211,16 +227,13 @@ export const Reports: React.FC = () => {
 
         {/* Dropdown Filters Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-2 border-t border-slate-800/80">
-          
+
           {/* District Dropdown */}
           <div>
             <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">District</label>
             <select
               value={selectedDistrict}
-              onChange={(e) => {
-                setSelectedDistrict(e.target.value);
-                if (reportType !== 'district') setReportType('district');
-              }}
+              onChange={(e) => setSelectedDistrict(e.target.value)}
               disabled={reportType === 'state'}
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none disabled:opacity-50"
             >
@@ -230,23 +243,16 @@ export const Reports: React.FC = () => {
             </select>
           </div>
 
-          {/* Institution Search & Selection */}
+          {/* College Dropdown */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Search & Audit Institution</label>
+            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Institution</label>
             <select
-              value={reportType === 'college' ? selectedCollegeName : ''}
-              onChange={(e) => {
-                if (e.target.value) {
-                  setSelectedCollegeName(e.target.value);
-                  setReportType('college');
-                }
-              }}
-              className={`w-full bg-slate-950 border ${
-                reportType === 'college' ? 'border-blue-500/80 ring-2 ring-blue-500/30' : 'border-slate-800'
-              } rounded-xl px-3 py-2 text-xs font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all`}
+              value={selectedCollegeName}
+              onChange={(e) => setSelectedCollegeName(e.target.value)}
+              disabled={reportType !== 'college'}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none disabled:opacity-50"
             >
-              <option value="">-- Search / Select Institution --</option>
-              <option value="College of Engineering Pune (COEP Technological University)">COEP Technological University, Pune</option>
+              <option value="College of Engineering Pune (COEP Technological University)">COEP Pune</option>
               <option value="Veermata Jijabai Technological Institute (VJTI), Mumbai">VJTI Mumbai</option>
               <option value="Walchand College of Engineering, Sangli">Walchand Sangli</option>
               <option value="Government College of Engineering, Karad">GCOE Karad</option>
@@ -342,19 +348,21 @@ export const Reports: React.FC = () => {
       {/* ========================================================================= */}
       {/* 2. OFFICIAL GOVERNMENT REPORT DOCUMENT CONTAINER                          */}
       {/* ========================================================================= */}
-      <div className="bg-slate-900/95 backdrop-blur-2xl border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8 relative overflow-hidden print:bg-white print:text-black print:p-0 print:border-none print:shadow-none">
-        
+      <div className="printable-document bg-slate-900/95 backdrop-blur-2xl border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8 relative overflow-hidden print:bg-white print:text-black print:p-0 print:border-none print:shadow-none">
+
         {/* Decorative Top Accent Border */}
         <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-600 via-indigo-500 to-amber-500"></div>
 
         {/* ── SECTION 1: GOVERNMENT HEADER ── */}
         <div className="flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-slate-800/80 gap-6">
           <div className="flex items-center gap-4 text-center sm:text-left">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Seal_of_Maharashtra.svg/1024px-Seal_of_Maharashtra.svg.png"
-              alt="Seal of Maharashtra"
-              className="w-14 h-14 object-contain drop-shadow-md mx-auto sm:mx-0"
-            />
+            <div className="w-14 h-14 rounded-xl bg-white p-1 flex items-center justify-center border border-slate-700 shadow-md shrink-0 mx-auto sm:mx-0">
+              <img
+                src="/maharashtra_logo.png"
+                alt="Government of Maharashtra Official Seal"
+                className="w-full h-full object-contain"
+              />
+            </div>
             <div>
               <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
                 Official Document
@@ -416,7 +424,7 @@ export const Reports: React.FC = () => {
 
             <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Enrolled Students</span>
-              <div className="text-xl font-black text-white mt-1">{(stats.total_students || 612450).toLocaleString()}</div>
+              <div className="text-xl font-black text-white mt-1">{(stats.total_students || 3922128).toLocaleString()}</div>
               <span className="text-[10px] text-emerald-400 font-semibold">Student-Faculty: {stats.student_faculty_ratio || 17.3}:1</span>
             </div>
 
@@ -428,7 +436,7 @@ export const Reports: React.FC = () => {
 
             <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Scholarship Beneficiaries</span>
-              <div className="text-xl font-black text-purple-400 mt-1">{(stats.scholarship_beneficiaries || 185000).toLocaleString()}</div>
+              <div className="text-xl font-black text-purple-400 mt-1">{(stats.scholarship_beneficiaries || 1254280).toLocaleString()}</div>
               <span className="text-[10px] text-purple-300 font-semibold">State EBC & Pragati</span>
             </div>
           </div>
@@ -436,7 +444,7 @@ export const Reports: React.FC = () => {
 
         {/* ── SECTION 4: VISUAL ANALYTICS CHARTS ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
+
           {/* Chart 1: Enrollment Trend */}
           <div className="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-3">
             <h4 className="text-xs font-extrabold text-white uppercase tracking-wider flex items-center justify-between">
@@ -445,11 +453,11 @@ export const Reports: React.FC = () => {
             </h4>
             <div className="h-[200px]">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={[
-                  { year: '2023', students: 540000 },
-                  { year: '2024', students: 580000 },
-                  { year: '2025', students: 612450 },
-                  { year: '2026 (Est)', students: 645000 },
+                <LineChart data={stats.enrollment_trend || [
+                  { year: '2023', students: 3650000 },
+                  { year: '2024', students: 3790000 },
+                  { year: '2025', students: 3922128 },
+                  { year: '2026 (Est)', students: 4050000 },
                 ]}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1e293b" />
                   <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#94a3b8' }} />
@@ -561,7 +569,7 @@ export const Reports: React.FC = () => {
 
         {/* ── SECTION 7: STRENGTHS & WEAKNESSES GRID ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
+
           {/* Strengths Card */}
           <div className="bg-slate-950 p-5 rounded-2xl border border-emerald-500/30 space-y-3">
             <h4 className="text-xs font-extrabold text-emerald-400 uppercase tracking-wider flex items-center gap-2">

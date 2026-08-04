@@ -7,11 +7,13 @@ export const Topbar: React.FC = () => {
     <header className="h-16 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/80 flex items-center justify-between px-6 sticky top-0 z-20 shadow-md">
       {/* Brand Badge */}
       <div className="flex items-center gap-3.5">
-        <img 
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Seal_of_Maharashtra.svg/1024px-Seal_of_Maharashtra.svg.png" 
-          alt="Govt of Maharashtra" 
-          className="w-9 h-9 object-contain drop-shadow-md"
-        />
+        <div className="w-10 h-10 rounded-lg bg-white p-1 flex items-center justify-center border border-slate-700 shadow-md">
+          <img 
+            src="/maharashtra_logo.png" 
+            alt="Government of Maharashtra Official Seal" 
+            className="w-full h-full object-contain"
+          />
+        </div>
         <div>
           <h1 className="text-xs font-extrabold text-white tracking-wide uppercase flex items-center gap-2">
             Government of Maharashtra

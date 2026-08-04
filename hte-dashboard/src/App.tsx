@@ -13,6 +13,7 @@ import { Faculty } from './pages/Faculty';
 import { Placements } from './pages/Placements';
 
 import { Reports } from './pages/Reports';
+import { InstitutionalReportPage } from './pages/InstitutionalReportPage';
 
 // Mock empty pages for now
 const Settings = () => <div className="p-8 text-center text-slate-500">Settings Module Coming Soon</div>;
@@ -40,7 +41,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/prediction" element={<Prediction />} />
         <Route path="/ai-assistant" element={<AiAssistant />} />
         <Route path="/reports" element={<Reports />} />
-        <Route path="/settings" element={<Settings />} />
+        <Route path="/institutional-report/:collegeName" element={<InstitutionalReportPage />} />
       </Routes>
     </Layout>
   );

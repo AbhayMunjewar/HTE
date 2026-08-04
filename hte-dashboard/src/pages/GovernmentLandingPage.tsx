@@ -131,11 +131,13 @@ export const GovernmentLandingPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Government Logo & Department Name */}
           <div className="flex items-center gap-3.5 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Seal_of_Maharashtra.svg/1024px-Seal_of_Maharashtra.svg.png"
-              alt="Seal of Maharashtra"
-              className="w-10 h-10 object-contain drop-shadow-md"
-            />
+            <div className="w-10 h-10 rounded-lg bg-white p-1 flex items-center justify-center border border-slate-700 shadow-md shrink-0">
+              <img
+                src="/maharashtra_logo.png"
+                alt="Government of Maharashtra Official Seal"
+                className="w-full h-full object-contain"
+              />
+            </div>
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xs sm:text-sm font-extrabold text-white tracking-wide uppercase">
@@ -268,10 +270,10 @@ export const GovernmentLandingPage: React.FC = () => {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4">
             {[
-              { label: 'Total Colleges', value: '2,000+', icon: Building2, color: 'from-blue-600 to-indigo-600' },
+              { label: 'Total Colleges', value: '3,726+', icon: Building2, color: 'from-blue-600 to-indigo-600' },
               { label: 'State Universities', value: '24', icon: Landmark, color: 'from-indigo-600 to-purple-600' },
-              { label: 'Enrolled Students', value: '612,450', icon: Users, color: 'from-emerald-600 to-teal-600' },
-              { label: 'Approved Faculty', value: '34,280', icon: GraduationCap, color: 'from-amber-600 to-orange-600' },
+              { label: 'Enrolled Students', value: '39,22,128', icon: Users, color: 'from-emerald-600 to-teal-600' },
+              { label: 'Approved Faculty', value: '226,713', icon: GraduationCap, color: 'from-amber-600 to-orange-600' },
               { label: 'Districts Covered', value: '36', icon: Globe, color: 'from-cyan-600 to-blue-600' },
               { label: 'Scholarships', value: '₹450 Cr+', icon: Award, color: 'from-purple-600 to-pink-600' },
               { label: 'Placement Rate', value: '95.0%', icon: TrendingUp, color: 'from-blue-600 to-emerald-600' },
@@ -503,12 +505,12 @@ export const GovernmentLandingPage: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                   <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
                     <span className="text-[10px] text-slate-400 uppercase font-bold">Total Active Students</span>
-                    <div className="text-xl font-extrabold text-white mt-1">612,450</div>
+                    <div className="text-xl font-extrabold text-white mt-1">3,922,128</div>
                     <span className="text-[10px] text-emerald-400 font-bold">↑ +4.2% YoY Growth</span>
                   </div>
                   <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
                     <span className="text-[10px] text-slate-400 uppercase font-bold">Monitored Colleges</span>
-                    <div className="text-xl font-extrabold text-white mt-1">2,000</div>
+                    <div className="text-xl font-extrabold text-white mt-1">3,726</div>
                     <span className="text-[10px] text-blue-400 font-bold">36 Districts Active</span>
                   </div>
                   <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
@@ -676,11 +678,13 @@ export const GovernmentLandingPage: React.FC = () => {
           
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-900">
             <div className="flex items-center gap-3.5">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Seal_of_Maharashtra.svg/1024px-Seal_of_Maharashtra.svg.png"
-                alt="Seal of Maharashtra"
-                className="w-10 h-10 object-contain drop-shadow-md"
-              />
+              <div className="w-10 h-10 rounded-lg bg-white p-1 flex items-center justify-center border border-slate-700 shadow-md shrink-0">
+                <img
+                  src="/maharashtra_logo.png"
+                  alt="Government of Maharashtra Official Seal"
+                  className="w-full h-full object-contain"
+                />
+              </div>
               <div>
                 <h3 className="font-extrabold text-white text-sm">Higher & Technical Education Department</h3>
                 <p className="text-[11px] text-slate-400">Government of Maharashtra | Mantralaya, Mumbai - 400032</p>

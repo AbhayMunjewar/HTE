@@ -13,22 +13,20 @@ import {
 import { cn } from '../../lib/utils';
 
 const navItems = [
-  { icon: Landmark, label: 'Government Portal', path: '/' },
   { icon: LayoutDashboard, label: 'Executive Workspace', path: '/dashboard' },
   { icon: Building2, label: 'Colleges Directory', path: '/colleges' },
   { icon: Bot, label: 'AI Intelligence Assistant', path: '/ai-assistant' },
   { icon: FileBarChart, label: 'Government Reports', path: '/reports' },
-  { icon: Settings, label: 'Platform Settings', path: '/settings' },
 ];
 
 export const Sidebar: React.FC = () => {
   return (
-    <aside className="w-64 bg-slate-950/90 backdrop-blur-xl border-r border-slate-800/80 text-slate-300 flex flex-col h-screen sticky top-0 shrink-0 shadow-2xl z-30">
+    <aside className="w-64 bg-slate-950/90 backdrop-blur-xl border-r border-slate-800/80 text-slate-300 flex flex-col h-screen sticky top-0 shrink-0 shadow-2xl z-30 overflow-hidden">
       {/* Brand Header */}
       <div className="p-5 border-b border-slate-800/80 bg-slate-900/50">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-extrabold text-sm shadow-lg shadow-blue-500/25 border border-blue-400/30">
-            HTE
+          <div className="w-10 h-10 rounded-xl bg-white p-1 flex items-center justify-center border border-slate-700 shadow-md shrink-0">
+            <img src="/maharashtra_logo.png" alt="Govt of Maharashtra Seal" className="w-full h-full object-contain" />
           </div>
           <div>
             <h2 className="text-sm font-extrabold text-white tracking-tight leading-tight flex items-center gap-1.5">
@@ -71,9 +69,9 @@ export const Sidebar: React.FC = () => {
         </div>
       </nav>
 
-      {/* Footer Info Badge */}
-      <div className="p-4 border-t border-slate-800/80 bg-slate-900/40">
-        <div className="flex items-center gap-3 bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+      {/* Footer Info Badge (Pinned to bottom) */}
+      <div className="mt-auto p-4 border-t border-slate-800/80 bg-slate-900/40 shrink-0">
+        <div className="flex items-center gap-3 bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 shadow-md">
           <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
             <ShieldCheck className="w-4 h-4" />
           </div>

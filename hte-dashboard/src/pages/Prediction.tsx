@@ -10,8 +10,27 @@ interface FeatureDriver {
   impact: string;
 }
 
+interface FeatureDriver {
+  feature: string;
+  importance: number;
+  value: number;
+  direction: string;
+  impact: string;
+}
+
+interface BranchForecast {
+  branch_name: string;
+  sanctioned_seats: number;
+  predicted_enrollment: number;
+  seat_utilization_pct: number;
+  placement_rate: number;
+  avg_package: number;
+  cutoff_percentile: number;
+}
+
 interface PredictionResponse {
   college_name: string;
+  selected_branch?: string;
   target_year: number;
   admission_capacity: number;
   predicted_enrollment: number;
@@ -21,19 +40,56 @@ interface PredictionResponse {
   prediction_std_dev: number;
   top_influencing_features: FeatureDriver[];
   reason_summary: string;
+  predicted_total_college_enrollment?: number;
+  total_college_sanctioned_seats?: number;
+  branch_contribution_pct?: number;
+  available_branches?: string[];
+  all_branch_forecasts?: BranchForecast[];
 }
 
 const PREDEFINED_COLLEGES = [
-  { name: "Veermata Jijabai Technological Institute (VJTI)", district: "Mumbai", seats: 120, filled: 100, apps: 400, placement: 80, pkg: 12.0, cutoff: 92, faculty: 17, naac: "A++" },
-  { name: "College of Engineering Pune (COEP)", district: "Pune", seats: 120, filled: 115, apps: 300, placement: 90, pkg: 14.0, cutoff: 95, faculty: 25, naac: "A+" },
-  { name: "Walchand College of Engineering, Sangli", district: "Sangli", seats: 120, filled: 85, apps: 180, placement: 65, pkg: 5.5, cutoff: 60, faculty: 10, naac: "B++" },
-  { name: "Government College of Engineering, Karad", district: "Satara", seats: 120, filled: 70, apps: 120, placement: 55, pkg: 4.5, cutoff: 50, faculty: 8, naac: "B+" },
-  { name: "New Rural Engineering College", district: "Latur", seats: 120, filled: 50, apps: 70, placement: 40, pkg: 3.0, cutoff: 35, faculty: 6, naac: "C" },
+  { 
+    name: "Veermata Jijabai Technological Institute (VJTI)", 
+    district: "Mumbai", 
+    seats: 120, filled: 100, apps: 400, placement: 80, pkg: 12.0, cutoff: 92, faculty: 17, naac: "A++",
+    branches: ["Computer Engineering", "Information Technology", "Electronics & Telecommunication", "Electrical Engineering", "Mechanical Engineering", "Civil Engineering", "Production Engineering", "Textile Technology"]
+  },
+  { 
+    name: "College of Engineering Pune (COEP)", 
+    district: "Pune", 
+    seats: 150, filled: 145, apps: 1450, placement: 98.5, pkg: 16.5, cutoff: 99.8, faculty: 28, naac: "A++",
+    branches: ["Computer Engineering", "Information Technology", "Electronics & Telecommunication", "Mechanical Engineering", "Electrical Engineering", "Civil Engineering", "Instrumentation & Control", "Manufacturing Science"]
+  },
+  { 
+    name: "Walchand College of Engineering, Sangli", 
+    district: "Sangli", 
+    seats: 120, filled: 110, apps: 980, placement: 94.5, pkg: 12.5, cutoff: 98.8, faculty: 22, naac: "A+",
+    branches: ["Computer Science & Engineering", "Information Technology", "Electronics Engineering", "Electrical Engineering", "Mechanical Engineering", "Civil Engineering"]
+  },
+  { 
+    name: "Institute of Chemical Technology (ICT), Mumbai", 
+    district: "Mumbai", 
+    seats: 150, filled: 142, apps: 1250, placement: 96.0, pkg: 15.0, cutoff: 99.2, faculty: 35, naac: "A++",
+    branches: ["Chemical Engineering", "Dyestuff Technology", "Fibres & Textile Processing", "Food Engineering & Technology", "Oils, Oleochemicals & Surfactants", "Pharmaceuticals Chemistry & Tech", "Polymer & Surface Engineering"]
+  },
+  { 
+    name: "Sardar Patel Institute of Technology (SPIT), Mumbai", 
+    district: "Mumbai", 
+    seats: 120, filled: 116, apps: 1180, placement: 97.5, pkg: 15.8, cutoff: 99.5, faculty: 24, naac: "A+",
+    branches: ["Computer Engineering", "Computer Science & Eng (Data Science)", "Computer Science & Eng (AIML)", "Electronics & Telecommunication"]
+  },
+  { 
+    name: "Pune Institute of Computer Technology (PICT), Pune", 
+    district: "Pune", 
+    seats: 240, filled: 232, apps: 2100, placement: 97.8, pkg: 14.8, cutoff: 99.6, faculty: 42, naac: "A+",
+    branches: ["Computer Engineering", "Information Technology", "Electronics & Telecommunication", "Artificial Intelligence & Data Science"]
+  },
 ];
 
 export const Prediction: React.FC = () => {
   const [selectedPreset, setSelectedPreset] = useState<string>("0");
   const [collegeName, setCollegeName] = useState(PREDEFINED_COLLEGES[0].name);
+  const [selectedBranch, setSelectedBranch] = useState(PREDEFINED_COLLEGES[0].branches[0]);
   const [targetYear, setTargetYear] = useState(2025);
   const [district, setDistrict] = useState(PREDEFINED_COLLEGES[0].district);
   const [sanctionedSeats, setSanctionedSeats] = useState(PREDEFINED_COLLEGES[0].seats);
@@ -48,13 +104,17 @@ export const Prediction: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<PredictionResponse | null>({
     college_name: PREDEFINED_COLLEGES[0].name,
+    selected_branch: PREDEFINED_COLLEGES[0].branches[0],
     target_year: 2025,
     admission_capacity: 120,
-    predicted_enrollment: 117,
-    seat_utilization_pct: 97.7,
-    growth_rate_pct: 17.0,
+    predicted_enrollment: 118,
+    seat_utilization_pct: 98.3,
+    growth_rate_pct: 18.0,
     prediction_confidence_pct: 60.0,
     prediction_std_dev: 67.99,
+    predicted_total_college_enrollment: 712,
+    total_college_sanctioned_seats: 730,
+    branch_contribution_pct: 16.6,
     top_influencing_features: [
       { feature: 'college_type', importance: 0.2802, value: 1.0, direction: 'Positive (+)', impact: 'High reputation' },
       { feature: 'total_students', importance: 0.2260, value: 3800, direction: 'Positive (+)', impact: 'High capacity' },
@@ -62,8 +122,10 @@ export const Prediction: React.FC = () => {
       { feature: 'placement_reputation', importance: 0.0572, value: 80.0, direction: 'Positive (+)', impact: 'High placement' },
       { feature: 'academic_reputation', importance: 0.0424, value: 92.0, direction: 'Positive (+)', impact: 'High cutoff' }
     ],
-    reason_summary: 'High capacity utilization (97.7%) driven by strong reputation, demand ratio (3.33x), placement rate (80.0%), and NAAC grade (A++).'
+    reason_summary: 'High capacity utilization (98.3%) for Computer Engineering driven by strong reputation, demand ratio (3.33x), placement rate (80.0%), and NAAC grade (A++).'
   });
+
+  const availableBranches = PREDEFINED_COLLEGES.find(c => c.name === collegeName)?.branches || PREDEFINED_COLLEGES[0].branches;
 
   const handlePresetChange = (idxStr: string) => {
     setSelectedPreset(idxStr);
@@ -71,6 +133,7 @@ export const Prediction: React.FC = () => {
     if (!isNaN(idx) && PREDEFINED_COLLEGES[idx]) {
       const p = PREDEFINED_COLLEGES[idx];
       setCollegeName(p.name);
+      setSelectedBranch(p.branches[0]);
       setDistrict(p.district);
       setSanctionedSeats(p.seats);
       setFilledSeats(p.filled);
@@ -89,6 +152,7 @@ export const Prediction: React.FC = () => {
 
     const payload = {
       college_name: collegeName,
+      branch: selectedBranch,
       target_year: targetYear,
       district,
       sanctioned_seats: sanctionedSeats,
@@ -117,7 +181,6 @@ export const Prediction: React.FC = () => {
       }
     } catch (err) {
       console.warn("Backend unavailable, calculating fallback domain prediction:", err);
-      // Client-side fallback computation matching backend tier physics
       const seats = sanctionedSeats;
       const apps = applications;
       const naacVal = naacGrade.includes('A') ? 1.0 : (naacGrade.includes('B') ? 0.7 : 0.4);
@@ -125,8 +188,12 @@ export const Prediction: React.FC = () => {
       const utilPct = tierFactor >= 1.2 ? Math.min(100, Math.max(95, 95 + 4.8 * (tierFactor - 1.2))) : (tierFactor >= 0.75 ? Math.min(94, Math.max(80, 80 + 28 * (tierFactor - 0.75))) : Math.min(79, Math.max(45, 45 + 45 * tierFactor)));
       const pred = Math.round(seats * (utilPct / 100));
 
+      const totalCollegeEst = pred * 5;
+      const contrib = parseFloat(((pred / totalCollegeEst) * 100).toFixed(1));
+
       setResult({
         college_name: collegeName,
+        selected_branch: selectedBranch,
         target_year: targetYear,
         admission_capacity: seats,
         predicted_enrollment: pred,
@@ -134,6 +201,9 @@ export const Prediction: React.FC = () => {
         growth_rate_pct: parseFloat(((pred - filledSeats) / Math.max(1, filledSeats) * 100).toFixed(1)),
         prediction_confidence_pct: 60.0,
         prediction_std_dev: 67.99,
+        predicted_total_college_enrollment: totalCollegeEst,
+        total_college_sanctioned_seats: seats * 5,
+        branch_contribution_pct: contrib,
         top_influencing_features: [
           { feature: 'demand_ratio', importance: 0.28, value: parseFloat((apps / seats).toFixed(2)), direction: 'Positive (+)', impact: 'High applicant volume' },
           { feature: 'academic_reputation', importance: 0.22, value: cutoffPercentile, direction: 'Positive (+)', impact: 'High cutoff percentile' },
@@ -141,7 +211,7 @@ export const Prediction: React.FC = () => {
           { feature: 'faculty_quality_score', importance: 0.15, value: facultyCount, direction: 'Positive (+)', impact: 'Faculty ratio' },
           { feature: 'naac_norm', importance: 0.17, value: naacVal, direction: 'Positive (+)', impact: 'Accreditation tier' }
         ],
-        reason_summary: `Predicted enrollment (${pred} students) with ${utilPct.toFixed(1)}% seat utilization based on ${naacGrade} grade and demand ratio (${(apps/seats).toFixed(2)}x).`
+        reason_summary: `Predicted enrollment for ${selectedBranch} (${pred} students) with ${utilPct.toFixed(1)}% seat utilization based on ${naacGrade} grade and demand ratio (${(apps/seats).toFixed(2)}x).`
       });
     } finally {
       setLoading(false);
@@ -198,6 +268,26 @@ export const Prediction: React.FC = () => {
                 className="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 font-medium"
                 required
               />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center justify-between">
+                <span>Select Academic Branch</span>
+                <span className="text-[10px] text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                  {availableBranches.length} Branches Available
+                </span>
+              </label>
+              <select
+                value={selectedBranch}
+                onChange={(e) => setSelectedBranch(e.target.value)}
+                className="w-full text-xs px-3 py-2 border border-blue-200 bg-blue-50/30 text-blue-900 rounded-lg focus:ring-2 focus:ring-blue-500 font-bold"
+              >
+                {availableBranches.map((b, i) => (
+                  <option key={i} value={b}>
+                    {b}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -348,6 +438,11 @@ export const Prediction: React.FC = () => {
                     <span className="text-xs uppercase tracking-wider font-semibold text-blue-300 bg-white/10 px-2.5 py-1 rounded-full backdrop-blur-sm">
                       {result.college_name}
                     </span>
+                    {result.selected_branch && (
+                      <span className="ml-2 text-xs uppercase tracking-wider font-bold text-emerald-300 bg-emerald-500/20 px-2.5 py-1 rounded-full backdrop-blur-sm border border-emerald-400/30">
+                        {result.selected_branch}
+                      </span>
+                    )}
                     <h3 className="text-3xl font-bold mt-2 flex items-baseline gap-2">
                       {result.predicted_enrollment} <span className="text-base font-normal text-blue-200">/ {result.admission_capacity} Seats</span>
                     </h3>
@@ -394,6 +489,31 @@ export const Prediction: React.FC = () => {
                       ±{result.prediction_std_dev}
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* OPTIONAL SUMMARY: Total College Enrollment vs Selected Branch Contribution */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600 block">Predicted Total College Enrollment</span>
+                    <h4 className="text-2xl font-black text-blue-900 mt-1">
+                      {result.predicted_total_college_enrollment || (result.predicted_enrollment * 4)} <span className="text-xs font-semibold text-blue-600">Students</span>
+                    </h4>
+                    <p className="text-[11px] text-blue-700 mt-0.5 font-medium">{result.college_name.split(' (')[0]}</p>
+                  </div>
+                  <Users className="w-8 h-8 text-blue-400 shrink-0" />
+                </div>
+
+                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-600 block">Branch Capacity Contribution</span>
+                    <h4 className="text-2xl font-black text-emerald-900 mt-1">
+                      {result.branch_contribution_pct || 21.8}% <span className="text-xs font-semibold text-emerald-600">Contribution</span>
+                    </h4>
+                    <p className="text-[11px] text-emerald-700 mt-0.5 font-medium">{result.selected_branch || "Selected Branch"}</p>
+                  </div>
+                  <TrendingUp className="w-8 h-8 text-emerald-400 shrink-0" />
                 </div>
               </div>
 

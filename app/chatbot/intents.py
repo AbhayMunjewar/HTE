@@ -9,13 +9,13 @@ import re
 from typing import Dict, Any, List, Optional
 
 COLLEGE_ALIASES = {
-    "vjti": "Veermata Jijabai Technological Institute (VJTI)",
-    "coep": "College of Engineering Pune (COEP)",
-    "ict": "Institute of Chemical Technology (ICT)",
+    "vjti": "Veermata Jijabai Technological Institute (VJTI), Mumbai",
+    "coep": "College of Engineering Pune (COEP Technological University)",
+    "ict": "Institute of Chemical Technology (ICT), Mumbai",
+    "spit": "Sardar Patel Institute of Technology (SPIT), Mumbai",
+    "pict": "Pune Institute of Computer Technology (PICT), Pune",
+    "walchand": "Walchand College of Engineering, Sangli",
     "vnit": "Visvesvaraya National Institute of Technology (VNIT)",
-    "walchand": "Walchand College of Engineering",
-    "pict": "Pune Institute of Computer Technology (PICT)",
-    "spit": "Sardar Patel Institute of Technology (SPIT)",
 }
 
 KNOWN_DISTRICTS = [

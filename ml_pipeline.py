@@ -733,25 +733,40 @@ class EnrollmentPredictor:
         except Exception as e:
             logger.error("Failed to load artifacts: %s", e)
 
-    def predict_enrollment(self, college_name: str, year: int, custom_data: Optional[Dict] = None) -> Dict:
+    def predict_enrollment(self, college_name: str, year: int, custom_data: Optional[Dict] = None, branch_name: Optional[str] = None) -> Dict:
         if self.model is None:
             return {"error": "Model not loaded"}
 
+        from app.data.branch_registry import get_branches_for_college, get_branch_details
+
+        # Get list of official branches for this college
+        college_branches = get_branches_for_college(college_name)
+        selected_branch_name = branch_name or (custom_data.get("branch") if custom_data else None)
+
+        if selected_branch_name:
+            branch_info = get_branch_details(college_name, selected_branch_name)
+            if branch_info:
+                selected_branch_name = branch_info["branch_name"]
+            else:
+                branch_info = college_branches[0] if college_branches else None
+        else:
+            branch_info = None
+
         base = {
             "year": year,
-            "sanctioned_seats": 120,
-            "filled_seats": 100,
-            "applications": 400,
-            "placement_rate": 80.0,
-            "avg_package": 12.0,
-            "cutoff_percentile": 92.0,
-            "faculty_count": 17,
+            "sanctioned_seats": branch_info["sanctioned_seats"] if branch_info else 120,
+            "filled_seats": int((branch_info["sanctioned_seats"] if branch_info else 120) * 0.8),
+            "applications": branch_info["applications"] if branch_info else 400,
+            "placement_rate": branch_info["placement_rate"] if branch_info else 80.0,
+            "avg_package": branch_info["avg_package"] if branch_info else 12.0,
+            "cutoff_percentile": branch_info["cutoff_percentile"] if branch_info else 92.0,
+            "faculty_count": branch_info["faculty_count"] if branch_info else 17,
             "naac_grade": "A++",
             "nirf_rank": 40,
             "autonomous": "Yes",
             "established_year": 1887,
             "district": "Mumbai",
-            "branch": "Engineering",
+            "branch": selected_branch_name or "Overall Institution",
             "college_type": "Autonomous",
             "ownership": "Government",
             "avg_cgpa": 8.5,
@@ -813,13 +828,10 @@ class EnrollmentPredictor:
 
         # Apply natural domain physical constraint bounding
         if tier_factor >= 1.2:
-            # Top Tier Institute (VJTI, COEP) -> 95% to 100% capacity fill
             utilization_pct = min(100.0, max(95.0, 95.0 + 4.8 * (tier_factor - 1.2)))
         elif tier_factor >= 0.75:
-            # Tier-2 Institute -> 80% to 94% capacity fill
             utilization_pct = min(94.0, max(80.0, 80.0 + 28.0 * (tier_factor - 0.75)))
         else:
-            # New / Rural College -> 50% to 79% capacity fill
             utilization_pct = min(79.0, max(45.0, 45.0 + 45.0 * tier_factor))
 
         predicted_enrollment = int(round(seats * (utilization_pct / 100.0)))
@@ -830,8 +842,49 @@ class EnrollmentPredictor:
             self.model, X, self.features, self.feature_means
         )
 
+        # Calculate total college enrollment and branch contribution across all branches
+        branch_forecasts = []
+        total_college_predicted_seats = 0
+        total_college_sanctioned_seats = 0
+
+        for b in college_branches:
+            b_seats = b["sanctioned_seats"]
+            b_apps = b["applications"]
+            b_cutoff = b["cutoff_percentile"]
+            b_placement = b["placement_rate"]
+            
+            b_tf = (0.35 * (b_apps / max(1, b_seats)) +
+                    0.25 * (b_cutoff / 100.0) +
+                    0.20 * (b_placement / 100.0) +
+                    0.20 * naac_val)
+                    
+            if b_tf >= 1.2:
+                b_util = min(100.0, max(95.0, 95.0 + 4.8 * (b_tf - 1.2)))
+            elif b_tf >= 0.75:
+                b_util = min(94.0, max(80.0, 80.0 + 28.0 * (b_tf - 0.75)))
+            else:
+                b_util = min(79.0, max(45.0, 45.0 + 45.0 * b_tf))
+                
+            b_pred = int(round(b_seats * (b_util / 100.0)))
+            total_college_predicted_seats += b_pred
+            total_college_sanctioned_seats += b_seats
+
+            branch_forecasts.append({
+                "branch_name": b["branch_name"],
+                "sanctioned_seats": b_seats,
+                "predicted_enrollment": b_pred,
+                "seat_utilization_pct": round(b_util, 1),
+                "placement_rate": b_placement,
+                "avg_package": b["avg_package"],
+                "cutoff_percentile": b_cutoff,
+            })
+
+        # Calculate selected branch contribution
+        contribution_pct = round((predicted_enrollment / max(1, total_college_predicted_seats)) * 100.0, 1)
+
         return {
             "college_name": college_name,
+            "selected_branch": selected_branch_name or "Overall College Aggregate",
             "target_year": year,
             "admission_capacity": seats,
             "predicted_enrollment": predicted_enrollment,
@@ -841,9 +894,15 @@ class EnrollmentPredictor:
             "prediction_std_dev": round(std, 2),
             "top_influencing_features": explanations,
             "reason_summary": (
-                f"High capacity utilization ({utilization_pct:.1f}%) driven by strong reputation, "
-                f"demand ratio ({apps/seats:.2f}x), placement rate ({placement}%), and NAAC grade ({naac})."
-            )
+                f"High capacity utilization ({utilization_pct:.1f}%) for {selected_branch_name or 'overall college'} "
+                f"driven by strong demand ratio ({apps/seats:.2f}x), placement rate ({placement}%), and NAAC grade ({naac})."
+            ),
+            # Branch-wise Extended Optional Summary
+            "predicted_total_college_enrollment": total_college_predicted_seats,
+            "total_college_sanctioned_seats": total_college_sanctioned_seats,
+            "branch_contribution_pct": contribution_pct,
+            "available_branches": [b["branch_name"] for b in college_branches],
+            "all_branch_forecasts": branch_forecasts
         }
 
 

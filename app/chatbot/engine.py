@@ -29,10 +29,10 @@ OUT_OF_SCOPE_TERMS = [
 ]
 
 DATASET_KEYWORDS = [
-    "vjti", "coep", "ict", "college", "student", "faculty", "placement",
+    "vjti", "coep", "ict", "spit", "pict", "walchand", "vnit", "college", "student", "faculty", "placement",
     "predict", "admission", "research", "finance", "budget", "complaint",
     "infrastructure", "scholarship", "report", "district", "top", "highest",
-    "lowest", "compare", "alert", "salary", "package", "hostel", "lab",
+    "lowest", "compare", "comparison", "vs", "versus", "difference", "alert", "salary", "package", "hostel", "lab",
     "classroom", "grant", "publication", "patent", "enrolled", "seat", "capacity",
     "require more", "shortage", "need more"
 ]
@@ -44,9 +44,11 @@ class ChatbotEngine:
         active_district = ctx.get("district", "Mumbai")
         q_lower = query.lower().strip()
 
-        # 1. Anti-hallucination out-of-scope check
+        # 1. Anti-hallucination out-of-scope check (using word boundaries so 'paris' doesn't match 'comparison')
+        import re
         is_general_edu = any(w in q_lower for w in ["engineering", "naac", "nirf", "degree", "diploma", "python", "c++", "ai", "machine learning"])
-        if any(term in q_lower for term in OUT_OF_SCOPE_TERMS) or (not is_general_edu and not any(kw in q_lower for kw in DATASET_KEYWORDS)):
+        is_out_of_scope = any(re.search(r'\b' + re.escape(term) + r'\b', q_lower) for term in OUT_OF_SCOPE_TERMS)
+        if is_out_of_scope or (not is_general_edu and not any(kw in q_lower for kw in DATASET_KEYWORDS)):
             return {"answer": "This information is not available in the current HTE database."}
 
         # 2. Intent classification & entity extraction

@@ -139,6 +139,7 @@ def predict_enrollment(request):
     data = request.data or {}
     college_name = data.get("college_name", "Veermata Jijabai Technological Institute (VJTI)")
     target_year = int(data.get("target_year", 2025))
+    branch_name = data.get("branch", None)
 
     custom_params = {
         "district": data.get("district", "Mumbai"),
@@ -155,7 +156,7 @@ def predict_enrollment(request):
     }
 
     try:
-        result = ml_predictor_service.predict(college_name, target_year, custom_params)
+        result = ml_predictor_service.predict(college_name, target_year, custom_params, branch_name=branch_name)
         return Response(result)
     except Exception as e:
         logger.error("Prediction error in Django: %s", e)
@@ -166,7 +167,7 @@ def predict_enrollment(request):
 @permission_classes([AllowAny])
 def ai_assistant_query(request):
     data = request.data or {}
-    query = data.get("query", "")
+    query = data.get("query") or data.get("message") or ""
     context = data.get("context", {})
     session_id = data.get("session_id", "default")
 

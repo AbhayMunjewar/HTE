@@ -70,7 +70,7 @@ export const AiAssistant: React.FC = () => {
         id: (Date.now() + 1).toString(),
         sender: 'ai',
         text: `### 📊 Executive Summary
-Based on original dataset analytics across 2,000 colleges and 612,450 students: **"${queryText}"** aligns with top NAAC A++ / A+ institutes in Maharashtra.
+Based on original dataset analytics across 3,726 colleges and 39,22,128 students: **"${queryText}"** aligns with top NAAC A++ / A+ institutes in Maharashtra.
 
 ### 🔍 Key Findings
 - **Target Institution**: Veermata Jijabai Technological Institute (VJTI)

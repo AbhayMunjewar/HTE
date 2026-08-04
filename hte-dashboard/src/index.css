@@ -108,3 +108,110 @@
     linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
 }
+
+/* Print Styles for Exporting Clean Official PDFs */
+@media print {
+  /* 1. Hide UI Navigation, Sidebars, Topbars, Footers, and Action Controls */
+  aside,
+  header,
+  footer,
+  nav,
+  .print\:hidden,
+  .pointer-events-none {
+    display: none !important;
+  }
+
+  /* 2. Reset Body, HTML and Layout for Full Page Document Printing */
+  html, body {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  div.flex.min-h-screen {
+    display: block !important;
+    min-height: 0 !important;
+    background: #ffffff !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .max-w-7xl {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 3. Printable Document Card Formatting */
+  .printable-document {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  /* Make dark container cards print with crisp light gray backgrounds and dark text */
+  .printable-document div,
+  .printable-document section,
+  .printable-document article {
+    box-shadow: none !important;
+  }
+
+  .printable-document .bg-slate-950,
+  .printable-document .bg-slate-900,
+  .printable-document .bg-slate-950\/80 {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+  }
+
+  .printable-document h1,
+  .printable-document h2,
+  .printable-document h3,
+  .printable-document h4,
+  .printable-document p,
+  .printable-document span,
+  .printable-document strong,
+  .printable-document li,
+  .printable-document div {
+    color: #0f172a !important;
+  }
+
+  /* Preserve Key Highlight Accent Colors in Print */
+  .printable-document .text-blue-400,
+  .printable-document .text-blue-300 {
+    color: #1d4ed8 !important;
+  }
+  .printable-document .text-emerald-400 {
+    color: #047857 !important;
+  }
+  .printable-document .text-amber-400,
+  .printable-document .text-amber-300 {
+    color: #b45309 !important;
+  }
+  .printable-document .text-purple-400,
+  .printable-document .text-purple-300 {
+    color: #6b21a8 !important;
+  }
+
+  /* Recharts SVGs should scale nicely on print */
+  .recharts-responsive-container {
+    width: 100% !important;
+  }
+
+  /* Clean page breaking */
+  .printable-document > div {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
+

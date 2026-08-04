@@ -6,3 +6,5 @@ dist/
 .DS_Store
 hte_platform.db
 *.log
+scratch*.py
+

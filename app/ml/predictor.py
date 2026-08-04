@@ -43,10 +43,10 @@ class MLPredictorService:
         except Exception as e:
             logger.error("Error loading ML Predictor: %s", e)
 
-    def predict(self, college_name: str, target_year: int = 2025, custom_params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def predict(self, college_name: str, target_year: int = 2025, custom_params: Optional[Dict[str, Any]] = None, branch_name: Optional[str] = None) -> Dict[str, Any]:
         if self.predictor is not None:
             try:
-                return self.predictor.predict_enrollment(college_name, target_year, custom_params)
+                return self.predictor.predict_enrollment(college_name, target_year, custom_params, branch_name=branch_name)
             except Exception as e:
                 logger.error("Prediction error: %s", e)
 
@@ -57,7 +57,7 @@ class MLPredictorService:
         pred_seats = int(round(seats * 0.98))
         seat_util = round((pred_seats / max(1, seats)) * 100, 1)
 
-        return {
+        result = {
             "college_name": college_name,
             "target_year": target_year,
             "admission_capacity": seats,
@@ -74,5 +74,14 @@ class MLPredictorService:
                 {"feature": "placement_reputation", "importance": 0.05, "direction": "Positive (+)", "impact": "High placement"}
             ]
         }
+
+        if branch_name:
+            result["selected_branch"] = branch_name
+            total_est = pred_seats * 5
+            result["predicted_total_college_enrollment"] = total_est
+            result["total_college_sanctioned_seats"] = seats * 5
+            result["branch_contribution_pct"] = round((pred_seats / max(1, total_est)) * 100.0, 1)
+
+        return result
 
 ml_predictor_service = MLPredictorService()
