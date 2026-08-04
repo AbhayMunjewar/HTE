@@ -524,10 +524,16 @@ export const Dashboard: React.FC = () => {
               <button
                 key={cName}
                 onClick={() => {
-                  const found = colleges.find(c => c.name.toLowerCase().includes(cName.toLowerCase()));
-                  if (found) handleSelectCollege(found);
+                  const keyword = cName.split(' ')[0].toLowerCase();
+                  const found = colleges.find(c => 
+                    c.name.toLowerCase().includes(keyword) || 
+                    c.id.toLowerCase().includes(keyword)
+                  );
+                  if (found) {
+                    handleSelectCollege(found);
+                  }
                 }}
-                className="text-[11px] font-bold text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-3 py-1 rounded-full border border-blue-500/20 transition-all"
+                className="text-[11px] font-bold text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-3 py-1 rounded-full border border-blue-500/20 transition-all cursor-pointer"
               >
                 {cName}
               </button>
