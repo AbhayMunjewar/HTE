@@ -8,6 +8,7 @@ from app.rag.retriever import RAGRetriever
 from app.rag.prompt import RAGPromptBuilder
 from app.rag.citation import CitationManager
 from app.rag.college_memory import college_memory
+from app.chatbot.ollama_client import OllamaClient
 from app.chatbot.groq_client import GroqClient
 
 class CollegeRAGService:
@@ -47,11 +48,43 @@ class CollegeRAGService:
         # 1. Update college memory
         college_memory.set_college(college_name)
 
-        # 2. Retrieve relevant document chunks from target college vector store
+        # 2. Strict Knowledge Isolation: Detect cross-college query attempt
+        KNOWN_COLLEGES = {
+            "vjti": "VJTI",
+            "coep": "COEP",
+            "spit": "SPIT",
+            "wce": "WCE (Walchand)",
+            "walchand": "WCE (Walchand)",
+            "ict": "ICT Mumbai",
+            "pict": "PICT Pune",
+            "vnit": "VNIT Nagpur"
+        }
+        q_lower = query.lower()
+        current_norm = college_name.lower().strip()
+
+        other_colleges_mentioned = [
+            name_disp for key, name_disp in KNOWN_COLLEGES.items()
+            if key in q_lower and key not in current_norm
+        ]
+
+        if other_colleges_mentioned:
+            target_other = other_colleges_mentioned[0]
+            refusal_msg = (
+                f"This assistant currently provides information only for **{college_name}**.\n\n"
+                f"Please return to the Colleges Directory and open the **{target_other}** Knowledge Assistant."
+            )
+            return {
+                "answer": refusal_msg,
+                "citations": [],
+                "college_name": college_name,
+                "confidence_score": 100
+            }
+
+        # 3. Retrieve relevant document chunks from target college vector store ONLY (Top 5)
         chunks_with_scores = self.retriever.retrieve(college_name, query, top_k=5)
         db_facts = self._get_db_dataset_facts(college_name)
 
-        # 3. If no document chunks found, fallback to SQLite Dataset facts!
+        # 4. Anti-Hallucination: If no document chunks found and no DB facts, return zero hallucination statement
         if not chunks_with_scores:
             if db_facts:
                 raw_answer = f"### 📄 Institutional Dataset Summary ({college_name})\n\nBased on official Maharashtra HTE database records:\n" + db_facts
@@ -63,7 +96,7 @@ class CollegeRAGService:
                     "confidence_score": 95
                 }
             else:
-                no_info_text = f"This information is not available in the uploaded documents or dataset for {college_name}."
+                no_info_text = f"This information is not available in the current HTE knowledge base for {college_name}."
                 return {
                     "answer": no_info_text,
                     "citations": [],
@@ -71,14 +104,14 @@ class CollegeRAGService:
                     "confidence_score": 0
                 }
 
-        # 4. Format citations
+        # 5. Format citations
         citations = CitationManager.format_citations(chunks_with_scores)
 
-        # 5. Build RAG Prompt combining document chunks + SQLite Dataset facts
+        # 6. Build RAG Prompt combining document chunks + SQLite Dataset facts
         prompt = RAGPromptBuilder.build_prompt(college_name, query, chunks_with_scores) + db_facts
 
-        # 6. Call Groq LLM for grounded answer synthesis
-        raw_answer = GroqClient.generate_response(user_query=query, grounded_facts=prompt)
+        # 7. Call Ollama LLM (qwen2.5:7b) for grounded answer synthesis
+        raw_answer = OllamaClient.generate_response(user_query=query, grounded_facts=prompt)
 
         if not raw_answer:
             # Smart grounded fallback extraction

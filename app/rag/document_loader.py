@@ -10,25 +10,46 @@ from typing import List, Dict, Any
 
 class DocumentLoader:
     def __init__(self, base_docs_dir: str = None):
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         if base_docs_dir is None:
-            # Default path relative to project root
-            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            self.base_docs_dir = os.path.join(base_dir, "documents")
+            self.search_dirs = [
+                os.path.join(base_dir, "college_data"),
+                os.path.join(base_dir, "documents")
+            ]
+            self.base_docs_dir = self.search_dirs[0]
         else:
+            self.search_dirs = [base_docs_dir]
             self.base_docs_dir = base_docs_dir
 
+    def discover_all_colleges(self) -> List[str]:
+        """Dynamically discovers all college folders present in college_data/ and documents/."""
+        colleges = set()
+        for s_dir in self.search_dirs:
+            if os.path.exists(s_dir):
+                for entry in os.listdir(s_dir):
+                    full_p = os.path.join(s_dir, entry)
+                    if os.path.isdir(full_p) and not entry.startswith('.'):
+                        colleges.add(entry)
+        return sorted(list(colleges))
+
     def list_college_documents(self, college_folder: str) -> List[str]:
-        """Returns list of all document file paths for a given college folder."""
-        college_dir = os.path.join(self.base_docs_dir, college_folder)
-        if not os.path.exists(college_dir):
-            return []
-        
-        supported_exts = ['*.txt', '*.pdf', '*.docx', '*.md']
+        """Returns list of all document file paths for a given college folder across all document directories."""
         doc_paths = []
-        for ext in supported_exts:
-            doc_paths.extend(glob.glob(os.path.join(college_dir, ext)))
-            doc_paths.extend(glob.glob(os.path.join(college_dir, "**", ext), recursive=True))
-        
+        supported_exts = ['*.txt', '*.pdf', '*.docx', '*.md']
+
+        for s_dir in self.search_dirs:
+            # Check exact match, lowercase match, or uppercase match
+            candidates = [
+                os.path.join(s_dir, college_folder),
+                os.path.join(s_dir, college_folder.upper()),
+                os.path.join(s_dir, college_folder.lower())
+            ]
+            for college_dir in candidates:
+                if os.path.exists(college_dir):
+                    for ext in supported_exts:
+                        doc_paths.extend(glob.glob(os.path.join(college_dir, ext)))
+                        doc_paths.extend(glob.glob(os.path.join(college_dir, "**", ext), recursive=True))
+
         return list(set(doc_paths))
 
     def load_document(self, file_path: str) -> Dict[str, Any]:

@@ -16,8 +16,21 @@ class DocumentIndexer:
     def __init__(self, base_docs_dir: str = None, base_index_dir: str = None):
         self.loader = DocumentLoader(base_docs_dir)
         self.parser = DocumentParser()
-        self.chunker = DocumentChunker(chunk_size=500, overlap=100)
+        # RAG Settings: Chunk Size 800 chars, Chunk Overlap 150 chars (~200 tokens / ~37 tokens)
+        self.chunker = DocumentChunker(chunk_size=200, overlap=37)
         self.base_index_dir = base_index_dir
+
+    def auto_index_all_colleges(self) -> List[str]:
+        """Discovers and auto-indexes all college folders present in the system."""
+        colleges = self.loader.discover_all_colleges()
+        indexed = []
+        for col in colleges:
+            try:
+                self.index_college(col)
+                indexed.append(col)
+            except Exception as e:
+                print(f"[DocumentIndexer] Warning auto-indexing {col}: {e}")
+        return indexed
 
     def index_college(self, college_name: str, force_reindex: bool = False) -> VectorStore:
         """Indexes or incrementally updates document vector store for a target college."""

@@ -16,6 +16,7 @@ from sqlalchemy.orm import Session
 from app.chatbot.intents import IntentClassifier
 from app.chatbot.memory import ConversationMemory
 from app.chatbot.router import ChatbotRouter
+from app.chatbot.ollama_client import OllamaClient
 from app.chatbot.groq_client import GroqClient
 from app.chatbot.formatter import ChatbotFormatter
 from app.database.engine import SessionLocal
@@ -44,17 +45,17 @@ class ChatbotEngine:
         active_district = ctx.get("district", "Mumbai")
         q_lower = query.lower().strip()
 
-        # 1. Anti-hallucination out-of-scope check (using word boundaries so 'paris' doesn't match 'comparison')
+        # 1. Anti-hallucination out-of-scope check
         import re
         is_general_edu = any(w in q_lower for w in ["engineering", "naac", "nirf", "degree", "diploma", "python", "c++", "ai", "machine learning"])
         is_out_of_scope = any(re.search(r'\b' + re.escape(term) + r'\b', q_lower) for term in OUT_OF_SCOPE_TERMS)
         if is_out_of_scope or (not is_general_edu and not any(kw in q_lower for kw in DATASET_KEYWORDS)):
-            return {"answer": "This information is not available in the current HTE database."}
+            return {"answer": "This information is not available in the current HTE knowledge base."}
 
         # 2. Intent classification & entity extraction
         intent = IntentClassifier.classify(query, ctx)
 
-        # 3. Contextual memory resolution (for follow-ups like "What about placements?")
+        # 3. Contextual memory resolution
         last_college = ConversationMemory.get_last_college(session_id)
         if intent["scope"] == "COLLEGE" and not intent["colleges"] and last_college:
             intent["colleges"].append(last_college)
@@ -79,8 +80,8 @@ class ChatbotEngine:
         grounded_facts = route_result.get("grounded_facts", "")
         hint = route_result.get("hint", "")
 
-        # 5. Call Groq LLM API or fallback to grounded facts
-        llm_response = GroqClient.generate_response(query, grounded_facts, hint)
+        # 5. Call Ollama LLM API (qwen2.5:7b) or fallback to grounded facts
+        llm_response = OllamaClient.generate_response(query, grounded_facts, hint)
         final_answer = llm_response if llm_response else ChatbotFormatter.format_fallback_response(grounded_facts)
 
         return {"answer": final_answer}

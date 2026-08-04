@@ -36,10 +36,11 @@ def create_app() -> FastAPI:
     def startup_event():
         logger.info("Initializing HTE Database Engine...")
         init_db(force=False)
-        logger.info("Auto-indexing College RAG Documents...")
+        logger.info("Auto-discovering and Indexing College RAG Documents...")
         try:
             indexer = DocumentIndexer()
-            indexer.index_college("COEP")
+            indexed_cols = indexer.auto_index_all_colleges()
+            logger.info(f"RAG Auto-Indexing complete for colleges: {indexed_cols}")
         except Exception as e:
             logger.warning(f"RAG Auto-Indexing warning: {e}")
 
