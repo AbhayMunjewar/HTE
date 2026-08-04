@@ -506,13 +506,42 @@ export const Dashboard: React.FC = () => {
         </button>
       </div>
 
-      {/* COLLEGE HEADER BANNER */}
-      {selectedCollege && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-blue-950 via-indigo-950 to-slate-950 rounded-2xl p-6 text-white shadow-2xl relative overflow-hidden border border-blue-500/30 glow-blue"
-        >
+      {/* SEARCH PLACEHOLDER WHEN NO COLLEGE IS SELECTED */}
+      {!selectedCollege ? (
+        <div className="bg-slate-900/60 backdrop-blur-xl rounded-2xl p-12 border border-slate-800 text-center space-y-4 shadow-2xl">
+          <div className="w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-500/30 text-blue-400 flex items-center justify-center mx-auto shadow-inner">
+            <Search className="w-8 h-8" />
+          </div>
+          <div className="max-w-md mx-auto space-y-2">
+            <h3 className="text-lg font-extrabold text-white">Search or Select an Institution</h3>
+            <p className="text-xs text-slate-400 font-medium leading-relaxed">
+              Use the search bar above or choose a college from the dropdown to inspect live institutional analytics, faculty data, placement records, and enrollment predictions.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+            <span className="text-[11px] font-bold text-slate-400">Quick Select:</span>
+            {['VJTI Mumbai', 'COEP Pune', 'ICT Mumbai', 'Walchand Sangli', 'SPIT Mumbai'].map(cName => (
+              <button
+                key={cName}
+                onClick={() => {
+                  const found = colleges.find(c => c.name.toLowerCase().includes(cName.toLowerCase()));
+                  if (found) handleSelectCollege(found);
+                }}
+                className="text-[11px] font-bold text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-3 py-1 rounded-full border border-blue-500/20 transition-all"
+              >
+                {cName}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* COLLEGE HEADER BANNER */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-blue-950 via-indigo-950 to-slate-950 rounded-2xl p-6 text-white shadow-2xl relative overflow-hidden border border-blue-500/30 glow-blue"
+          >
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 border border-blue-400/40 flex items-center justify-center text-white font-extrabold text-2xl shadow-xl shrink-0">
@@ -553,7 +582,6 @@ export const Dashboard: React.FC = () => {
           {/* ISOLATED COLLEGE RAG ASSISTANT */}
           <CollegeAssistantWidget collegeName={selectedCollege.name} />
         </motion.div>
-      )}
 
       {/* EXECUTIVE KPI CARDS */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-9 gap-3">
@@ -1244,8 +1272,9 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
         )}
-
       </div>
+      </>
+      )}
     </div>
   );
 };
