@@ -49,25 +49,25 @@ from sklearn.ensemble import (
 
 # Optional Advanced ML Packages
 try:
-    from xgboost import XGBRegressor
+    from xgboost import XGBRegressor  # type: ignore # noqa: F401
     XGBOOST_AVAILABLE = True
 except ImportError:
     XGBOOST_AVAILABLE = False
 
 try:
-    from lightgbm import LGBMRegressor
+    from lightgbm import LGBMRegressor  # type: ignore # noqa: F401
     LIGHTGBM_AVAILABLE = True
 except ImportError:
     LIGHTGBM_AVAILABLE = False
 
 try:
-    from catboost import CatBoostRegressor
+    from catboost import CatBoostRegressor  # type: ignore # noqa: F401
     CATBOOST_AVAILABLE = True
 except ImportError:
     CATBOOST_AVAILABLE = False
 
 try:
-    import shap
+    import shap  # type: ignore # noqa: F401
     SHAP_AVAILABLE = True
 except ImportError:
     SHAP_AVAILABLE = False
