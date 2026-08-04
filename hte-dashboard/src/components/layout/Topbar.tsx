@@ -31,11 +31,6 @@ export const Topbar: React.FC = () => {
           <Calendar className="w-3.5 h-3.5 text-blue-400" />
           <span>{format(new Date(), 'dd MMMM yyyy')}</span>
         </div>
-
-        <div className="flex items-center gap-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1.5 rounded-full text-xs font-bold shadow-sm">
-          <Sparkles className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-          <span>Live SQLite Sync Active</span>
-        </div>
       </div>
     </header>
   );
