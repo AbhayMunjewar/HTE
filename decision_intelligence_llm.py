@@ -14,6 +14,7 @@ Features:
 
 import os
 import sys
+import re
 import json
 import logging
 import urllib.request
