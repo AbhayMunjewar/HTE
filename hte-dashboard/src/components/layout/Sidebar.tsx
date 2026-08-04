@@ -68,19 +68,6 @@ export const Sidebar: React.FC = () => {
           </ul>
         </div>
       </nav>
-
-      {/* Footer Info Badge (Pinned to bottom) */}
-      <div className="mt-auto p-4 border-t border-slate-800/80 bg-slate-900/40 shrink-0">
-        <div className="flex items-center gap-3 bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 shadow-md">
-          <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-            <ShieldCheck className="w-4 h-4" />
-          </div>
-          <div className="flex flex-col min-w-0">
-            <span className="text-xs font-bold text-slate-200 truncate">Higher & Tech Edu</span>
-            <span className="text-[10px] text-emerald-400 font-semibold truncate">Govt. of Maharashtra</span>
-          </div>
-        </div>
-      </div>
     </aside>
   );
 };

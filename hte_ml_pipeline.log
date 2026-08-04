@@ -1,0 +1,46 @@
+2026-08-04 22:04:37,240 [INFO] HTE_Pipeline_v3 - Predictor loaded all v3.0 artifacts successfully.
+2026-08-04 22:04:37,240 [INFO] HTE_ML_Predictor - ML Predictor v3.0 initialized successfully.
+2026-08-04 22:04:38,230 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:04:38,230 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-04 22:04:38,232 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:04:38,778 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:04:38,779 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-04 22:04:38,779 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:04:53,875 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:04:53,875 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-04 22:04:53,877 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:04:54,430 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:04:54,430 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-04 22:04:54,430 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:04:58,777 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:04:58,777 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-04 22:04:58,777 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:04:59,296 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:04:59,296 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-04 22:04:59,296 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:13:55,462 [WARNING] HTE_Report_Service - Groq report synthesis failed or returned non-JSON, using structured fallback narrative: Expecting value: line 1 column 1 (char 0)
+2026-08-04 22:15:21,331 [WARNING] HTE_Report_Service - Groq report synthesis failed or returned non-JSON, using structured fallback narrative: Expecting value: line 1 column 1 (char 0)
+2026-08-04 22:17:37,096 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:17:37,096 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-04 22:17:37,096 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:17:37,577 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-04 22:17:37,577 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-04 22:17:37,577 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 00:01:21,046 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 00:01:21,048 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-05 00:01:21,048 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 00:01:21,532 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 00:01:21,532 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-05 00:01:21,532 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 00:02:49,171 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 00:02:49,171 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-05 00:02:49,171 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 00:02:49,551 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 00:02:49,559 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-05 00:02:49,559 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 00:03:12,033 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 00:03:12,033 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-05 00:03:12,033 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 00:03:12,490 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 00:03:12,490 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-05 00:03:12,490 [INFO] HTE_Pipeline_v3 - ============================================================
