@@ -13,12 +13,15 @@ class DocumentChunker:
         self.overlap_char_size = overlap * 4
 
     def chunk_blocks(self, blocks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Chunks structural blocks while preserving all required metadata."""
+        """Chunks structural blocks while preserving required metadata with max limit per doc."""
         all_chunks = []
         chunk_counter = 1
+        MAX_CHUNKS_PER_DOC = 250
 
         for block in blocks:
-            text = block["content"]
+            if chunk_counter > MAX_CHUNKS_PER_DOC:
+                break
+            text = block["content"][:1200]
             doc_name = block["document_name"]
             page_num = block["page_number"]
             heading = block["section_heading"]
@@ -33,9 +36,8 @@ class DocumentChunker:
                 })
                 chunk_counter += 1
             else:
-                # Sliding window chunking with overlap
                 start = 0
-                while start < len(text):
+                while start < len(text) and chunk_counter <= MAX_CHUNKS_PER_DOC:
                     end = start + self.chunk_char_size
                     chunk_text = text[start:end].strip()
 

@@ -70,20 +70,29 @@ class VectorStore:
 
         self.save_index()
 
-    def similarity_search(self, query_vector: np.ndarray, top_k: int = 5) -> List[Tuple[Dict[str, Any], float]]:
+    def similarity_search(self, query_vector, top_k: int = 5) -> List[Tuple[Dict[str, Any], float]]:
         """Performs cosine similarity search against indexed vector embeddings."""
         if self.embedding_matrix is None or len(self.chunks) == 0:
             return []
 
-        # Cosine similarity (since vectors are unit normalized, dot product = cosine similarity)
-        scores = np.dot(self.embedding_matrix, query_vector.T).flatten()
+        try:
+            from scipy import sparse
+            if sparse.issparse(self.embedding_matrix):
+                if sparse.issparse(query_vector):
+                    scores = self.embedding_matrix.dot(query_vector.T).toarray().flatten()
+                else:
+                    scores = self.embedding_matrix.dot(query_vector.T).flatten()
+            else:
+                scores = np.dot(self.embedding_matrix, query_vector.T).flatten()
+        except Exception:
+            return []
+
         top_indices = np.argsort(scores)[::-1][:top_k]
 
         results = []
         for idx in top_indices:
             score = float(scores[idx])
-            # Return candidates with similarity score > 0.05
-            if score > 0.02:
+            if score > 0.01:
                 results.append((self.chunks[idx], score))
 
         return results

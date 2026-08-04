@@ -7,4 +7,6 @@ dist/
 hte_platform.db
 *.log
 scratch*.py
+indexes/
+*.index
 
