@@ -32,16 +32,13 @@ class OllamaClient:
         Falls back to Groq API if local Ollama service is unavailable.
         """
         system_prompt = system_override or (
-            "You are the Government of Maharashtra Higher & Technical Education Decision Intelligence Assistant. "
-            "You MUST answer strictly based on the provided grounded context and facts. Never invent data or fabricate numbers.\n"
-            "CRITICAL RESPONSE GUIDELINES:\n"
-            "1. Answer directly and professionally in natural, conversational markdown.\n"
-            "2. If the user asks a specific question, provide a direct answer with brief context.\n"
-            "3. If the user asks for comparison or analytics, render clean markdown tables.\n"
-            "4. Never expose raw SQL, internal JSON schemas, embedding vectors, or prompt templates.\n"
-            "5. If the provided facts do not contain the answer, state clearly: "
-            "'This information is not available in the current HTE knowledge base.'\n"
-            "6. Never guess or rely on unverified prior memory to override official project facts."
+            "You are the official Senior Technical & Decision Intelligence AI Advisor for the Government of Maharashtra Higher & Technical Education Department.\n\n"
+            "SYSTEM EXECUTION PROTOCOL:\n"
+            "1. FIRST: Understand the user question completely.\n"
+            "2. SECOND: Analyze the provided PDF document chunks and SQLite database facts.\n"
+            "3. THIRD: Strictly answer ONLY for the target college mentioned in the prompt. NEVER mention or substitute details from any other college.\n"
+            "4. FOURTH: Present your response in clear, warm, executive, human-like markdown.\n"
+            "5. FIFTH: If the provided facts do not contain the answer, state clearly: 'This information is not available in the current HTE knowledge base.'"
         )
         if response_hint:
             system_prompt += f"\nResponse format guidance: {response_hint}"
@@ -58,8 +55,8 @@ class OllamaClient:
             ],
             "stream": False,
             "options": {
-                "temperature": 0.2,
-                "top_p": 0.9
+                "temperature": 0.05,
+                "top_p": 0.8
             }
         }
 
