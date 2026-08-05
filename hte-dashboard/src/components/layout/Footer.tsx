@@ -8,11 +8,9 @@ export const Footer: React.FC = () => {
           © {new Date().getFullYear()} Government of Maharashtra • Higher & Technical Education Department
         </div>
         <div className="flex items-center gap-4 text-slate-500">
-          <span>ExtraTrees ML v3.0</span>
+          <span>Official Government Portal</span>
           <span>•</span>
-          <span>Groq Llama-3.3-70B AI</span>
-          <span>•</span>
-          <span>SQLite ORM</span>
+          <span>Decision Support Engine</span>
         </div>
       </div>
     </footer>

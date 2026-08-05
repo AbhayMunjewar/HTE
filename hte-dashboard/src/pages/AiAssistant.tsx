@@ -133,7 +133,7 @@ Based on original dataset analytics across 3,726 colleges and 39,22,128 students
           </div>
           <div>
             <h3 className="font-extrabold text-white text-sm tracking-tight">HTE Decision Intelligence LLM Assistant</h3>
-            <p className="text-[11px] text-slate-400 font-medium">Powered by SQLite ORM & Groq Llama-3.3-70B</p>
+            <p className="text-[11px] text-slate-400 font-medium">Government Decision Intelligence Engine</p>
           </div>
         </div>
         <span className="flex items-center gap-1.5 text-xs text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20 shadow-sm">
