@@ -67,3 +67,4 @@
 2026-08-05 19:28:38,847 [INFO] HTE_Ollama_Client - Successfully generated response using Groq fallback.
 2026-08-05 19:29:08,419 [WARNING] HTE_Ollama_Client - Ollama API call error (http://localhost:11434/api/chat): timed out. Attempting Groq fallback...
 2026-08-05 19:29:09,565 [INFO] HTE_Ollama_Client - Successfully generated response using Groq fallback.
+2026-08-05 19:35:50,283 [WARNING] HTE_Report_Service - Groq report synthesis failed or returned non-JSON, using structured fallback narrative: Expecting value: line 1 column 1 (char 0)
