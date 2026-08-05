@@ -13,6 +13,7 @@ import {
 import { cn } from '../../lib/utils';
 
 const navItems = [
+  { icon: Landmark, label: 'Government Portal Home', path: '/' },
   { icon: LayoutDashboard, label: 'Executive Workspace', path: '/dashboard' },
   { icon: Building2, label: 'Colleges Directory', path: '/colleges' },
   { icon: Bot, label: 'AI Intelligence Assistant', path: '/ai-assistant' },

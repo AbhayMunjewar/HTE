@@ -41,3 +41,18 @@
 2026-08-05 18:25:21,885 [INFO] HTE_Pipeline_v3 - ============================================================
 2026-08-05 18:25:21,890 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
 2026-08-05 18:25:21,890 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 18:40:31,907 [WARNING] HTE_Ollama_Client - Ollama API call error (http://localhost:11434/api/chat): timed out. Attempting Groq fallback...
+2026-08-05 18:40:33,197 [INFO] HTE_Ollama_Client - Successfully generated response using Groq fallback.
+2026-08-05 18:41:10,067 [INFO] HTE_Ollama_Client - Successfully generated response using Ollama (qwen2.5:7b)
+2026-08-05 18:41:38,718 [INFO] HTE_Ollama_Client - Successfully generated response using Ollama (qwen2.5:7b)
+2026-08-05 18:42:23,274 [INFO] HTE_Ollama_Client - Successfully generated response using Ollama (qwen2.5:7b)
+2026-08-05 18:43:19,372 [WARNING] HTE_Ollama_Client - Ollama API call error (http://localhost:11434/api/chat): timed out. Attempting Groq fallback...
+2026-08-05 18:43:20,486 [INFO] HTE_Ollama_Client - Successfully generated response using Groq fallback.
+2026-08-05 18:44:38,128 [INFO] HTE_Ollama_Client - Successfully generated response using Ollama (qwen2.5:7b)
+2026-08-05 18:46:12,072 [INFO] HTE_Ollama_Client - Successfully generated response using Ollama (qwen2.5:7b)
+2026-08-05 18:52:10,911 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 18:52:10,911 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-05 18:52:10,911 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 18:59:17,247 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 18:59:17,254 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-05 18:59:17,254 [INFO] HTE_Pipeline_v3 - ============================================================
