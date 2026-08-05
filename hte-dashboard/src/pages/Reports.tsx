@@ -189,7 +189,6 @@ export const Reports: React.FC = () => {
           {[
             { id: 'state', label: 'Statewide Maharashtra Report', icon: Landmark },
             { id: 'district', label: 'District Performance Audit', icon: MapPin },
-            { id: 'college', label: 'Institutional Audit', icon: Building2 },
           ].map((tab) => {
             const IconComp = tab.icon;
             const active = reportType === tab.id;
@@ -210,7 +209,7 @@ export const Reports: React.FC = () => {
         </div>
 
         {/* Dropdown Filters Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-2 border-t border-slate-800/80">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 pt-2 border-t border-slate-800/80">
 
           {/* District Dropdown */}
           <div>
@@ -219,34 +218,12 @@ export const Reports: React.FC = () => {
               value={selectedDistrict}
               onChange={(e) => {
                 setSelectedDistrict(e.target.value);
-                if (reportType === 'state') setReportType('district');
+                setReportType('district');
               }}
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none"
             >
               {['Pune', 'Mumbai', 'Thane', 'Nagpur', 'Nashik', 'Aurangabad', 'Solapur', 'Kolhapur', 'Amravati', 'Sangli', 'Satara'].map((d) => (
                 <option key={d} value={d}>{d} District</option>
-              ))}
-            </select>
-          </div>
-
-          {/* College Dropdown */}
-          <div>
-            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Institution</label>
-            <select
-              value={selectedCollegeName}
-              onChange={(e) => {
-                setSelectedCollegeName(e.target.value);
-                setReportType('college');
-              }}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none"
-            >
-              <option value="College of Engineering Pune (COEP Technological University)">COEP Pune</option>
-              <option value="Veermata Jijabai Technological Institute (VJTI), Mumbai">VJTI Mumbai</option>
-              <option value="Walchand College of Engineering, Sangli">Walchand Sangli</option>
-              <option value="Government College of Engineering, Karad">GCOE Karad</option>
-              <option value="Sardar Patel Institute of Technology (SPIT), Mumbai">SPIT Mumbai</option>
-              {collegesList.map((c) => (
-                <option key={c.id} value={c.name}>{c.name.split(' (')[0]}</option>
               ))}
             </select>
           </div>

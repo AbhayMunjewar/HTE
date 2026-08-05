@@ -68,3 +68,33 @@
 2026-08-05 19:29:08,419 [WARNING] HTE_Ollama_Client - Ollama API call error (http://localhost:11434/api/chat): timed out. Attempting Groq fallback...
 2026-08-05 19:29:09,565 [INFO] HTE_Ollama_Client - Successfully generated response using Groq fallback.
 2026-08-05 19:35:50,283 [WARNING] HTE_Report_Service - Groq report synthesis failed or returned non-JSON, using structured fallback narrative: Expecting value: line 1 column 1 (char 0)
+2026-08-05 19:46:01,482 [ERROR] HTE_ML_Predictor - Prediction error: 'dict' object has no attribute 'lower'
+2026-08-05 19:46:15,921 [WARNING] HTE_Report_Service - Groq report synthesis failed or returned non-JSON, using structured fallback narrative: Expecting value: line 1 column 1 (char 0)
+2026-08-05 19:46:15,945 [ERROR] HTE_ML_Predictor - Prediction error: 'dict' object has no attribute 'lower'
+2026-08-05 19:46:25,741 [WARNING] HTE_Report_Service - Groq report synthesis failed or returned non-JSON, using structured fallback narrative: Expecting value: line 1 column 1 (char 0)
+2026-08-05 19:46:25,769 [ERROR] HTE_ML_Predictor - Prediction error: 'dict' object has no attribute 'lower'
+2026-08-05 20:06:50,104 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 20:06:50,104 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-05 20:06:50,104 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 20:07:26,977 [WARNING] HTE_Report_Service - Groq report synthesis failed or returned non-JSON, using structured fallback narrative: Unterminated string starting at: line 1 column 5537 (char 5536)
+2026-08-05 20:07:36,379 [WARNING] HTE_Report_Service - Groq report synthesis failed or returned non-JSON, using structured fallback narrative: Unterminated string starting at: line 1 column 4914 (char 4913)
+2026-08-05 20:07:54,247 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 20:07:54,247 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-05 20:07:54,247 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 20:07:57,797 [ERROR] HTE_ML_Predictor - Prediction error: 'dict' object has no attribute 'lower'
+2026-08-05 20:08:00,276 [WARNING] HTE_Report_Service - Groq report synthesis failed or returned non-JSON, using structured fallback narrative: Expecting value: line 1 column 1 (char 0)
+2026-08-05 20:08:00,325 [ERROR] HTE_ML_Predictor - Prediction error: 'dict' object has no attribute 'lower'
+2026-08-05 20:08:02,496 [WARNING] HTE_Report_Service - Groq report synthesis failed or returned non-JSON, using structured fallback narrative: Expecting value: line 1 column 1 (char 0)
+2026-08-05 20:08:11,413 [WARNING] HTE_Groq_Client - Groq API call error: HTTP Error 429: Too Many Requests
+2026-08-05 20:08:12,441 [WARNING] HTE_Groq_Client - Groq API call error: HTTP Error 429: Too Many Requests
+2026-08-05 20:08:12,743 [ERROR] HTE_ML_Predictor - Prediction error: 'dict' object has no attribute 'lower'
+2026-08-05 20:08:14,988 [WARNING] HTE_Report_Service - Groq report synthesis failed or returned non-JSON, using structured fallback narrative: Expecting value: line 1 column 1 (char 0)
+2026-08-05 20:08:35,080 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 20:08:35,082 [INFO] HTE_Pipeline_v3 - TASK 3: Feature Engineering (20+ Composite Features)
+2026-08-05 20:08:35,083 [INFO] HTE_Pipeline_v3 - ============================================================
+2026-08-05 20:08:39,483 [ERROR] HTE_ML_Predictor - Prediction error: 'dict' object has no attribute 'lower'
+2026-08-05 20:08:42,229 [WARNING] HTE_Report_Service - Groq report synthesis failed or returned non-JSON, using structured fallback narrative: Expecting value: line 1 column 1 (char 0)
+2026-08-05 20:08:42,278 [ERROR] HTE_ML_Predictor - Prediction error: 'dict' object has no attribute 'lower'
+2026-08-05 20:08:44,878 [WARNING] HTE_Report_Service - Groq report synthesis failed or returned non-JSON, using structured fallback narrative: Expecting value: line 1 column 1 (char 0)
+2026-08-05 20:09:58,213 [WARNING] HTE_Groq_Client - Groq API call error: HTTP Error 429: Too Many Requests
+2026-08-05 20:09:58,628 [WARNING] HTE_Groq_Client - Groq API call error: HTTP Error 429: Too Many Requests
