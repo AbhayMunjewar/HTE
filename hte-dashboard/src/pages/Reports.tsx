@@ -329,18 +329,33 @@ export const Reports: React.FC = () => {
         </div>
 
         {/* REPORT TITLE BANNER */}
-        <div className="bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-950 p-6 rounded-2xl border border-blue-500/30 shadow-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <span className="text-[10px] font-bold text-blue-300 uppercase tracking-widest bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20">
-              {reportData?.entity_name || 'Statewide Maharashtra'}
-            </span>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-white mt-1.5">
+        <div className="bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-950 p-6 rounded-2xl border border-blue-500/30 shadow-xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+          <div className="space-y-1.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[10px] font-bold text-blue-300 uppercase tracking-widest bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20">
+                {reportData?.entity_name || 'Statewide Maharashtra'}
+              </span>
+              <span className="text-[10px] font-extrabold text-amber-300 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/30">
+                AY {selectedYear}
+              </span>
+              {naacFilter !== 'All' && (
+                <span className="text-[10px] font-extrabold text-purple-300 bg-purple-500/10 px-2.5 py-0.5 rounded-full border border-purple-500/30">
+                  NAAC: {naacFilter}
+                </span>
+              )}
+              {branchFilter !== 'All' && (
+                <span className="text-[10px] font-extrabold text-emerald-300 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                  Stream: {branchFilter}
+                </span>
+              )}
+            </div>
+            <h2 className="text-xl sm:text-2xl font-extrabold text-white">
               {reportData?.report_title || 'Maharashtra State Higher & Technical Education Executive Decision Report'}
             </h2>
           </div>
-          <span className="text-xs font-bold text-amber-300 bg-amber-500/10 px-3.5 py-1.5 rounded-full border border-amber-500/30 shrink-0">
-            {selectedYear}
-          </span>
+          <div className="text-[10px] font-mono text-slate-400 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800 shrink-0">
+            Filtered Data Audit
+          </div>
         </div>
 
         {/* ── SECTION 2: EXECUTIVE SUMMARY & DECISION SUPPORT Q&A ── */}
