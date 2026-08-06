@@ -70,8 +70,8 @@ class ChatbotEngine:
         else:
             target_college = active_college
 
-        # If query is about a college, delegate to college_rag_service (handles Document RAG if docs exist, or Dataset Facts if no docs exist)
-        if target_college and (intent["scope"] == "COLLEGE" or any(kw in q_lower for kw in ["college", "institute", "university", "vjti", "coep", "ict", "spit", "pict", "walchand", "wce", "vnit"])):
+        # Delegate to college_rag_service (combines Document RAG from uploaded files AND Dataset Facts from SQLite database)
+        if target_college:
             try:
                 from app.rag.rag_service import college_rag_service
                 rag_res = college_rag_service.answer_college_query(target_college, query)

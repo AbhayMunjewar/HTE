@@ -67,15 +67,10 @@ class CollegeRAGService:
     def _get_placement_document_facts(self, college_name: str) -> str:
         """Reads key placement statistics lines for the target college without exceeding API limits."""
         import os
-        c_lower = college_name.lower()
-        folder = None
-        if "coep" in c_lower: folder = "COEP"
-        elif "vjti" in c_lower: folder = "VJTI"
-        elif "spit" in c_lower: folder = "SPIT"
-        elif "walchand" in c_lower or "wce" in c_lower: folder = "WCE"
-        
+        from app.rag.document_loader import DocumentLoader
+        folder = DocumentLoader.normalize_college_name(college_name)
         if not folder:
-            return ""
+            folder = college_name.strip()
 
         doc_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "documents", folder)
         if not os.path.exists(doc_dir):
