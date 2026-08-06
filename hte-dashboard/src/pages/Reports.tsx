@@ -62,50 +62,35 @@ export const Reports: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [reportType, setReportType] = useState<'state' | 'district' | 'college'>('state');
+  const [reportType, setReportType] = useState<'state' | 'district'>('state');
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const collegeParam = searchParams.get('college');
-    if (collegeParam) {
-      setReportType('college');
-      setSelectedCollegeName(collegeParam);
+    const districtParam = searchParams.get('district');
+    if (districtParam) {
+      setReportType('district');
+      setSelectedDistrict(districtParam);
     }
   }, [location.search]);
 
   const [selectedDistrict, setSelectedDistrict] = useState<string>('Pune');
-  const [selectedCollegeName, setSelectedCollegeName] = useState<string>('College of Engineering Pune');
   const [selectedYear, setSelectedYear] = useState<string>('2025-2026');
   const [naacFilter, setNaacFilter] = useState<string>('All');
   const [branchFilter, setBranchFilter] = useState<string>('All');
   const [categoryFilter, setCategoryFilter] = useState<string>('All');
 
-  const [collegesList, setCollegesList] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [reportData, setReportData] = useState<ReportData | null>(null);
-
-  // Fetch initial colleges list for dropdown
-  useEffect(() => {
-    fetch('http://localhost:8000/api/colleges?limit=150')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.colleges && data.colleges.length > 0) {
-          setCollegesList(data.colleges);
-        }
-      })
-      .catch((err) => console.warn('Colleges fetch error:', err));
-  }, []);
 
   // Automatically fetch initial report on mount and when type/targets change
   useEffect(() => {
     handleGenerateReport();
-  }, [reportType, selectedDistrict, selectedCollegeName, selectedYear]);
+  }, [reportType, selectedDistrict, selectedYear]);
 
   const handleGenerateReport = async () => {
     setLoading(true);
     let targetParam = '';
     if (reportType === 'district') targetParam = selectedDistrict;
-    if (reportType === 'college') targetParam = selectedCollegeName;
 
     try {
       const res = await fetch('http://localhost:8000/api/reports/generate', {
@@ -189,14 +174,13 @@ export const Reports: React.FC = () => {
           {[
             { id: 'state', label: 'Statewide Maharashtra Report', icon: Landmark },
             { id: 'district', label: 'District Performance Audit', icon: MapPin },
-            { id: 'college', label: 'College Executive Report', icon: Building2 },
           ].map((tab) => {
             const IconComp = tab.icon;
             const active = reportType === tab.id;
             return (
               <button
                 key={tab.id}
-                onClick={() => setReportType(tab.id as any)}
+                onClick={() => setReportType(tab.id as 'state' | 'district')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-extrabold transition-all ${active
                     ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 border border-blue-400/40'
                     : 'bg-slate-950 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-slate-800'
@@ -212,30 +196,9 @@ export const Reports: React.FC = () => {
         {/* Dropdown Filters Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 pt-2 border-t border-slate-800/80">
 
-          {/* College Dropdown */}
-          <div>
-            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Target College</label>
-            <select
-              value={selectedCollegeName}
-              onChange={(e) => {
-                setSelectedCollegeName(e.target.value);
-                setReportType('college');
-              }}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none"
-            >
-              <option value="College of Engineering Pune">COEP Pune</option>
-              <option value="Veermata Jijabai Technological Institute">VJTI Mumbai</option>
-              <option value="Walchand College of Engineering">WCE Sangli</option>
-              <option value="Sardar Patel Institute of Technology">SPIT Mumbai</option>
-              {collegesList.map((c) => (
-                <option key={c.college_id} value={c.college_name}>{c.college_name}</option>
-              ))}
-            </select>
-          </div>
-
           {/* District Dropdown */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">District</label>
+            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Target District</label>
             <select
               value={selectedDistrict}
               onChange={(e) => {
@@ -250,7 +213,7 @@ export const Reports: React.FC = () => {
             </select>
           </div>
 
-          {/* Year Filter */}
+          {/* Academic Year */}
           <div>
             <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Academic Year</label>
             <select
@@ -317,7 +280,7 @@ export const Reports: React.FC = () => {
           </div>
 
           {/* Generate Button */}
-          <div className="flex items-end sm:col-span-2 md:col-span-1">
+          <div className="flex items-end">
             <button
               onClick={handleGenerateReport}
               disabled={loading}
