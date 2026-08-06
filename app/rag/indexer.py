@@ -34,8 +34,9 @@ class DocumentIndexer:
 
     def index_college(self, college_name: str, force_reindex: bool = False) -> VectorStore:
         """Indexes or incrementally updates document vector store for a target college."""
-        vector_store = VectorStore(college_name, self.base_index_dir)
-        doc_paths = self.loader.list_college_documents(college_name)
+        norm_name = DocumentLoader.normalize_college_name(college_name)
+        vector_store = VectorStore(norm_name, self.base_index_dir)
+        doc_paths = self.loader.list_college_documents(norm_name)
 
         if not doc_paths:
             return vector_store

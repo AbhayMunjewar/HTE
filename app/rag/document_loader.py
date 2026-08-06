@@ -32,15 +32,31 @@ class DocumentLoader:
                         colleges.add(entry)
         return sorted(list(colleges))
 
+    @staticmethod
+    def normalize_college_name(college_name: str) -> str:
+        if not college_name:
+            return ""
+        cn = college_name.lower().strip()
+        if "walchand" in cn or "wce" in cn: return "WCE"
+        if "coep" in cn or "jijabai" not in cn and "pune" in cn and "engineering" in cn: return "COEP"
+        if "vjti" in cn or "jijabai" in cn: return "VJTI"
+        if "spit" in cn or "sardar patel" in cn: return "SPIT"
+        if "ict" in cn or "chemical" in cn: return "ICT"
+        if "pict" in cn: return "PICT"
+        if "vnit" in cn or "visvesvaraya" in cn: return "VNIT"
+        return college_name
+
     def list_college_documents(self, college_folder: str) -> List[str]:
         """Returns list of all document file paths for a given college folder across all document directories."""
+        norm_folder = self.normalize_college_name(college_folder)
         doc_paths = []
         supported_exts = ['*.txt', '*.pdf', '*.docx', '*.md']
 
         for s_dir in self.search_dirs:
-            # Check exact match, lowercase match, or uppercase match
+            # Check exact match, normalized match, lowercase match, or uppercase match
             candidates = [
                 os.path.join(s_dir, college_folder),
+                os.path.join(s_dir, norm_folder),
                 os.path.join(s_dir, college_folder.upper()),
                 os.path.join(s_dir, college_folder.lower())
             ]

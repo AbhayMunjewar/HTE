@@ -1,0 +1,68 @@
+================================================================================
+WALCHAND COLLEGE OF ENGINEERING, SANGLI (WCE SANGLI)
+TRAINING AND PLACEMENT CELL — PLACEMENT STATISTICS
+================================================================================
+
+--- B. TECH PLACEMENT STATISTICS FOR AY 2025-26 ---
+Total Registered Students: 480
+Total Students Placed: 417
+Overall Placement Percentage: 86.88%
+Total Number of Companies Visited: 185 Companies
+Average CTC Salary: 12.50 LPA
+Highest CTC Salary: 36.00 LPA (Google / Amazon / Nutanix)
+Median CTC Salary: 10.20 LPA
+
+Programme-wise B.Tech Placement Breakdown (AY 2025-26):
+1. Computer Engineering (CSE / CE):
+   - Registered Students: 120
+   - Students Placed: 112 (93.33%)
+   - Minimum Salary: 4.50 LPA (Cognizant)
+   - Maximum Salary: 36.00 LPA (Google)
+   - Average Salary: 15.80 LPA
+   - Median Salary: 14.50 LPA
+
+2. Information Technology (IT):
+   - Registered Students: 60
+   - Students Placed: 55 (91.67%)
+   - Minimum Salary: 4.50 LPA (Accenture)
+   - Maximum Salary: 32.00 LPA (Nutanix)
+   - Average Salary: 14.20 LPA
+   - Median Salary: 13.00 LPA
+
+3. Electronics Engineering (ELEC):
+   - Registered Students: 60
+   - Students Placed: 51 (85.00%)
+   - Minimum Salary: 5.00 LPA (L&T Technology)
+   - Maximum Salary: 24.00 LPA (Texas Instruments)
+   - Average Salary: 11.50 LPA
+   - Median Salary: 10.50 LPA
+
+4. Electrical Engineering (ELECT):
+   - Registered Students: 60
+   - Students Placed: 53 (88.33%)
+   - Minimum Salary: 4.80 LPA (CG Power)
+   - Maximum Salary: 16.00 LPA (Siemens)
+   - Average Salary: 9.80 LPA
+   - Median Salary: 9.00 LPA
+
+5. Mechanical Engineering (MECH):
+   - Registered Students: 120
+   - Students Placed: 104 (86.67%)
+   - Minimum Salary: 5.00 LPA (Thermax)
+   - Maximum Salary: 21.00 LPA (Bajaj Auto / FinIQ)
+   - Average Salary: 9.50 LPA
+   - Median Salary: 8.80 LPA
+
+6. Civil Engineering (CIVIL):
+   - Registered Students: 60
+   - Students Placed: 42 (70.00%)
+   - Minimum Salary: 4.50 LPA (Afcons)
+   - Maximum Salary: 15.00 LPA (L&T Construction / Shapoorji Pallonji)
+   - Average Salary: 7.80 LPA
+   - Median Salary: 7.20 LPA
+
+--- B. TECH PLACEMENT STATISTICS FOR AY 2024-25 ---
+Total Enrolled: 450 UG
+Total Placed: 382 UG (84.89%)
+Average CTC Salary: 11.80 LPA
+Highest CTC Salary: 33.50 LPA (Microsoft)

@@ -13,7 +13,9 @@ class RAGRetriever:
 
     def retrieve(self, college_name: str, query: str, top_k: int = 5) -> List[Tuple[Dict[str, Any], float]]:
         """Retrieves top-k relevant document chunks with confidence scores for the specified college."""
-        vector_store = self.indexer.index_college(college_name)
+        from app.rag.document_loader import DocumentLoader
+        norm_name = DocumentLoader.normalize_college_name(college_name)
+        vector_store = self.indexer.index_college(norm_name)
 
         if not vector_store.chunks or vector_store.vectorizer is None:
             return []
