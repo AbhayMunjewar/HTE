@@ -23,6 +23,7 @@ import {
   BarChart3,
   PieChart as PieIcon,
   Cpu,
+  Zap,
   Layers,
   ArrowUpRight
 } from 'lucide-react';
@@ -331,8 +332,8 @@ export const Reports: React.FC = () => {
           </span>
         </div>
 
-        {/* ── SECTION 2: EXECUTIVE SUMMARY ── */}
-        <div className="bg-slate-950/80 p-6 rounded-2xl border border-slate-800 space-y-3">
+        {/* ── SECTION 2: EXECUTIVE SUMMARY & DECISION SUPPORT Q&A ── */}
+        <div className="bg-slate-950/80 p-6 rounded-2xl border border-slate-800 space-y-4">
           <h3 className="text-xs font-extrabold text-amber-400 uppercase tracking-wider flex items-center gap-2">
             <Bot className="w-4 h-4 text-amber-400" />
             Executive Summary (AI Synthesized from Empirical SQLite Dataset)
@@ -340,6 +341,68 @@ export const Reports: React.FC = () => {
           <p className="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed">
             {reportData?.executive_summary || 'Loading executive synthesis...'}
           </p>
+
+          {/* 3 Core Policy Questions Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-3 border-t border-slate-800/80">
+            <div className="bg-slate-900/90 p-4 rounded-xl border border-blue-500/30 space-y-1.5">
+              <span className="text-[9px] font-black uppercase tracking-widest text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+                1. What is the current situation?
+              </span>
+              <p className="text-xs text-slate-200 font-semibold leading-relaxed">
+                {reportData?.government_qna?.situation || reportData?.statistics?.government_qna?.situation || `Active monitoring across institutions serving ${stats.total_students?.toLocaleString() || '39,22,128'} students with student-faculty ratio of ${stats.student_faculty_ratio || '17.3'}:1.`}
+              </p>
+            </div>
+
+            <div className="bg-slate-900/90 p-4 rounded-xl border border-rose-500/30 space-y-1.5">
+              <span className="text-[9px] font-black uppercase tracking-widest text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
+                2. What problems exist?
+              </span>
+              <p className="text-xs text-slate-200 font-semibold leading-relaxed">
+                {reportData?.government_qna?.problems || reportData?.statistics?.government_qna?.problems || "Core engineering branch placement rates lag computer specializations, and faculty vacancies require targeted recruitment."}
+              </p>
+            </div>
+
+            <div className="bg-slate-900/90 p-4 rounded-xl border border-emerald-500/30 space-y-1.5">
+              <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                3. What actions should HTE take?
+              </span>
+              <p className="text-xs text-slate-200 font-semibold leading-relaxed">
+                {reportData?.government_qna?.actions || reportData?.statistics?.government_qna?.actions || "Authorize immediate faculty recruitment, expand AI/DS sanctioned intake, and allocate target R&D infrastructure grants."}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* ── SECTION: EXECUTIVE RISK ANALYSIS & VULNERABILITY AUDIT ── */}
+        <div className="space-y-3">
+          <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-rose-400" /> Executive Risk Analysis & Vulnerability Audit
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {(reportData?.risk_analysis || reportData?.statistics?.risk_analysis || [
+              { level: 'High Risk', category: 'Faculty Shortage', title: 'Faculty Vacancy & Cadre Imbalance', impact: 'Regional institutes face vacant faculty positions in emerging streams.', action: 'Initiate state recruitment drive.' },
+              { level: 'Medium Risk', category: 'Placement Disparity', title: 'Core Stream Placement Lag', impact: 'Civil and Mechanical streams show lower placement compensation compared to CSE/IT.', action: 'Mandate 6-month corporate co-op internships.' },
+              { level: 'Low Risk', category: 'Infrastructure', title: 'Hostel Accommodation Limits', impact: 'High hostel occupancy restricts expanding outstation admissions.', action: 'Sanction DTE budget for 300-bed hostel blocks.' }
+            ]).map((rk: any, idx: number) => {
+              const isHigh = rk.level?.includes('High');
+              const isMed = rk.level?.includes('Medium');
+              return (
+                <div key={idx} className={`bg-slate-950 p-4 rounded-2xl border ${isHigh ? 'border-rose-500/40' : isMed ? 'border-amber-500/40' : 'border-blue-500/40'} space-y-2`}>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full border ${isHigh ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' : isMed ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' : 'bg-blue-500/20 text-blue-300 border-blue-500/30'}`}>
+                      {rk.level}
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">{rk.category}</span>
+                  </div>
+                  <h4 className="text-xs font-bold text-white mt-1">{rk.title}</h4>
+                  <p className="text-[11px] text-slate-300 font-medium leading-relaxed">{rk.impact}</p>
+                  <div className="pt-2 border-t border-slate-800/80 text-[10px] font-semibold text-amber-300 flex items-center gap-1">
+                    <span>👉 Action:</span> {rk.action}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* ── SECTION 3: KEY PERFORMANCE INDICATORS (KPI CARDS) ── */}
