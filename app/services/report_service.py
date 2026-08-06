@@ -285,6 +285,17 @@ class ReportService:
 
         scholarships = db.query(func.count(Student.student_id)).filter(Student.college_id.in_(college_ids), Student.scholarship == "Yes").scalar() or int(total_students * 0.3)
 
+        # Sort colleges so flagship engineering institutes (COEP, VJTI, WCE, ICT, SPIT, PICT, VNIT) and A++/A+ colleges appear first
+        flagship_ids = ['COL0001', 'COL0002', 'COL0003', 'COL0004', 'COL0005', 'COL0006', 'COL1950']
+        colleges_sorted = sorted(
+            colleges_query,
+            key=lambda c: (
+                0 if c.college_id in flagship_ids else 1,
+                0 if (c.naac_grade or "").strip() in ["A++", "A+"] else 1,
+                -(c.total_students or 0)
+            )
+        )
+
         college_list = [
             {
                 "id": c.college_id,
@@ -295,7 +306,7 @@ class ReportService:
                 "students": int((c.total_students or 0) * year_multiplier),
                 "faculty": int((c.total_faculty or 0) * year_multiplier)
             }
-            for c in colleges_query[:10]
+            for c in colleges_sorted[:10]
         ]
 
         # NAAC Distribution for District
@@ -313,53 +324,87 @@ class ReportService:
             {"year": "2026 (Est)", "students": int(total_students * 1.08)},
         ]
 
-        # Risk Analysis (Categorized High / Medium / Low)
-        risk_analysis = [
-            {
+        top_college_name = college_list[0]["name"] if college_list else f"{district_name} Main Institute"
+        sfr = round(total_students / max(1, total_faculty), 1)
+        b_count = sum(1 for c in colleges_query if (c.naac_grade or "").strip() in ["C", "B", "Unaccredited", ""])
+
+        # Dynamic District Risk Analysis based on empirical database facts
+        risk_analysis = []
+        if placement_rate < 75.0:
+            risk_analysis.append({
+                "level": "High Risk",
+                "category": "Employment Conversion",
+                "title": f"Placement Conversion Deficit in {district_name} ({placement_rate}%)",
+                "impact": f"Overall placement rate in {district_name} stands at {placement_rate}%, with unplaced graduates requiring immediate intervention.",
+                "action": f"Deploy mandatory regional corporate placement bootcamps for {district_name} institutes."
+            })
+        else:
+            risk_analysis.append({
+                "level": "Medium Risk",
+                "category": "Placement Disparity",
+                "title": f"Core Stream Compensation Gap in {district_name}",
+                "impact": f"While overall placement rate is {placement_rate}%, peak salary package ({max_ctc} LPA) is concentrated in software/IT programs.",
+                "action": f"Establish 6-month corporate co-op internships for Civil & Mechanical branches in {district_name}."
+            })
+
+        if sfr > 17.5:
+            risk_analysis.append({
                 "level": "High Risk",
                 "category": "Faculty Shortage",
-                "title": f"Faculty Cadre Shortages in {district_name} District",
-                "impact": f"Key departments across {district_name} colleges require expedited faculty hiring to preserve NBA accreditation and research standards.",
-                "action": f"Sanction regional faculty recruitment drive for {district_name} District institutions."
-            },
-            {
+                "title": f"Faculty Cadre Overload in {district_name} ({sfr}:1 SFR)",
+                "impact": f"{district_name} operates with a student-faculty ratio of {sfr}:1 across {total_faculty:,} approved faculty positions.",
+                "action": f"Sanction expedited recruitment drive for vacant faculty positions in {district_name} colleges."
+            })
+        else:
+            risk_analysis.append({
                 "level": "Medium Risk",
-                "category": "Placement Lag",
-                "title": "Non-IT & Core Stream Placement Gap",
-                "impact": f"Core engineering placements in {district_name} District show lower recruiter conversion compared to Computer/IT programs.",
-                "action": "Deploy regional placement bootcamps and 6-month industry co-op internships."
-            },
-            {
+                "category": "Faculty Qualification",
+                "title": f"Ph.D. Qualification Expansion in {district_name}",
+                "impact": f"Faculty cadre across {total_colleges} colleges in {district_name} requires expanded Ph.D. research guides.",
+                "action": f"Sponsor QIP Ph.D. fellowships for junior faculty members in {district_name}."
+            })
+
+        if b_count > 0:
+            risk_analysis.append({
+                "level": "Medium Risk",
+                "category": "NAAC Accreditation",
+                "title": f"Accreditation Mentoring Deficit ({b_count} Institutes)",
+                "impact": f"{b_count} out of {total_colleges} institutions in {district_name} require NAAC grade upgrades.",
+                "action": f"Assign NAAC mentoring taskforce led by {top_college_name} to assist unaccredited colleges."
+            })
+        else:
+            risk_analysis.append({
                 "level": "Low Risk",
                 "category": "Infrastructure",
-                "title": "Hostel Accommodation Margins",
-                "impact": f"Hostel occupancy in {district_name} campus hubs restricts expanding outstation admissions.",
-                "action": "Sanction 300-bed student hostel expansion under DTE infrastructure budget."
-            }
-        ]
+                "title": f"Campus Amenities & Hostel Expansion in {district_name}",
+                "impact": f"High campus hostel occupancy restrictions in {district_name} limit outstation student intake margins.",
+                "action": f"Sanction DTE capital grant for 300-bed student hostel block in {district_name}."
+            })
 
+        # Dynamic District Action Plan
         action_plan = {
             "immediate_0_6m": [
-                f"Issue recruitment notifications for vacant faculty positions in {district_name} colleges.",
-                "Upgrade departmental laboratories into smart AI learning centers.",
-                "Launch industry placement training bootcamps."
+                f"Issue recruitment notifications for vacant faculty positions across {total_colleges} colleges in {district_name}.",
+                f"Launch pre-placement corporate training bootcamps starting at {top_college_name}.",
+                f"Upgrade 8 departmental laboratories into smart AI learning centers in {district_name}."
             ],
             "medium_term_6_18m": [
-                f"Construct 300-bed modern student hostel facility in {district_name}.",
-                "Establish Regional Interdisciplinary R&D Incubation Hub.",
-                "Execute MoUs with 15 regional manufacturing & core industry partners."
+                f"Construct 300-bed modern student hostel facility in {district_name} to expand outstation admissions.",
+                f"Establish Regional Interdisciplinary R&D Incubation Hub linked with {top_college_name}.",
+                f"Execute MoUs with regional manufacturing & core industry partners for 6-month internships."
             ],
             "long_term_18m_plus": [
-                f"Achieve 80%+ Ph.D. faculty ratio across all {district_name} District institutes.",
-                "Elevate regional college rankings in NIRF India Engineering list.",
-                "File for Tier-1 NBA accreditation across undergraduate programs."
+                f"Achieve 85%+ placement conversion rate and 80%+ Ph.D. faculty ratio across {district_name} District.",
+                f"Elevate {top_college_name} and top district institutes in NIRF India Engineering list.",
+                f"File for Tier-1 NBA accreditation across B.Tech programs in {district_name}."
             ]
         }
 
+        # Dynamic District Government Q&A
         government_qna = {
-            "situation": f"{district_name} District monitors {total_colleges} institutions serving {total_students:,} students with a student-faculty ratio of {round(total_students/max(1, total_faculty), 1)}:1.",
-            "problems": f"Faculty vacancies in regional colleges and non-IT placement rate gaps require administrative intervention.",
-            "actions": f"Deploy targeted infrastructure grants, authorize faculty hiring, and mandate corporate internships in {district_name}."
+            "situation": f"{district_name} District currently monitors {total_colleges} higher & technical education institutions serving {total_students:,} enrolled students and {total_faculty:,} faculty members (Student-Faculty Ratio: {sfr}:1). Top district institutions include {top_college_name}.",
+            "problems": f"Average placement success rate in {district_name} stands at {placement_rate}% (highest package ₹{max_ctc} LPA). Key challenges include core branch salary gaps and accreditation mentoring for {b_count} lower-tier institutes.",
+            "actions": f"Targeted policy actions for {district_name}: 1. Launch regional placement co-op internships, 2. Fast-track faculty hiring for {total_faculty} sanctioned cadre, 3. Sanction DTE R&D labs grant."
         }
 
         computed_stats = {
@@ -1065,30 +1110,33 @@ class ReportService:
         p_rate = computed_stats.get('placement_rate_pct', 78.5)
         sf_ratio = computed_stats.get('student_faculty_ratio', 18.0)
         s_bens = computed_stats.get('scholarship_beneficiaries', 0)
-        
+        d_name = computed_stats.get('district', entity_name)
+        top_c = computed_stats.get('colleges', [{}])[0].get('name', 'Main Institute') if computed_stats.get('colleges') else 'Top Regional Institutions'
+        max_pkg = computed_stats.get('highest_package_lpa', 48.0)
+
         return {
-            "executive_summary": f"This executive decision intelligence report presents empirical analysis for {entity_name}. Performance data is aggregated across {t_colleges} institutions, encompassing {t_students:,} enrolled students, with a placement rate of {p_rate}% to support evidence-based governance.",
+            "executive_summary": f"This executive decision intelligence report presents empirical analysis for {entity_name}. Higher education indicators in {d_name} are aggregated across {t_colleges} active institutions serving {t_students:,} enrolled students, achieving an overall placement conversion rate of {p_rate}% (highest CTC package: ₹{max_pkg} LPA). Key regional academic anchors include {top_c}.",
             "key_findings": [
-                f"Overall placement rate stands at {p_rate}% with strong demand in technical streams.",
-                f"Student-to-faculty ratio is maintained at {sf_ratio}:1.",
-                f"A total of {s_bens:,} students benefited from scholarships and financial aid initiatives."
+                f"Overall placement conversion in {d_name} stands at {p_rate}% with highest compensation reaching ₹{max_pkg} LPA.",
+                f"Student-to-faculty ratio across {d_name} colleges is maintained at {sf_ratio}:1 ({s_bens:,} scholarship beneficiaries).",
+                f"Top performing institutional anchors in {d_name} include {top_c}."
             ],
             "strengths": [
-                f"Strong academic network comprising {t_colleges} institutions serving {t_students:,} students.",
-                f"High regional employment conversion with {p_rate}% overall placement success."
+                f"Established academic network comprising {t_colleges} institutions serving {t_students:,} students in {d_name}.",
+                f"Regional technical talent pipeline anchored by flagship institutes like {top_c}."
             ],
             "weaknesses": [
-                "Core branch placement rates lag behind Computer & IT specializations.",
-                "Post-graduate research seed funding requires continuous expansion."
+                f"Core engineering placement rates in {d_name} lag software specializations.",
+                f"Faculty cadre vacancy bottlenecks require expedited recruitment in {d_name} regional centers."
             ],
             "ai_insights": [
-                "Predictive ML modeling indicates high seat utilization for upcoming admissions.",
-                "Mandatory NEP 2020 curriculum updates will boost non-core branch employability."
+                f"Predictive ML modeling indicates high seat utilization in {d_name} for upcoming admissions.",
+                f"Implementing 6-month corporate co-op internships will boost non-IT branch employability in {d_name}."
             ],
             "recommendations": [
-                "Establish department-specific placement bootcamps starting from 3rd semester.",
-                "Expand 6-month corporate co-op internships under AICTE guidelines.",
-                "Sponsor faculty Ph.D. upgrades and high-impact Q1/Q2 journal publications."
+                f"Establish department-specific placement bootcamps in {d_name} starting from 3rd semester.",
+                f"Expand 6-month corporate co-op internships under AICTE guidelines in {d_name} colleges.",
+                f"Sponsor faculty Ph.D. upgrades and high-impact research publications across {d_name} institutes."
             ],
-            "conclusion": f"The higher education indicators for {entity_name} demonstrate steady progress across its {t_colleges} institutions. Implementation of targeted policy recommendations will accelerate NIRF ranking and overall academic excellence."
+            "conclusion": f"The higher education indicators for {d_name} demonstrate strong academic performance across its {t_colleges} institutions led by {top_c}. Implementation of targeted policy recommendations will accelerate NIRF rankings and regional development."
         }
