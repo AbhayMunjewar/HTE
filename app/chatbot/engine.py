@@ -70,6 +70,16 @@ class ChatbotEngine:
         else:
             target_college = active_college
 
+        # If query is about a college, delegate to college_rag_service (handles Document RAG if docs exist, or Dataset Facts if no docs exist)
+        if target_college and (intent["scope"] == "COLLEGE" or any(kw in q_lower for kw in ["college", "institute", "university", "vjti", "coep", "ict", "spit", "pict", "walchand", "wce", "vnit"])):
+            try:
+                from app.rag.rag_service import college_rag_service
+                rag_res = college_rag_service.answer_college_query(target_college, query)
+                if rag_res and rag_res.get("answer"):
+                    return {"answer": rag_res["answer"]}
+            except Exception as e:
+                logger.warning(f"College RAG service failed in engine: {e}")
+
         # 4. Route query to SQL database / analytics engine
         db: Session = SessionLocal()
         try:
@@ -80,7 +90,7 @@ class ChatbotEngine:
         grounded_facts = route_result.get("grounded_facts", "")
         hint = route_result.get("hint", "")
 
-        # 5. Call Ollama LLM API (qwen2.5:7b) or fallback to grounded facts
+        # 5. Call Ollama/Groq LLM API or fallback to grounded facts
         llm_response = OllamaClient.generate_response(query, grounded_facts, hint)
         final_answer = llm_response if llm_response else ChatbotFormatter.format_fallback_response(grounded_facts)
 
