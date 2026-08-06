@@ -302,6 +302,9 @@ def generate_report_view(request):
     naac = data.get("naac", "All")
     branch = data.get("branch", "All")
 
+    print(f"=== GENERATE_REPORT_VIEW CALLED ===", flush=True)
+    print(f"  type={report_type}, target='{target}', year='{year}', naac='{naac}', branch='{branch}'", flush=True)
+
     db = SessionLocal()
     try:
         if report_type == "district":

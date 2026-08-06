@@ -39,7 +39,8 @@ class ReportService:
             college_query = college_query.filter(College.district.ilike(f"%{district}%"))
 
         if naac and naac not in ["All", "All NAAC Grades", ""]:
-            college_query = college_query.filter(College.naac_grade == naac)
+            clean_naac = naac.replace("Grade", "").strip()
+            college_query = college_query.filter(func.trim(College.naac_grade) == clean_naac)
 
         colleges = college_query.all()
         total_colleges = len(colleges)
@@ -47,39 +48,43 @@ class ReportService:
         base_students = sum(c.total_students or 0 for c in colleges)
         base_faculty = sum(c.total_faculty or 0 for c in colleges)
 
-        # If strict filter yields 0, query all matching without crashing
-        if total_colleges == 0:
-            colleges = db.query(College).all()
-            total_colleges = len(colleges)
-            base_students = sum(c.total_students or 0 for c in colleges)
-            base_faculty = sum(c.total_faculty or 0 for c in colleges)
+        if total_colleges == 0 and naac not in ["All", "All NAAC Grades", ""]:
+            base_students = 0
+            base_faculty = 0
 
         college_ids = [c.college_id for c in colleges]
 
         # Adjust for Academic Year
+        year_str = str(year or "")
         year_multiplier = 1.0
-        if year == "2024-2025":
-            year_multiplier = 0.94
-        elif year == "2026-2027":
-            year_multiplier = 1.06
+        if "2024" in year_str:
+            year_multiplier = 0.92
+        elif "2026" in year_str:
+            year_multiplier = 1.08
 
         total_students = int(base_students * year_multiplier)
         total_faculty = int(base_faculty * year_multiplier)
 
         # Placement stats with branch stream filter
-        placement_query = db.query(Placement).filter(Placement.college_id.in_(college_ids))
-        if branch and branch not in ["All", "All Streams / Branches", ""]:
-            placement_query = placement_query.filter(Placement.stream.ilike(f"%{branch}%"))
+        if college_ids:
+            placement_query = db.query(Placement).filter(Placement.college_id.in_(college_ids))
+            if branch and branch not in ["All", "All Streams / Branches", ""]:
+                placement_query = placement_query.filter(Placement.branch.ilike(f"%{branch.strip()}%"))
 
-        total_placements = placement_query.count()
-        placed_count = placement_query.filter(Placement.placement_status == "Placed").count()
-        placement_rate = round((placed_count / max(1, total_placements)) * 100, 1) if total_placements > 0 else (82.4 if branch in ["Computer", "IT"] else 71.2)
-        
-        max_ctc_val = placement_query.filter(Placement.placement_status == "Placed").with_entities(func.max(Placement.package_lpa)).scalar()
-        max_ctc = float(max_ctc_val) if max_ctc_val else (58.0 if branch in ["Computer", "IT"] else 38.5)
+            total_placements = placement_query.count()
+            placed_count = placement_query.filter(Placement.placement_status == "Placed").count()
+            placement_rate = round((placed_count / max(1, total_placements)) * 100, 1) if total_placements > 0 else (82.4 if branch in ["Computer", "IT"] else 71.2)
+            
+            max_ctc_val = placement_query.filter(Placement.placement_status == "Placed").with_entities(func.max(Placement.package_lpa)).scalar()
+            max_ctc = float(max_ctc_val) if max_ctc_val else (58.0 if branch in ["Computer", "IT"] else 38.5)
 
-        # Scholarships & Research
-        scholarship_count = db.query(func.count(Student.student_id)).filter(Student.scholarship == "Yes", Student.college_id.in_(college_ids)).scalar() or int(total_students * 0.3)
+            scholarship_count = db.query(func.count(Student.student_id)).filter(Student.scholarship == "Yes", Student.college_id.in_(college_ids)).scalar() or int(total_students * 0.3)
+        else:
+            total_placements = 0
+            placed_count = 0
+            placement_rate = 0.0
+            max_ctc = 0.0
+            scholarship_count = 0
         total_publications = db.query(func.sum(Research.publications)).scalar() or 1420
         total_patents = db.query(func.sum(Research.patents)).scalar() or 185
 
@@ -254,7 +259,8 @@ class ReportService:
         college_query = db.query(College).filter(College.district.ilike(f"%{district_name}%"))
         
         if naac and naac not in ["All", "All NAAC Grades", ""]:
-            college_query = college_query.filter(College.naac_grade == naac)
+            clean_naac = naac.replace("Grade", "").strip()
+            college_query = college_query.filter(func.trim(College.naac_grade) == clean_naac)
 
         colleges_query = college_query.all()
         total_colleges = len(colleges_query)
@@ -262,34 +268,40 @@ class ReportService:
         base_students = sum(c.total_students or 0 for c in colleges_query)
         base_faculty = sum(c.total_faculty or 0 for c in colleges_query)
 
-        if total_colleges == 0:
-            colleges_query = db.query(College).filter(College.district.ilike(f"%{district_name}%")).all()
-            total_colleges = len(colleges_query)
-            base_students = sum(c.total_students or 0 for c in colleges_query)
-            base_faculty = sum(c.total_faculty or 0 for c in colleges_query)
+        if total_colleges == 0 and naac not in ["All", "All NAAC Grades", ""]:
+            base_students = 0
+            base_faculty = 0
 
+        year_str = str(year or "")
         year_multiplier = 1.0
-        if year == "2024-2025":
-            year_multiplier = 0.94
-        elif year == "2026-2027":
-            year_multiplier = 1.06
+        if "2024" in year_str:
+            year_multiplier = 0.92
+        elif "2026" in year_str:
+            year_multiplier = 1.08
 
         total_students = int(base_students * year_multiplier)
         total_faculty = int(base_faculty * year_multiplier)
 
         college_ids = [c.college_id for c in colleges_query]
 
-        placement_query = db.query(Placement).filter(Placement.college_id.in_(college_ids))
-        if branch and branch not in ["All", "All Streams / Branches", ""]:
-            placement_query = placement_query.filter(Placement.stream.ilike(f"%{branch}%"))
+        if college_ids:
+            placement_query = db.query(Placement).filter(Placement.college_id.in_(college_ids))
+            if branch and branch not in ["All", "All Streams / Branches", ""]:
+                placement_query = placement_query.filter(Placement.branch.ilike(f"%{branch.strip()}%"))
 
-        placed_count = placement_query.filter(Placement.placement_status == "Placed").count()
-        total_placements = placement_query.count()
-        placement_rate = round((placed_count / max(1, total_placements)) * 100, 1) if total_placements > 0 else (81.0 if branch in ["Computer", "IT"] else 70.5)
-        max_ctc_val = placement_query.filter(Placement.placement_status == "Placed").with_entities(func.max(Placement.package_lpa)).scalar()
-        max_ctc = float(max_ctc_val) if max_ctc_val else (52.0 if branch in ["Computer", "IT"] else 36.0)
+            placed_count = placement_query.filter(Placement.placement_status == "Placed").count()
+            total_placements = placement_query.count()
+            placement_rate = round((placed_count / max(1, total_placements)) * 100, 1) if total_placements > 0 else (81.0 if branch in ["Computer", "IT"] else 70.5)
+            max_ctc_val = placement_query.filter(Placement.placement_status == "Placed").with_entities(func.max(Placement.package_lpa)).scalar()
+            max_ctc = float(max_ctc_val) if max_ctc_val else (52.0 if branch in ["Computer", "IT"] else 36.0)
 
-        scholarships = db.query(func.count(Student.student_id)).filter(Student.college_id.in_(college_ids), Student.scholarship == "Yes").scalar() or int(total_students * 0.3)
+            scholarships = db.query(func.count(Student.student_id)).filter(Student.college_id.in_(college_ids), Student.scholarship == "Yes").scalar() or int(total_students * 0.3)
+        else:
+            total_placements = 0
+            placed_count = 0
+            placement_rate = 0.0
+            max_ctc = 0.0
+            scholarships = 0
 
         # Sort colleges so flagship engineering institutes (COEP, VJTI, WCE, ICT, SPIT, PICT, VNIT) and A++/A+ colleges appear first
         flagship_ids = ['COL0001', 'COL0002', 'COL0003', 'COL0004', 'COL0005', 'COL0006', 'COL1950']
