@@ -7,7 +7,13 @@ export interface College {
   totalStudents: number;
   facultyCount: number;
   placementRate: number;
+  averagePackage?: number;
+  highestPackage?: number;
   graduationRate?: number;
+  scholarshipStudents?: number;
+  researchPublications?: number;
+  patents?: number;
+  infraScore?: number;
   nirfRank: string | number;
   type: string;
 }

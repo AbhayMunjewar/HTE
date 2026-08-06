@@ -280,21 +280,26 @@ export const Dashboard: React.FC = () => {
         totalFaculty: defaultMetrics.totalFaculty,
         placementRate: defaultMetrics.placementRate,
         averagePackage: 8.5,
+        highestPackage: 50.0,
+        graduationRate: 94.2,
         scholarshipStudents: defaultMetrics.scholarshipStudents,
         researchPublications: 1240,
         infraScore: 8.4,
         budgetUtil: 91.2,
       };
     }
+    const c = col as any;
     return {
-      totalStudents: col.totalStudents,
-      totalFaculty: col.facultyCount,
-      placementRate: col.placementRate,
-      averagePackage: col.placementRate >= 90 ? 14.5 : (col.placementRate >= 80 ? 9.2 : 6.5),
-      scholarshipStudents: Math.round(col.totalStudents * 0.32),
-      researchPublications: col.naacGrade.includes('A') ? 420 : 180,
-      infraScore: col.naacGrade.includes('A') ? 9.2 : 7.8,
-      budgetUtil: col.naacGrade.includes('A') ? 94.8 : 86.5,
+      totalStudents: c.totalStudents || 4500,
+      totalFaculty: c.facultyCount || 185,
+      placementRate: c.placementRate ?? 81.7,
+      averagePackage: c.averagePackage ?? (c.placementRate >= 90 ? 15.2 : (c.placementRate >= 80 ? 12.55 : 9.2)),
+      highestPackage: c.highestPackage ?? 60.3,
+      graduationRate: c.graduationRate ?? 96.2,
+      scholarshipStudents: c.scholarshipStudents ?? Math.round((c.totalStudents || 4500) * 0.28),
+      researchPublications: c.researchPublications ?? (c.naacGrade?.includes('A') ? 480 : 180),
+      infraScore: c.infraScore ?? (c.naacGrade?.includes('A') ? 9.4 : 7.8),
+      budgetUtil: c.naacGrade?.includes('A') ? 94.8 : 86.5,
     };
   }, [selectedCollege]);
 
@@ -617,7 +622,7 @@ export const Dashboard: React.FC = () => {
 
         <div className="glass-card rounded-2xl p-4 shadow-xl border border-slate-800/80 hover:border-blue-500/40 transition-all">
           <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Graduation Rate</div>
-          <div className="text-xl font-extrabold text-blue-400 mt-1">94.2%</div>
+          <div className="text-xl font-extrabold text-blue-400 mt-1">{kpis.graduationRate}%</div>
           <div className="text-[9px] text-blue-300 font-bold mt-1">State Standard</div>
         </div>
 
