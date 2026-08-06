@@ -145,8 +145,8 @@ class CollegeRAGService:
         # 5. Format citations
         citations = CitationManager.format_citations(chunks_with_scores)
 
-        # 6. Build RAG Prompt combining document chunks + SQLite Dataset facts + Placement Doc Facts
-        prompt = RAGPromptBuilder.build_prompt(college_name, query, chunks_with_scores) + db_facts + placement_doc_facts
+        # 6. Build RAG Prompt combining document chunks + SQLite Dataset facts + Placement Doc Facts inside knowledge base section
+        prompt = RAGPromptBuilder.build_prompt(college_name, query, chunks_with_scores, extra_facts=db_facts + placement_doc_facts)
 
         # 7. Call Ollama/Groq LLM for grounded answer synthesis
         response_hint = (
