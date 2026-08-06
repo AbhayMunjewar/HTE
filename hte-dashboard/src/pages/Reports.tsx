@@ -199,18 +199,29 @@ export const Reports: React.FC = () => {
 
           {/* District Dropdown */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Target District</label>
+            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+              Target District {reportType === 'state' && <span className="text-[9px] font-normal text-slate-500">(Disabled for State)</span>}
+            </label>
             <select
-              value={selectedDistrict}
+              value={reportType === 'state' ? 'Statewide' : selectedDistrict}
+              disabled={reportType === 'state'}
               onChange={(e) => {
                 setSelectedDistrict(e.target.value);
                 setReportType('district');
               }}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none"
+              className={`w-full border rounded-xl px-3 py-2 text-xs font-semibold outline-none transition-all ${
+                reportType === 'state'
+                  ? 'bg-slate-900/50 border-slate-800/60 text-slate-500 cursor-not-allowed opacity-60'
+                  : 'bg-slate-950 border-slate-800 text-white focus:ring-2 focus:ring-blue-500'
+              }`}
             >
-              {['Pune', 'Mumbai', 'Thane', 'Nagpur', 'Nashik', 'Aurangabad', 'Solapur', 'Kolhapur', 'Amravati', 'Sangli', 'Satara'].map((d) => (
-                <option key={d} value={d}>{d} District</option>
-              ))}
+              {reportType === 'state' ? (
+                <option value="Statewide">All 36 Districts (Statewide)</option>
+              ) : (
+                ['Pune', 'Mumbai', 'Thane', 'Nagpur', 'Nashik', 'Aurangabad', 'Solapur', 'Kolhapur', 'Amravati', 'Sangli', 'Satara'].map((d) => (
+                  <option key={d} value={d}>{d} District</option>
+                ))
+              )}
             </select>
           </div>
 
