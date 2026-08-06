@@ -37,7 +37,7 @@ class GroqClient:
                 "5. Only include 'Recommendations' or 'Insights' if the user explicitly asks for them or if the query is analytical in nature.\n"
                 "6. Only include 'Executive Summary' if the user asks 'tell me about', 'overview', or 'summary'.\n"
                 "7. Use markdown formatting, tables, and bullet points as appropriate.\n"
-                "8. Keep responses concise and focused on what was asked."
+                "8. Provide comprehensive, in-depth, structured markdown answers with full branch tables, specific salary figures, root cause diagnostics, and actionable policy recommendations whenever asked for diagnostics, placements, packages, or institutional performance."
             )
             if response_hint:
                 system_prompt += f"\nResponse format guidance: {response_hint}"
@@ -51,7 +51,7 @@ class GroqClient:
                     {"role": "user", "content": user_prompt}
                 ],
                 "temperature": 0.2,
-                "max_tokens": 1024
+                "max_tokens": 3072
             }
             req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers)
             with urllib.request.urlopen(req, timeout=12) as response:
