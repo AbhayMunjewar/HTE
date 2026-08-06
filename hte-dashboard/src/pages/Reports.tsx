@@ -77,15 +77,14 @@ export const Reports: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<string>('2025-2026');
   const [naacFilter, setNaacFilter] = useState<string>('All');
   const [branchFilter, setBranchFilter] = useState<string>('All');
-  const [categoryFilter, setCategoryFilter] = useState<string>('All');
 
   const [loading, setLoading] = useState<boolean>(false);
   const [reportData, setReportData] = useState<ReportData | null>(null);
 
-  // Automatically fetch initial report on mount and when type/targets change
+  // Automatically fetch report on mount and whenever ANY filter changes
   useEffect(() => {
     handleGenerateReport();
-  }, [reportType, selectedDistrict, selectedYear]);
+  }, [reportType, selectedDistrict, selectedYear, naacFilter, branchFilter]);
 
   const handleGenerateReport = async () => {
     setLoading(true);
@@ -100,7 +99,8 @@ export const Reports: React.FC = () => {
           type: reportType,
           target: targetParam,
           year: selectedYear,
-          naac: naacFilter
+          naac: naacFilter,
+          branch: branchFilter
         })
       });
       if (res.ok) {
@@ -193,8 +193,8 @@ export const Reports: React.FC = () => {
           })}
         </div>
 
-        {/* Dropdown Filters Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 pt-2 border-t border-slate-800/80">
+        {/* Dropdown Filters Grid (5 Columns) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-2 border-t border-slate-800/80">
 
           {/* District Dropdown */}
           <div>
@@ -259,23 +259,6 @@ export const Reports: React.FC = () => {
               <option value="Mechanical">Mechanical Engineering</option>
               <option value="Civil">Civil Engineering</option>
               <option value="Electrical">Electrical Engineering</option>
-            </select>
-          </div>
-
-          {/* Category Filter */}
-          <div>
-            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Student Category</label>
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:ring-2 focus:ring-blue-500 outline-none"
-            >
-              <option value="All">All Categories</option>
-              <option value="General">General / Open</option>
-              <option value="OBC">OBC</option>
-              <option value="SC">SC</option>
-              <option value="ST">ST</option>
-              <option value="EWS">EWS</option>
             </select>
           </div>
 

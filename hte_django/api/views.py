@@ -299,15 +299,17 @@ def generate_report_view(request):
     report_type = data.get("type", "state")
     target = data.get("target", "")
     year = data.get("year", "2025-2026")
+    naac = data.get("naac", "All")
+    branch = data.get("branch", "All")
 
     db = SessionLocal()
     try:
         if report_type == "district":
-            report = ReportService.get_district_report(db, district_name=target or "Pune", year=year)
+            report = ReportService.get_district_report(db, district_name=target or "Pune", year=year, naac=naac, branch=branch)
         elif report_type == "college":
             report = ReportService.get_college_report(db, college_name=target or "COEP", year=year)
         else:
-            report = ReportService.get_state_report(db, year=year)
+            report = ReportService.get_state_report(db, year=year, district=target, naac=naac, branch=branch)
         return Response(report)
     except Exception as e:
         logger.error("Error in generate_report_view: %s", e)
