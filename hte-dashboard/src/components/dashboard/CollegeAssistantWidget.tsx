@@ -141,26 +141,26 @@ export const CollegeAssistantWidget: React.FC<CollegeAssistantWidgetProps> = ({ 
   };
 
   return (
-    <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-blue-500/30 overflow-hidden mt-6">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-300 overflow-hidden mt-6 text-slate-900">
       {/* Header */}
-      <div className="p-4 bg-slate-950/90 border-b border-slate-800 flex items-center justify-between">
+      <div className="p-4 bg-[#062A4E] text-white border-b-2 border-amber-500 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-xl shadow-lg shadow-blue-500/30 border border-blue-400/40">
+          <div className="p-2 bg-white text-[#062A4E] rounded-lg shadow-sm border border-amber-400">
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
             <h3 className="font-extrabold text-white text-sm">{shortName} Institutional AI Assistant</h3>
-            <p className="text-[11px] text-slate-400 font-medium">Official Institutional Records & Document Intelligence</p>
+            <p className="text-[11px] text-amber-200 font-medium">Official Institutional Records & Document Intelligence</p>
           </div>
         </div>
-        <span className="flex items-center gap-1.5 text-xs text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 shadow-sm">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" /> Active Assistant
+        <span className="flex items-center gap-1.5 text-xs text-slate-950 font-black bg-amber-500 px-3 py-1 rounded shadow-sm uppercase tracking-wider">
+          <ShieldCheck className="w-4 h-4 text-slate-950" /> Active Assistant
         </span>
       </div>
 
       {/* Quick Prompts */}
-      <div className="px-4 py-2 bg-slate-950/60 border-b border-slate-800/80 flex items-center gap-2 overflow-x-auto text-[11px]">
-        <span className="text-slate-500 font-extrabold uppercase shrink-0">Quick RAG Queries:</span>
+      <div className="px-4 py-2 bg-slate-50 border-b border-slate-200 flex items-center gap-2 overflow-x-auto text-[11px]">
+        <span className="text-slate-700 font-extrabold uppercase shrink-0">Quick RAG Queries:</span>
         {[
           "Highest package and top companies?",
           "Who are the placement faculty coordinators?",
@@ -170,7 +170,7 @@ export const CollegeAssistantWidget: React.FC<CollegeAssistantWidgetProps> = ({ 
           <button
             key={idx}
             onClick={() => handleSend(q)}
-            className="px-2.5 py-1 bg-slate-800/90 hover:bg-blue-600 hover:text-white rounded-lg text-slate-300 transition-colors shrink-0 font-medium border border-slate-700/60"
+            className="px-2.5 py-1 bg-white hover:bg-[#062A4E] hover:text-white rounded-md text-slate-800 transition-colors shrink-0 font-semibold border border-slate-300 shadow-sm"
           >
             {q}
           </button>
@@ -178,58 +178,58 @@ export const CollegeAssistantWidget: React.FC<CollegeAssistantWidgetProps> = ({ 
       </div>
 
       {/* Messages */}
-      <div className="p-4 max-h-[380px] overflow-y-auto space-y-4">
+      <div className="p-4 max-h-[380px] overflow-y-auto space-y-4 bg-slate-50">
         {messages.map((msg) => (
           <div
             key={msg.id}
             className={`flex gap-3 max-w-4xl ${msg.sender === 'user' ? 'ml-auto flex-row-reverse' : ''}`}
           >
             <div
-              className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-md text-xs font-bold ${
-                msg.sender === 'user' ? 'bg-gradient-to-tr from-blue-600 to-indigo-600 text-white' : 'bg-slate-800 text-blue-400 border border-slate-700'
+              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-sm text-xs font-bold ${
+                msg.sender === 'user' ? 'bg-[#062A4E] text-amber-400 border border-amber-500/40' : 'bg-white text-[#062A4E] border border-slate-300'
               }`}
             >
               {msg.sender === 'user' ? 'U' : <Bot className="w-4 h-4" />}
             </div>
 
             <div
-              className={`p-3.5 rounded-2xl text-xs font-medium leading-relaxed ${
+              className={`p-3.5 rounded-xl text-xs font-medium leading-relaxed ${
                 msg.sender === 'user'
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-tr-none border border-blue-400/30 shadow-lg'
-                  : 'glass-panel text-slate-200 rounded-tl-none border border-slate-800 shadow-xl'
+                  ? 'bg-[#062A4E] text-white rounded-tr-none border border-amber-500/30 shadow-sm'
+                  : 'bg-white text-slate-800 rounded-tl-none border border-slate-300 shadow-sm'
               }`}
             >
               {renderFormattedText(msg.text)}
 
-              <span className={`text-[10px] block mt-2 font-mono ${msg.sender === 'user' ? 'text-blue-200 text-right' : 'text-slate-500'}`}>
+              <span className={`text-[10px] block mt-2 font-mono ${msg.sender === 'user' ? 'text-amber-200 text-right' : 'text-slate-500'}`}>
                 {msg.timestamp}
               </span>
             </div>
           </div>
         ))}
         {loading && (
-          <div className="flex items-center gap-2 text-xs text-blue-400 font-semibold bg-slate-950/60 p-3 rounded-xl border border-slate-800 w-fit">
-            <RefreshCw className="w-4 h-4 animate-spin text-blue-400" />
-            Retrieving chunks from isolated <code className="text-emerald-300">documents/{shortName}/</code> vector store...
+          <div className="flex items-center gap-2 text-xs text-[#062A4E] font-semibold bg-white p-3 rounded-lg border border-slate-300 w-fit shadow-sm">
+            <RefreshCw className="w-4 h-4 animate-spin text-amber-600" />
+            Retrieving chunks from isolated <code className="text-blue-900 font-bold">documents/{shortName}/</code> vector store...
           </div>
         )}
       </div>
 
       {/* Input */}
-      <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="p-4 bg-slate-950/90 border-t border-slate-800 flex gap-3">
+      <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="p-4 bg-white border-t border-slate-200 flex gap-3">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={`Ask about ${shortName}'s placement statistics, packages, AICTE disclosure, faculty...`}
-          className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500/50 outline-none font-medium shadow-inner"
+          className="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-xs text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-[#062A4E] outline-none font-medium"
         />
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50 text-white px-5 py-2.5 rounded-xl text-xs font-extrabold flex items-center gap-2 shadow-lg shadow-blue-600/30 border border-blue-400/30 transition-all"
+          className="bg-[#062A4E] hover:bg-[#0A2540] disabled:opacity-50 text-white px-5 py-2.5 rounded-lg text-xs font-extrabold flex items-center gap-2 shadow-sm border border-amber-500/40 transition-all"
         >
-          <Send className="w-4 h-4" />
+          <Send className="w-4 h-4 text-amber-400" />
           RAG Search
         </button>
       </form>

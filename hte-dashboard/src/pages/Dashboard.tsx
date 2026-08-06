@@ -377,34 +377,34 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="space-y-6 pb-12">
       {/* TOP GLOBAL EXECUTIVE SEARCH BAR */}
-      <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl p-6 text-white shadow-2xl relative z-30 border border-slate-800/80 bg-grid-pattern">
+      <div className="bg-white rounded-xl p-6 text-slate-900 shadow-sm relative z-30 border border-slate-300">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] font-extrabold tracking-widest uppercase text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20 shadow-sm">
+              <span className="text-[10px] font-extrabold tracking-widest uppercase text-slate-900 bg-amber-500/20 px-3 py-1 rounded border border-amber-500/40 shadow-sm">
                 Government Executive Decision Support Mode
               </span>
-              <span className="text-[10px] font-extrabold tracking-widest uppercase text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 flex items-center gap-1.5 shadow-sm">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Live Data Sync
+              <span className="text-[10px] font-extrabold tracking-widest uppercase text-emerald-800 bg-emerald-100 px-3 py-1 rounded border border-emerald-300 flex items-center gap-1.5 shadow-sm">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" /> Live Data Sync
               </span>
             </div>
-            <h1 className="text-2xl font-extrabold mt-2 text-white tracking-tight">
+            <h1 className="text-2xl font-extrabold mt-2 text-slate-900 tracking-tight">
               Maharashtra Higher & Technical Education Intelligence Platform
             </h1>
           </div>
 
           {selectedCollege && (
-            <div className="flex items-center gap-2 bg-gradient-to-r from-blue-600/30 to-indigo-600/30 text-blue-200 px-3.5 py-2 rounded-xl border border-blue-500/30 text-xs font-semibold shadow-inner backdrop-blur-md">
-              <Building2 className="w-4 h-4 text-blue-400" />
-              Active Context: <span className="text-white font-bold">{selectedCollege.name.split(' (')[0]}</span>
-              <button onClick={() => setSelectedCollege(null)} className="ml-2 hover:text-white font-extrabold text-sm transition-transform hover:scale-125">×</button>
+            <div className="flex items-center gap-2 bg-[#062A4E] text-white px-3.5 py-2 rounded-lg border border-amber-500/40 text-xs font-semibold shadow-sm">
+              <Building2 className="w-4 h-4 text-amber-400" />
+              Active Context: <span className="text-amber-300 font-bold">{selectedCollege.name.split(' (')[0]}</span>
+              <button onClick={() => setSelectedCollege(null)} className="ml-2 hover:text-amber-400 font-extrabold text-sm transition-transform hover:scale-125">×</button>
             </div>
           )}
         </div>
 
         <div className="relative">
           <div className="relative flex items-center">
-            <Search className="w-5 h-5 absolute left-4 text-slate-400" />
+            <Search className="w-5 h-5 absolute left-4 text-slate-500" />
             <input
               type="text"
               value={searchQuery}
@@ -414,12 +414,12 @@ export const Dashboard: React.FC = () => {
               }}
               onFocus={() => setShowSearchDropdown(true)}
               placeholder="Search by College Name (e.g. VJTI, COEP, ICT), District (Pune, Mumbai), Department, University..."
-              className="w-full pl-12 pr-10 py-3.5 bg-slate-950/80 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 font-medium transition-all shadow-inner"
+              className="w-full pl-12 pr-10 py-3.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#062A4E] font-medium transition-all"
             />
             {searchQuery && (
               <button 
                 onClick={() => { setSearchQuery(''); setSelectedCollege(null); }}
-                className="absolute right-4 text-slate-400 hover:text-white text-xs font-semibold bg-slate-800/80 px-2 py-1 rounded-md"
+                className="absolute right-4 text-slate-600 hover:text-slate-900 text-xs font-semibold bg-slate-200 px-2 py-1 rounded-md"
               >
                 Clear
               </button>
@@ -432,21 +432,21 @@ export const Dashboard: React.FC = () => {
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 5 }}
-                className="absolute left-0 right-0 top-full mt-2 bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 rounded-xl shadow-2xl overflow-hidden z-50 divide-y divide-slate-800"
+                className="absolute left-0 right-0 top-full mt-2 bg-white border border-slate-300 rounded-lg shadow-lg overflow-hidden z-50 divide-y divide-slate-200"
               >
                 {searchSuggestions.map((col) => (
                   <div
                     key={col.id}
                     onClick={() => handleSelectCollege(col)}
-                    className="p-3.5 hover:bg-slate-800/80 cursor-pointer flex items-center justify-between transition-colors"
+                    className="p-3.5 hover:bg-slate-50 cursor-pointer flex items-center justify-between transition-colors"
                   >
                     <div>
-                      <div className="text-sm font-semibold text-white">{col.name}</div>
-                      <div className="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
-                        <MapPin className="w-3.5 h-3.5 text-blue-400" /> {col.district} • {col.type}
+                      <div className="text-sm font-semibold text-slate-900">{col.name}</div>
+                      <div className="text-xs text-slate-600 flex items-center gap-2 mt-0.5">
+                        <MapPin className="w-3.5 h-3.5 text-blue-700" /> {col.district} • {col.type}
                       </div>
                     </div>
-                    <span className="px-2.5 py-1 text-[10px] font-bold bg-blue-500/20 text-blue-300 rounded-full border border-blue-400/20">
+                    <span className="px-2.5 py-1 text-[10px] font-bold bg-[#062A4E] text-white rounded border border-amber-500/30">
                       {col.naacGrade} Grade
                     </span>
                   </div>
@@ -458,10 +458,10 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* STICKY FILTER BAR */}
-      <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-800/80 p-4 flex flex-wrap items-center justify-between gap-3 text-xs sticky top-2 z-20">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-300 p-4 flex flex-wrap items-center justify-between gap-3 text-xs sticky top-2 z-20">
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1.5 font-bold text-slate-300 uppercase tracking-wider text-[11px] pr-3 border-r border-slate-800">
-            <Filter className="w-4 h-4 text-blue-400" /> Filters
+          <div className="flex items-center gap-1.5 font-bold text-slate-800 uppercase tracking-wider text-[11px] pr-3 border-r border-slate-300">
+            <Filter className="w-4 h-4 text-[#062A4E]" /> Filters
           </div>
 
           <select
@@ -471,7 +471,7 @@ export const Dashboard: React.FC = () => {
               setSelectedCollege(c || null);
               if (c) setSearchQuery(c.name);
             }}
-            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 font-semibold text-slate-200 focus:ring-2 focus:ring-blue-500/50 outline-none shadow-inner"
+            className="bg-white border border-slate-300 rounded-lg px-3 py-2 font-semibold text-slate-900 focus:ring-2 focus:ring-[#062A4E] outline-none"
           >
             <option value="">All Maharashtra Institutions</option>
             {colleges.map(c => (
@@ -482,7 +482,7 @@ export const Dashboard: React.FC = () => {
           <select
             value={filterYear}
             onChange={(e) => setFilterYear(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 font-semibold text-slate-200 focus:ring-2 focus:ring-blue-500/50 outline-none shadow-inner"
+            className="bg-white border border-slate-300 rounded-lg px-3 py-2 font-semibold text-slate-900 focus:ring-2 focus:ring-[#062A4E] outline-none"
           >
             <option value="2025">Academic Year 2025-2026</option>
             <option value="2026">Academic Year 2026-2027</option>
@@ -492,7 +492,7 @@ export const Dashboard: React.FC = () => {
           <select
             value={filterDept}
             onChange={(e) => setFilterDept(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 font-semibold text-slate-200 focus:ring-2 focus:ring-blue-500/50 outline-none shadow-inner"
+            className="bg-white border border-slate-300 rounded-lg px-3 py-2 font-semibold text-slate-900 focus:ring-2 focus:ring-[#062A4E] outline-none"
           >
             <option value="">All Departments</option>
             <option value="Computer">Computer Engineering</option>
@@ -505,26 +505,26 @@ export const Dashboard: React.FC = () => {
 
         <button
           onClick={handleResetFilters}
-          className="bg-slate-800/80 hover:bg-slate-800 text-slate-200 font-semibold px-3.5 py-2 rounded-xl transition-all border border-slate-700/60 flex items-center gap-1.5 ml-auto shadow-sm"
+          className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold px-3.5 py-2 rounded-lg transition-all border border-slate-300 flex items-center gap-1.5 ml-auto shadow-sm"
         >
-          <RotateCcw className="w-3.5 h-3.5 text-slate-400" /> Reset Filters
+          <RotateCcw className="w-3.5 h-3.5 text-slate-600" /> Reset Filters
         </button>
       </div>
 
       {/* SEARCH PLACEHOLDER WHEN NO COLLEGE IS SELECTED */}
       {!selectedCollege ? (
-        <div className="bg-slate-900/60 backdrop-blur-xl rounded-2xl p-12 border border-slate-800 text-center space-y-4 shadow-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-500/30 text-blue-400 flex items-center justify-center mx-auto shadow-inner">
+        <div className="bg-white rounded-xl p-12 border border-slate-300 text-center space-y-4 shadow-sm text-slate-900">
+          <div className="w-16 h-16 rounded-xl bg-slate-100 border border-slate-300 text-[#062A4E] flex items-center justify-center mx-auto shadow-sm">
             <Search className="w-8 h-8" />
           </div>
           <div className="max-w-md mx-auto space-y-2">
-            <h3 className="text-lg font-extrabold text-white">Search or Select an Institution</h3>
-            <p className="text-xs text-slate-400 font-medium leading-relaxed">
+            <h3 className="text-lg font-extrabold text-slate-900">Search or Select an Institution</h3>
+            <p className="text-xs text-slate-600 font-medium leading-relaxed">
               Use the search bar above or choose a college from the dropdown to inspect live institutional analytics, faculty data, placement records, and enrollment predictions.
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
-            <span className="text-[11px] font-bold text-slate-400">Quick Select:</span>
+            <span className="text-[11px] font-bold text-slate-600">Quick Select:</span>
             {['VJTI Mumbai', 'COEP Pune', 'ICT Mumbai', 'Walchand Sangli', 'SPIT Mumbai'].map(cName => (
               <button
                 key={cName}
@@ -538,7 +538,7 @@ export const Dashboard: React.FC = () => {
                     handleSelectCollege(found);
                   }
                 }}
-                className="text-[11px] font-bold text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-3 py-1 rounded-full border border-blue-500/20 transition-all cursor-pointer"
+                className="text-[11px] font-bold text-[#062A4E] hover:text-white bg-slate-100 hover:bg-[#062A4E] px-3 py-1 rounded-md border border-slate-300 transition-all cursor-pointer"
               >
                 {cName}
               </button>
@@ -551,41 +551,41 @@ export const Dashboard: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-blue-950 via-indigo-950 to-slate-950 rounded-2xl p-6 text-white shadow-2xl relative overflow-hidden border border-blue-500/30 glow-blue"
+            className="bg-[#062A4E] text-white rounded-xl p-6 shadow-sm relative overflow-hidden border-l-4 border-amber-500"
           >
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 border border-blue-400/40 flex items-center justify-center text-white font-extrabold text-2xl shadow-xl shrink-0">
+              <div className="w-16 h-16 rounded-xl bg-white p-1 flex items-center justify-center text-slate-900 font-extrabold text-2xl shadow-md shrink-0 border border-amber-400">
                 {selectedCollege.name.substring(0, 2).toUpperCase()}
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 shadow-sm">
+                  <span className="px-2.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-500 text-slate-950 uppercase tracking-wider shadow-sm">
                     NAAC {selectedCollege.naacGrade} Grade
                   </span>
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-500/20 text-blue-300 border border-blue-400/30 shadow-sm">
+                  <span className="px-2.5 py-0.5 rounded text-[10px] font-extrabold bg-slate-800 text-white border border-slate-700 shadow-sm">
                     NIRF Rank #{selectedCollege.nirfRank}
                   </span>
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-500/20 text-purple-300 border border-purple-400/30 shadow-sm">
+                  <span className="px-2.5 py-0.5 rounded text-[10px] font-extrabold bg-purple-900 text-purple-100 border border-purple-400/30 shadow-sm">
                     {selectedCollege.type}
                   </span>
                 </div>
                 <h2 className="text-2xl font-extrabold mt-1.5 text-white">{selectedCollege.name}</h2>
-                <p className="text-xs text-blue-200 mt-0.5 flex items-center gap-2 font-semibold">
-                  <MapPin className="w-3.5 h-3.5 text-blue-400" /> {selectedCollege.district} District • {selectedCollege.university}
+                <p className="text-xs text-amber-200 mt-0.5 flex items-center gap-2 font-semibold">
+                  <MapPin className="w-3.5 h-3.5 text-amber-400" /> {selectedCollege.district} District • {selectedCollege.university}
                 </p>
               </div>
             </div>
 
-            <div className="text-right bg-slate-900/80 p-4 rounded-2xl border border-slate-800 backdrop-blur-md shadow-inner">
-              <div className="text-[10px] text-blue-300 uppercase tracking-widest font-extrabold">Institutional Rating</div>
-              <div className="text-2xl font-extrabold text-amber-300 mt-0.5">NAAC {selectedCollege.naacGrade}</div>
+            <div className="text-right bg-slate-900/90 p-4 rounded-xl border border-slate-700 shadow-inner">
+              <div className="text-[10px] text-amber-300 uppercase tracking-widest font-extrabold">Institutional Rating</div>
+              <div className="text-2xl font-extrabold text-white mt-0.5">NAAC {selectedCollege.naacGrade}</div>
               <div className="text-[11px] text-emerald-400 font-bold mt-0.5">Placement: {selectedCollege.placementRate}%</div>
               <button 
                 onClick={() => navigate(`/institutional-report/${encodeURIComponent(selectedCollege.name)}`)}
-                className="mt-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-lg hover:shadow-blue-500/30 transition-all flex items-center justify-center gap-1.5 w-full border border-blue-500/50"
+                className="mt-3 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black py-1.5 px-3 rounded-lg shadow transition-all flex items-center justify-center gap-1.5 w-full border border-amber-300"
               >
-                <FileText className="w-3.5 h-3.5" />
+                <FileText className="w-3.5 h-3.5 text-slate-950" />
                 Generate Audit Report
               </button>
             </div>
@@ -596,63 +596,63 @@ export const Dashboard: React.FC = () => {
 
       {/* EXECUTIVE KPI CARDS */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-9 gap-3">
-        <div className="glass-card rounded-2xl p-4 shadow-xl border border-slate-800/80 hover:border-blue-500/40 transition-all">
-          <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Students</div>
-          <div className="text-xl font-extrabold text-blue-400 mt-1">{formatNum(kpis.totalStudents)}</div>
-          <div className="text-[9px] text-emerald-400 font-bold mt-1 flex items-center gap-0.5"><ArrowUpRight className="w-3 h-3"/> Enrolled</div>
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-300 text-slate-900">
+          <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Total Students</div>
+          <div className="text-xl font-extrabold text-blue-900 mt-1">{formatNum(kpis.totalStudents)}</div>
+          <div className="text-[9px] text-emerald-700 font-bold mt-1 flex items-center gap-0.5"><ArrowUpRight className="w-3 h-3"/> Enrolled</div>
         </div>
 
-        <div className="glass-card rounded-2xl p-4 shadow-xl border border-slate-800/80 hover:border-purple-500/40 transition-all">
-          <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Faculty Members</div>
-          <div className="text-xl font-extrabold text-purple-400 mt-1">{kpis.totalFaculty}</div>
-          <div className="text-[9px] text-purple-300 font-bold mt-1">1:{Math.round(kpis.totalStudents / Math.max(1, kpis.totalFaculty))} Ratio</div>
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-300 text-slate-900">
+          <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Faculty Members</div>
+          <div className="text-xl font-extrabold text-purple-900 mt-1">{kpis.totalFaculty}</div>
+          <div className="text-[9px] text-purple-700 font-bold mt-1">1:{Math.round(kpis.totalStudents / Math.max(1, kpis.totalFaculty))} Ratio</div>
         </div>
 
-        <div className="glass-card rounded-2xl p-4 shadow-xl border border-slate-800/80 hover:border-emerald-500/40 transition-all">
-          <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Placement Rate</div>
-          <div className="text-xl font-extrabold text-emerald-400 mt-1">{kpis.placementRate}%</div>
-          <div className="text-[9px] text-emerald-400 font-bold mt-1 flex items-center gap-0.5"><ArrowUpRight className="w-3 h-3"/> High Demand</div>
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-300 text-slate-900">
+          <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Placement Rate</div>
+          <div className="text-xl font-extrabold text-emerald-700 mt-1">{kpis.placementRate}%</div>
+          <div className="text-[9px] text-emerald-700 font-bold mt-1 flex items-center gap-0.5"><ArrowUpRight className="w-3 h-3"/> High Demand</div>
         </div>
 
-        <div className="glass-card rounded-2xl p-4 shadow-xl border border-slate-800/80 hover:border-emerald-500/40 transition-all">
-          <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Avg Package</div>
-          <div className="text-xl font-extrabold text-emerald-400 mt-1">₹{kpis.averagePackage} LPA</div>
-          <div className="text-[9px] text-slate-400 font-semibold mt-1">Core Recruitment</div>
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-300 text-slate-900">
+          <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Avg Package</div>
+          <div className="text-xl font-extrabold text-emerald-700 mt-1">₹{kpis.averagePackage} LPA</div>
+          <div className="text-[9px] text-slate-600 font-semibold mt-1">Core Recruitment</div>
         </div>
 
-        <div className="glass-card rounded-2xl p-4 shadow-xl border border-slate-800/80 hover:border-blue-500/40 transition-all">
-          <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Graduation Rate</div>
-          <div className="text-xl font-extrabold text-blue-400 mt-1">{kpis.graduationRate}%</div>
-          <div className="text-[9px] text-blue-300 font-bold mt-1">State Standard</div>
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-300 text-slate-900">
+          <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Graduation Rate</div>
+          <div className="text-xl font-extrabold text-blue-900 mt-1">{kpis.graduationRate}%</div>
+          <div className="text-[9px] text-blue-700 font-bold mt-1">State Standard</div>
         </div>
 
-        <div className="glass-card rounded-2xl p-4 shadow-xl border border-slate-800/80 hover:border-amber-500/40 transition-all">
-          <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Scholarships</div>
-          <div className="text-xl font-extrabold text-amber-300 mt-1">{formatNum(kpis.scholarshipStudents)}</div>
-          <div className="text-[9px] text-amber-400 font-bold mt-1">32% Students</div>
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-300 text-slate-900">
+          <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Scholarships</div>
+          <div className="text-xl font-extrabold text-amber-800 mt-1">{formatNum(kpis.scholarshipStudents)}</div>
+          <div className="text-[9px] text-amber-700 font-bold mt-1">32% Students</div>
         </div>
 
-        <div className="glass-card rounded-2xl p-4 shadow-xl border border-slate-800/80 hover:border-purple-500/40 transition-all">
-          <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Publications</div>
-          <div className="text-xl font-extrabold text-purple-400 mt-1">{kpis.researchPublications}</div>
-          <div className="text-[9px] text-purple-300 font-bold mt-1">Indexed Papers</div>
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-300 text-slate-900">
+          <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Publications</div>
+          <div className="text-xl font-extrabold text-purple-900 mt-1">{kpis.researchPublications}</div>
+          <div className="text-[9px] text-purple-700 font-bold mt-1">Indexed Papers</div>
         </div>
 
-        <div className="glass-card rounded-2xl p-4 shadow-xl border border-slate-800/80 hover:border-blue-500/40 transition-all">
-          <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Infra Score</div>
-          <div className="text-xl font-extrabold text-blue-400 mt-1">{kpis.infraScore}/10</div>
-          <div className="text-[9px] text-emerald-400 font-bold mt-1">Smart Ready</div>
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-300 text-slate-900">
+          <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Infra Score</div>
+          <div className="text-xl font-extrabold text-blue-900 mt-1">{kpis.infraScore}/10</div>
+          <div className="text-[9px] text-emerald-700 font-bold mt-1">Smart Ready</div>
         </div>
 
-        <div className="glass-card rounded-2xl p-4 shadow-xl border border-slate-800/80 hover:border-emerald-500/40 transition-all">
-          <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Budget Util</div>
-          <div className="text-xl font-extrabold text-emerald-400 mt-1">{kpis.budgetUtil}%</div>
-          <div className="text-[9px] text-emerald-400 font-bold mt-1">RUSA Compliant</div>
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-300 text-slate-900">
+          <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Budget Util</div>
+          <div className="text-xl font-extrabold text-emerald-700 mt-1">{kpis.budgetUtil}%</div>
+          <div className="text-[9px] text-emerald-700 font-bold mt-1">RUSA Compliant</div>
         </div>
       </div>
 
       {/* PROFESSIONAL EXECUTIVE TABS NAVBAR */}
-      <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl border border-slate-800/80 shadow-xl p-2 flex flex-wrap gap-1.5">
+      <div className="bg-white rounded-xl border border-slate-300 shadow-sm p-2 flex flex-wrap gap-1.5">
         {[
           { id: 'overview', label: 'Overview', icon: LayoutDashboard },
           { id: 'students', label: 'Students', icon: Users },
@@ -670,13 +670,13 @@ export const Dashboard: React.FC = () => {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as TabType)}
               className={cn(
-                "flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-200",
+                "flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-150",
                 isActive 
-                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/30 border border-blue-400/30" 
-                  : "text-slate-400 hover:bg-slate-800/70 hover:text-slate-100"
+                  ? "bg-[#062A4E] text-white shadow-sm border-b-2 border-amber-500" 
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300"
               )}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-4 h-4 text-amber-400" />
               {tab.label}
             </button>
           );
