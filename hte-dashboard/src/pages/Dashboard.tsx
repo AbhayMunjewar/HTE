@@ -1040,7 +1040,6 @@ export const Dashboard: React.FC = () => {
                   <span className="flex items-center gap-2">
                     <Sliders className="w-5 h-5 text-blue-600" /> Enrollment Prediction with Data Entry
                   </span>
-                  <span className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-mono font-bold">ExtraTrees v3.0</span>
                 </h3>
 
                 <div className="space-y-3">
@@ -1093,7 +1092,7 @@ export const Dashboard: React.FC = () => {
 
                   <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-100">
                     <span>Demand Ratio: <strong className="text-blue-600">{(applications / Math.max(1, seats)).toFixed(2)}x</strong></span>
-                    <span>Model: <strong className="text-blue-600">ExtraTrees v3.0</strong></span>
+                    <span>Status: <strong className="text-emerald-600 font-bold">Active Engine</strong></span>
                   </div>
 
                   <button

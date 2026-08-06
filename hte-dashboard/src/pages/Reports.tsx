@@ -492,7 +492,7 @@ export const Reports: React.FC = () => {
                 <Cpu className="w-4 h-4 text-blue-400" /> ML v3.0 Predictive Enrollment Forecast (AY 2025-26)
               </h3>
               <span className="text-[10px] font-mono font-bold bg-blue-500/20 text-blue-300 px-2.5 py-0.5 rounded-full border border-blue-500/30">
-                ExtraTrees Model
+                ML Forecasting Engine
               </span>
             </div>
 

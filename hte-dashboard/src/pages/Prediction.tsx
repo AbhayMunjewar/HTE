@@ -233,7 +233,7 @@ export const Prediction: React.FC = () => {
         </div>
         <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full border border-emerald-200 text-xs font-semibold">
           <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-          Backend Model Connected (ExtraTrees v3.0)
+          Backend Model Connected
         </div>
       </div>
 
