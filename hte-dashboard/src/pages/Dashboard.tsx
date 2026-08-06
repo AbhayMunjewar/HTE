@@ -892,48 +892,7 @@ export const Dashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* DATA TABLE FOR STUDENTS */}
-              <div className="pt-4 border-t border-slate-200">
-                <h4 className="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-blue-600" /> Enrolled Student Records Directory ({selectedCollege ? selectedCollege.name : 'Statewide'})
-                </h4>
-                <div className="overflow-x-auto border border-slate-200 rounded-lg">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-100 text-slate-700 font-semibold uppercase tracking-wider border-b border-slate-200">
-                      <tr>
-                        <th className="py-2.5 px-3">Student ID</th>
-                        <th className="py-2.5 px-3">Roll No</th>
-                        <th className="py-2.5 px-3">Branch</th>
-                        <th className="py-2.5 px-3">Semester</th>
-                        <th className="py-2.5 px-3">Attendance</th>
-                        <th className="py-2.5 px-3">Scholarship</th>
-                        <th className="py-2.5 px-3">Placement</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                      {[1, 2, 3, 4, 5, 6].map((_, i) => (
-                        <tr key={i} className="hover:bg-slate-50">
-                          <td className="py-2.5 px-3 font-semibold text-blue-600">STU{202400 + i}</td>
-                          <td className="py-2.5 px-3 text-slate-500">2024-CS-{101 + i}</td>
-                          <td className="py-2.5 px-3">Computer Engineering</td>
-                          <td className="py-2.5 px-3 font-bold text-slate-900">Sem {6 - (i % 4)}</td>
-                          <td className="py-2.5 px-3 text-emerald-600 font-semibold">{85 + (i * 2)}%</td>
-                          <td className="py-2.5 px-3">
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${i % 2 === 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
-                              {i % 2 === 0 ? 'Yes' : 'No'}
-                            </span>
-                          </td>
-                          <td className="py-2.5 px-3">
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${kpis.placementRate > 80 ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'}`}>
-                              {kpis.placementRate > 80 ? 'Placed' : 'In Process'}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+
             </div>
           </div>
         )}
